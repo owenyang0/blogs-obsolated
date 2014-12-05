@@ -1,0 +1,15 @@
+.post-title {
+  margin: 10px 0;
+}
+.post-content {
+  padding-top: 10px;
+}
+.post-content h3 {
+  background-color: #808080;
+  color: #fff;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+}
+.post-content p {
+  margin-top: 10px;
+}
