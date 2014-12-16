@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>css - position relative与display table-cell深入分析 | OwenYang&#39;s</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+
+  <meta name="generator" content="OwenYang's">
+
+  
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="site-head"  style="background: #24282b url(/img/img-bg.jpg) 0 -20%" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="/img/logo.svg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">OwenYang's</h1>
+            <h2 class="blog-description"><button id="showMenu">Show Menu</button></h2>
+        </div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2014-12-14T07:44:18.000Z" itemprop="datePublished">
+          Dec 14 2014
+      </time>
+    
+    
+    | 
+    <a href='/tags/css/'>css</a>,
+    
+    <a href='/tags/table-cell/'>table-cell</a>,
+    
+    <a href='/tags/display/'>display</a>,
+    
+    <a href='/tags/position/'>position</a>,
+    
+    <a href='/tags/relative/'>relative</a>
+    
+    
+</span>
+    <h1 class="post-title">css - position relative与display table-cell深入分析</h1>
+    <section class="post-content">
+      <p>在很多时候，想使用 <code>display: table;</code> 以及其子元素使用 <code>display: table-cell</code> 都只是为了使用 <code>vertical-align</code> 这一属性。这是一个很简单的常识，但这次在项目上使用却产生意想不到的表现方式。</p>
+<p>因为我在其中又使用了 <code>position: relative;</code> 这样一个属性。同样是一个很简单而标准的属性，我想即使放在一起，肯定也是可以正常工作的。可惜，我错了。</p>
+<h2 id="缘起">缘起</h2>
+<p>就这样的一个简单的样式场景，</p>
+<p><strong>Chrome</strong><br><img src="/images/lists.png" alt="lists"><br><strong>FireFox</strong><br><img src="/images/lists-ff.png" alt="lists"></p>
+<p>看着两个图不一样，很难受是吧？开始的时候，即用的是 <code>vertical-align: top;</code> 使用 <code>position: relative;</code>去修这样一个位置。因为icon没有 <code>padding</code>，而文字却是有 <code>line-height</code> 的。直接使用vertical-align: top; 是不够雅观的，必须往下移大概3个px。我就用position: relative; 去调整了一下(当然，使用 <code>padding-top: 3px;</code>的话，就没这么多的后话了)。</p>
+<p>做为一个开发者，一般说来都会习惯用Chrome或者FF调试自己的样式。而幸运的是，我用的是Chrome，Chrome对很多东西都支持很好，我用了position: relative; 在Chrome调好了样式。这就导致了在Chrome上很好的东西，到其他浏览器的时候会丑得像一堆X一样。到FF上的时候，发现这些位置根本不工作。</p>
+<h2 id="代码">代码</h2>
+<p>客户的代码还是就算了，随便写个demo代码吧。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class">.table</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table</span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">10px</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table-cell</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">vertical-align</span>:<span class="value"> top</span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell-icon</span><span class="pseudo">:before</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">content</span>:<span class="value"> <span class="string">"icon"</span></span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell-icon</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">20px</span></span></span>;</div><div class="line"><span class="rule">}</span></div></pre></td></tr></table></figure>
+
+<p>目的只是为了让 <code>top: 20px;</code> 工作而已，不用去管它现在是否为业务价值。当然，在客户那里是肯定有价值的。经过测试：</p>
+<p><strong>WORK：</strong><br>Chrome |<br>Safari |<br>IE 8+</p>
+<p>唯FireFox不行，根本不关心你是否有此(position: relative;)属性。</p>
+<h2 id="过程">过程</h2>
+<p>遇到这种情况，当然去查找相关资料，最后查到了CSS规范: <a href="http://www.w3.org/TR/CSS21/visuren.html#choose-position" target="_blank" rel="external">choose-position</a>。里面有一句:</p>
+<blockquote>
+<p>The effect of ‘position:relative’ on table-row-group, table-header-group, table-footer-group, table-row, table-column-group, table-column, table-cell, and table-caption elements is undefined.</p>
+</blockquote>
+<p>大致一意思就是说：<code>position: relative;</code>在table-cell或者其他table元素下都是不工作的，醒醒吧少年。</p>
+<p>实际的情况是：有些浏览器又允许用户在table-cell里使用绝对或者相对定位(在这里可以看到更多详细信息<a href="http://www.w3.org/TR/CSS21/visuren.html#comp-abspos" target="_blank" rel="external">http://www.w3.org/TR/CSS21/visuren.html#comp-abspos</a>)。但浏览器又有权不实现那些开发者想要的规范，毕竟这些都不在W3定义的规范里面。</p>
+<p>所以，到这里已经明了了，不是由于FF不给力，而确实是由于规范里面没有这样要求，那么剩下的，我们去寻找真正的解决办法就好了。</p>
+<h2 id="解决">解决</h2>
+<p><strong>1.</strong><br>以上其实提到过，可以跳过 <code>position: relative;</code>，直接就用 <code>padding-top: 20px;</code> 就好了。但这明显不能满足我们的好奇心。所以，请看方法二。</p>
+<p><strong>2.</strong><br>这需要在table-cell里面在包一层，在这层限定这的position就好了。然后，所有浏览器测试一遍，搞定。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">i</span> <span class="attribute">class</span>=<span class="value">"cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">i</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div></pre></td></tr></table></figure>
+
+<p><a href="http://owenyang0.github.io/Snippets/html/table-cell/" target="_blank" rel="external">Demo</a></p>
+<p>或者有人会觉得简单，我觉得不。这些都只是经验型的东西，如果此前没遇到过，或许你会花很长时间去搞明白到底是怎么一回事。这在所有的事情面前都是一样的。</p>
+<p>所以，保持学习，努力填坑。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?title=爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。 ?url=http://owenyang0.github.io/2014/12/14/css-position-relative与display-table-cell深入分析/" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2014/12/14/css-position-relative与display-table-cell深入分析/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2014/12/14/css-position-relative与display-table-cell深入分析/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2014/12/14/css-position-relative与display-table-cell深入分析/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2014/12/13/AEM-Adobe-CMS-扒坑记之始/">
+        AEM - Adobe CMS 扒坑记之始 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang's</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-mail"  href="/about/"><span>Contact</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>
