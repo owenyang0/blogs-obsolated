@@ -1,9 +1,6 @@
 @charset "UTF-8";
 /* CSS Document */
-.site-head { min-height: 420px; }
-button { border: none; padding: 0.6em 1.2em; background: #a9a9a9; color: #fff; font-family: Arial, sans-serif; font-size: 1em; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: inline-block; margin: 10px; border-radius: 2px; font-weight: 400; outline: none; }
-button { font-size: 75%; background: none; border: 1px #fff solid; }
-button:hover, button:active { background: rgba(0,0,0,0.2); }
+
 /*add p2*/
 .perspective { width: 100%; height: 100%; }
 .perspective { background: #aaa; position: relative; }
@@ -52,7 +49,7 @@ button:hover, button:active { background: rgba(0,0,0,0.2); }
 .effect-movedown { background: #34495e; }
 .effect-movedown .container { -webkit-transition: -webkit-transform 0.4s; transition: transform 0.4s; -webkit-transform-origin: 50% 50%; transform-origin: 50% 50%; }
 .effect-movedown .container::after { background: rgba(52, 73, 94, 0.5); }
-.effect-movedown.animate .container { -webkit-transform: translateY(100%) translateZ(-1500px); transform: translateY(100%) translateZ(-1500px); }
+.effect-movedown.animate .container { -webkit-transform: translateY(80%) translateZ(-1500px); transform: translateY(30%) translateZ(-1500px); }
 .no-csstransforms3d .effect-movedown.animate .container { top: 75%; }
 .effect-movedown .outer-nav a { opacity: 0; -webkit-transform: translateY(-20px); transform: translateY(-20px); -webkit-transition: -webkit-transform 0.4s, opacity 0.4s; transition: transform 0.4s, opacity 0.4s; }
 .effect-movedown .outer-nav a:hover { color: #fbb44f; }

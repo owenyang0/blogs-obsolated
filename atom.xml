@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[OwenYang's]]></title>
+  
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://owenyang0.github.io/"/>
+  <updated>2014-12-19T17:01:52.227Z</updated>
+  <id>http://owenyang0.github.io/</id>
+  
+  <author>
+    <name><![CDATA[Owen Yang]]></name>
+    <email><![CDATA[usay@outlook.com]]></email>
+  </author>
+  
+  <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[css - position relative与display table-cell深入分析]]></title>
+    <link href="http://owenyang0.github.io/2014/12/14/css-position-relative%E4%B8%8Edisplay-table-cell%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90/"/>
+    <id>http://owenyang0.github.io/2014/12/14/css-position-relative与display-table-cell深入分析/</id>
+    <published>2014-12-14T07:44:18.000Z</published>
+    <updated>2014-12-14T07:49:50.000Z</updated>
+    <content type="html"><![CDATA[<p>在很多时候，想使用 <code>display: table;</code> 以及其子元素使用 <code>display: table-cell</code> 都只是为了使用 <code>vertical-align</code> 这一属性。这是一个很简单的常识，但这次在项目上使用却产生意想不到的表现方式。</p>
+<p>因为我在其中又使用了 <code>position: relative;</code> 这样一个属性。同样是一个很简单而标准的属性，我想即使放在一起，肯定也是可以正常工作的。可惜，我错了。</p>
+<h2 id="缘起">缘起</h2>
+<p>就这样的一个简单的样式场景，</p>
+<p><strong>Chrome</strong><br><img src="/images/lists.png" alt="lists"><br><strong>FireFox</strong><br><img src="/images/lists-ff.png" alt="lists"></p>
+<p>看着两个图不一样，很难受是吧？开始的时候，即用的是 <code>vertical-align: top;</code> 使用 <code>position: relative;</code>去修这样一个位置。因为icon没有 <code>padding</code>，而文字却是有 <code>line-height</code> 的。直接使用vertical-align: top; 是不够雅观的，必须往下移大概3个px。我就用position: relative; 去调整了一下(当然，使用 <code>padding-top: 3px;</code>的话，就没这么多的后话了)。</p>
+<p>做为一个开发者，一般说来都会习惯用Chrome或者FF调试自己的样式。而幸运的是，我用的是Chrome，Chrome对很多东西都支持很好，我用了position: relative; 在Chrome调好了样式。这就导致了在Chrome上很好的东西，到其他浏览器的时候会丑得像一堆X一样。到FF上的时候，发现这些位置根本不工作。</p>
+<h2 id="代码">代码</h2>
+<p>客户的代码还是就算了，随便写个demo代码吧。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class">.table</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table</span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">10px</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table-cell</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">vertical-align</span>:<span class="value"> top</span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell-icon</span><span class="pseudo">:before</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">content</span>:<span class="value"> <span class="string">"icon"</span></span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell-icon</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">20px</span></span></span>;</div><div class="line"><span class="rule">}</span></div></pre></td></tr></table></figure>
+
+<p>目的只是为了让 <code>top: 20px;</code> 工作而已，不用去管它现在是否为业务价值。当然，在客户那里是肯定有价值的。经过测试：</p>
+<p><strong>WORK：</strong><br>Chrome |<br>Safari |<br>IE 8+</p>
+<p>唯FireFox不行，根本不关心你是否有此(position: relative;)属性。</p>
+<h2 id="过程">过程</h2>
+<p>遇到这种情况，当然去查找相关资料，最后查到了CSS规范: <a href="http://www.w3.org/TR/CSS21/visuren.html#choose-position" target="_blank" rel="external">choose-position</a>。里面有一句:</p>
+<blockquote>
+<p>The effect of ‘position:relative’ on table-row-group, table-header-group, table-footer-group, table-row, table-column-group, table-column, table-cell, and table-caption elements is undefined.</p>
+</blockquote>
+<p>大致一意思就是说：<code>position: relative;</code>在table-cell或者其他table元素下都是不工作的，醒醒吧少年。</p>
+<p>实际的情况是：有些浏览器又允许用户在table-cell里使用绝对或者相对定位(在这里可以看到更多详细信息<a href="http://www.w3.org/TR/CSS21/visuren.html#comp-abspos" target="_blank" rel="external">http://www.w3.org/TR/CSS21/visuren.html#comp-abspos</a>)。但浏览器又有权不实现那些开发者想要的规范，毕竟这些都不在W3定义的规范里面。</p>
+<p>所以，到这里已经明了了，不是由于FF不给力，而确实是由于规范里面没有这样要求，那么剩下的，我们去寻找真正的解决办法就好了。</p>
+<h2 id="解决">解决</h2>
+<p><strong>1.</strong><br>以上其实提到过，可以跳过 <code>position: relative;</code>，直接就用 <code>padding-top: 20px;</code> 就好了。但这明显不能满足我们的好奇心。所以，请看方法二。</p>
+<p><strong>2.</strong><br>这需要在table-cell里面在包一层，在这层限定这的position就好了。然后，所有浏览器测试一遍，搞定。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">i</span> <span class="attribute">class</span>=<span class="value">"cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">i</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div></pre></td></tr></table></figure>
+
+<p><a href="http://owenyang0.github.io/Snippets/html/table-cell/" target="_blank" rel="external">Demo</a></p>
+<p>或者有人会觉得简单，我觉得不。这些都只是经验型的东西，如果此前没遇到过，或许你会花很长时间去搞明白到底是怎么一回事。这在所有的事情面前都是一样的。</p>
+<p>所以，保持学习，努力填坑。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在很多时候，想使用 <code>display: table;</code> 以及其子元素使用 <code>display: table-cell</code> 都只是为了使用 <code>vertical-align</code> 这一属性。这是一个很简单的常识，但这次在]]>
+    </summary>
+    
+      <category term="css" scheme="http://owenyang0.github.io/tags/css/"/>
+    
+      <category term="table-cell" scheme="http://owenyang0.github.io/tags/table-cell/"/>
+    
+      <category term="display" scheme="http://owenyang0.github.io/tags/display/"/>
+    
+      <category term="position" scheme="http://owenyang0.github.io/tags/position/"/>
+    
+      <category term="relative" scheme="http://owenyang0.github.io/tags/relative/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[AEM - Adobe CMS 扒坑记之始]]></title>
+    <link href="http://owenyang0.github.io/2014/12/13/AEM-Adobe-CMS-%E6%89%92%E5%9D%91%E8%AE%B0%E4%B9%8B%E5%A7%8B/"/>
+    <id>http://owenyang0.github.io/2014/12/13/AEM-Adobe-CMS-扒坑记之始/</id>
+    <published>2014-12-13T08:02:06.000Z</published>
+    <updated>2014-12-13T09:46:05.000Z</updated>
+    <content type="html"><![CDATA[<p>AEM是Adobe公司所出的商业内容管理系统，全称<strong>阿豆比体验管理系统</strong>(Adobe Experience Manager)，其前身叫<strong>CQ</strong>，分别有<code>CQ5</code> <code>CQ6</code>两个大版本。它提供了整套的网站内容管理系统解决方案，是一个企业级的重型系统。当然，这套系统在中国几乎没什么人知晓。但在澳洲，这系统几乎在所有金融行业遍地开花了。</p>
+<p>基于客户的发展战略，不可避免地开始了<code>AEM</code>的扒坑之旅。不过，此前一直在扒<code>Drupal</code>的坑，再扒一堆坑也无关紧要了。</p>
+<h2 id="AEM_技术栈">AEM 技术栈</h2>
+<p><img src="/images/cq_technology_stack.png" alt="stack" title="cq5 technology stack"></p>
+<h3 id="Apache_Sling">Apache Sling</h3>
+<p><code>Apache Sling</code> 是一个以内容为中心的网络框架。其使用Java的内容仓库去存储与管理内容，比如<code>Apache Jackrabbit</code> 和 <code>CRX</code>。</p>
+<blockquote>
+<ul>
+<li>基于<code>REST</code>原则，以内容为导向进行开发</li>
+<li>与<code>CQ5</code>(或者说<code>AEM5, 6</code>)天然集成</li>
+<li>用于处理<code>HTTP</code>的渲染与<code>数据存储</code>的请求。这是一种新的方式，它将在后台将内容组装，渲染最终将其呈现给用户</li>
+<li>能将内容对象与处理数据的组成映射起来</li>
+<li>支持服务端与<code>AJAX</code>请求</li>
+<li>支持多种脚本语言(比如，JSP, ESP, Ruby等)</li>
+<li><em>注</em> <a href="http://incubator.apache.org/projects/sling.html" target="_blank" rel="external">http://incubator.apache.org/projects/sling.html</a> 查看更多关于<code>Sling</code>的信息</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="OSGi_(Apache_Felix)">OSGi (Apache Felix)</h3>
+<p>CQ5 内建了基于<code>OSGI R4 服务平台</code>(OSGi Service Platform Release 4) 的应用程序框架。</p>
+<blockquote>
+<ul>
+<li>是一个针对<code>JAVA</code>的动态模块系统</li>
+<li>发展自通用中间键。很多第三方的组件可以以bundle的形式进行复用</li>
+<li>OSGI的bundle可以包含经编译后的JAVA代码，脚本，或者内容。这些均可根据需要将其加载到相应的仓库，或者对其进行配置等等。</li>
+</ul>
+</blockquote>
+<h2 id="获得软件">获得软件</h2>
+<p>所有需要的，只是一个可独立执行的jar包。由于是商业软件，License是必须的。我们将其放到一个文件夹下，暂且命名为<code>aem-install</code>吧。<br><img src="/images/aem-dir.png" alt="aem-dir" title="AEM directory structure"></p>
+<p>关于目录下的 <code>crx-quickstart</code> 是当你启动后，自动生成的。里面包含了，你开发所需要的所有，包含所有的内容，以及配置等等。</p>
+<h3 id="准备">准备</h3>
+<p>AEM 是一个基于<code>JAVA</code>跨平台的系统，所以<code>OS X</code>, <code>桌面版 Windows</code>, <code>Linux</code>肯定都可以支持啦。</p>
+<p>唯一需要注意的是，AEM运行在<code>JAVA 7</code>上。所以如果你是用的<code>JAVA 8</code>，但却装有<code>JAVA 7</code>的话，只需要切换一下<code>JAVA_HOME</code>。将这条命令放在你的 <code>.bashrc</code> 或者<code>.zshrc</code> source一下就搞定啦。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export JAV<span class="built_in">A_HOME</span>=<span class="escape">`/</span>usr/libexec/jav<span class="built_in">a_home</span> -v <span class="number">1.7</span>`</div></pre></td></tr></table></figure>
+
+<h3 id="启动">启动</h3>
+<p>好的，一准备工作就绪，那么我们就开始我们的正式启动。比如有趣的是，Adobe提供了两种方法供我们使用。</p>
+<blockquote>
+<p><strong>1. 控制台</strong></p>
+<p>不用说，作为一个职业代码人，我们还是比较喜欢这样的方式的。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -Xmx1024M -jar <span class="keyword">cq</span>-author-p4502.jar -<span class="keyword">p</span> <span class="number">4502</span> -<span class="keyword">r</span> author</div></pre></td></tr></table></figure>
+
+<p>其中，以下两个参数是可省的，因为默认的参数就是 <strong>端口 4502</strong>，<strong>模式 author</strong>。当然，如果你的电脑足够强大，<strong>-Xmx1024M</strong> 也是可以省的。</p>
+<blockquote>
+<ul>
+<li><code>-p</code>指的是工作端口</li>
+<li><code>-r</code>指的是启动模式。常见的模式有<code>author</code> 与 <code>publish</code>两种。当然还有其他的，用得不多就此略过罢</li>
+</ul>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>2. GUI 双击</strong></p>
+<p>当然，有时为了方便，也可以直接双击<code>cq-author-p4502.jar</code>启动。只是有几个需要注意的地方。</p>
+</blockquote>
+<p>默认的情况，是以<code>author</code>模式，启动在<code>localhost:4502</code>。但我们可以在启动以前，通过修改jar包的名字，达到不同模式不同端口的效果。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cq</span>-&lt;instance-<span class="built_in">type</span>&gt;-<span class="keyword">p</span>&lt;port-<span class="keyword">number</span>&gt;.jar</div></pre></td></tr></table></figure>
+
+<p>比如，修改成</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cq</span>-author-p4502.jar</div></pre></td></tr></table></figure>
+
+<p>启动，这就达到了以<code>author</code>模式启动，端口设置在 <code>4502</code>的效果。<br>同理，修改成</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cq</span>-publish-p4503.jar</div></pre></td></tr></table></figure>
+
+<p>启动，就将以<code>publish</code>的模式启动，端口是<code>4503</code>。<br>理想的情况是，你需要同时启动两个<code>instance</code>，只需要把jar包和license文件放在相应目录下就可以了。如：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">aem-install</span>&gt;</span>/author</div><div class="line">和</div><div class="line"><span class="tag">&lt;<span class="title">aem-install</span>&gt;</span>/publish</div></pre></td></tr></table></figure>
+
+<h3 id="就绪">就绪</h3>
+<p>当AEM启动后，会自动打开浏览器定位到相应的页面。比如，我的是<code>localhost:4502</code>。以<code>admin:admin</code>登陆就可以开始正式的开发之路了。<br><img src="/images/crx_de.png" alt="crx-de" title="crx/de"></p>
+<h2 id="小结">小结</h2>
+<p>那么就此开始，我们已经扒完了AEM的第一坑了，AEM的填坑之路就正式开始了。接下来几篇，我将着重在开发之上，讲解一下AEM的整个开发流程。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>AEM是Adobe公司所出的商业内容管理系统，全称<strong>阿豆比体验管理系统</strong>(Adobe Experience Manager)，其前身叫<strong>CQ</strong>，分别有<code>CQ5</code> <code>CQ6</code]]>
+    </summary>
+    
+      <category term="AEM" scheme="http://owenyang0.github.io/tags/AEM/"/>
+    
+      <category term="CMS" scheme="http://owenyang0.github.io/tags/CMS/"/>
+    
+      <category term="Drupal" scheme="http://owenyang0.github.io/tags/Drupal/"/>
+    
+      <category term="Adobe" scheme="http://owenyang0.github.io/tags/Adobe/"/>
+    
+      <category term="Experience Management" scheme="http://owenyang0.github.io/tags/Experience-Management/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Change Tab Title with JavaScript]]></title>
+    <link href="http://owenyang0.github.io/2014/12/11/Change-Tab-Title-with-JavaScript/"/>
+    <id>http://owenyang0.github.io/2014/12/11/Change-Tab-Title-with-JavaScript/</id>
+    <published>2014-12-11T02:38:11.000Z</published>
+    <updated>2014-12-11T02:50:04.000Z</updated>
+    <content type="html"><![CDATA[<p>修改tab或者window的标题，是一项较老的实践。<code>Gmail</code> 用它来提示用户新的聊天消息，当有新的page通过<code>AJAX</code>加载的时候，本站同样用它更新<code>tab title</code>。这是怎样做到的呢？当时是通过设置<code>document</code>对象。</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.title = <span class="string">'Hello!'</span>; <span class="comment">// New title :)</span></div></pre></td></tr></table></figure>
+
+<p>有一个常识性的错误是：你会以为应该去修改 <code>window.title</code>。但实际上，你应该使用<code>document</code>对象，否则你做的肯定是无用的。注意一下，你将会看到：很多时候会用 <code>setInterval</code>来实际更新 <code>document.title</code>，用以引起用户的注意！</p>
+<p><strong>原文：</strong><a href="http://davidwalsh.name/change-title-javascript" target="_blank" rel="external">Change Tab Title with JavaScript</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>修改tab或者window的标题，是一项较老的实践。<code>Gmail</code> 用它来提示用户新的聊天消息，当有新的page通过<code>AJAX</code>加载的时候，本站同样用它更新<code>tab title</code>。这是怎样做到的呢？当时是通过]]>
+    </summary>
+    
+      <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
+    
+      <category term="Tab" scheme="http://owenyang0.github.io/tags/Tab/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[JavaScript TDD with Mocha]]></title>
+    <link href="http://owenyang0.github.io/2014/12/04/JavaScript-TDD-with-Mocha/"/>
+    <id>http://owenyang0.github.io/2014/12/04/JavaScript-TDD-with-Mocha/</id>
+    <published>2014-12-03T16:37:41.000Z</published>
+    <updated>2014-12-03T16:47:15.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="开发现状">开发现状</h3>
+<p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 <code>人肉测试</code> 不在本博的讨论范围。</p>
+<p>测试大体分为以下几类</p>
+<blockquote>
+<ul>
+<li>单元测试</li>
+<li>集成测试</li>
+<li>功能测试</li>
+</ul>
+</blockquote>
+<h3 id="测试驱动开发">测试驱动开发</h3>
+<p>TDD(Test-Driven Development) 从根本上改变了传统的开发模式，它要求你在写代码之前就写好测试，而不仅仅是待你写你代码以后的用作验证的目的。<br>TDD将测试提到了应用设计的阶段，在这期间你应该用你的测试理清你写代码时的思路，我们称作 <code>Tasking</code>.</p>
+<p>以下是TDD开发时的基本要点</p>
+<blockquote>
+<ol>
+<li>Tasking (将项目需要拆分成小的task)</li>
+<li>Red (写测试代码，让其失败，变红)</li>
+<li>Green (写实现代码，让其通过，变绿)</li>
+<li>Refactor (重构，消失代码中的bad smell)</li>
+<li>Repeat (重复以上步骤)</li>
+</ol>
+</blockquote>
+<p>这就是TDD开发过程中的基本过程，我们就在 “红-绿-红-绿” 中完成我们的软件开发。</p>
+<h3 id="JavaScript_TDD">JavaScript TDD</h3>
+<p>笔者将通过编写一个传统游戏的方式，来完成一个 JavaScript TDD 的实践。  </p>
+<p><strong>4 digits</strong><br>是一个猜数字游戏。在国外称为公牛和母牛，在中国人们就叫它猜数字。游戏的目标是在八次内用尽可能短的时间猜出一个随机的四位数：</p>
+<blockquote>
+<ul>
+<li>顺序与大小都相同的用 A 表示  </li>
+<li>大小相同，但顺序不同用 B 表示</li>
+</ul>
+</blockquote>
+<p><strong>比如</strong> 输入 1234 | 猜数 2156 | 结果 0A2B</p>
+<p>这是曾经在文曲星上有过的游戏，网友做过一个GUI版的，大家可以看下截图：<br><img src="/images/digits.png" alt="4digits">   </p>
+<p>当然，本文的重点是 JavaScript TDD, 不是去实现一个太过细节逻辑。我们就把需求稍微改写一下：</p>
+<blockquote>
+<ul>
+<li>四位数先给定</li>
+<li>仅做算法处理(比较所猜数字与给定数字)</li>
+</ul>
+</blockquote>
+<h4 id="开发准备">开发准备</h4>
+<blockquote>
+<ul>
+<li>Node  </li>
+<li>Mocha</li>
+</ul>
+</blockquote>
+<p>如果不知道 <code>Node</code>, 估计你暂时还不用写 <code>JavaScript</code>。所以，本篇文章可能还不太适合你。</p>
+<p><img src="/images/mocha.png" alt="Mocha"><br><a href="http://visionmedia.github.io/mocha/" target="_blank" rel="external">摩卡</a>是一个功能丰富的运行在 <code>Node</code> 和浏览器上的JavaScript测试框架。它允许你使用你任意喜欢的断言库。比如</p>
+<blockquote>
+<ul>
+<li>should.js</li>
+<li>chai</li>
+<li>expect.js</li>
+<li>better-assert</li>
+</ul>
+</blockquote>
+<p>本次工程就选择 <a href="https://github.com/visionmedia/should.js" target="_blank" rel="external">should.js</a>吧，写TDD很优美，下面正式开发我们的TDD之旅。</p>
+<h4 id="工程建立">工程建立</h4>
+<pre><code>mkdir -p digits/{src,test}
+cd digits
+touch src/digits.js test/digitsSpec.js
+npm init
+npm <span class="operator"><span class="keyword">install</span> -g mocha
+npm <span class="keyword">install</span> should <span class="comment">--save-dev</span></span>
+</code></pre><p>工程就是这样搭建完成了，我们可以来看一下目录结构(<br>我把node_modules目录隐藏了)：<br><img src="/images/catalog.png" alt="Catalog"></p>
+<p>就这样，我们就可以直接运行</p>
+<pre><code><span class="title">mocha</span> 
+</code></pre><p>跑测试了。当然，我们什么代码都没有写，当时没有测试可以跑，所以结果会是一个 <code>0 passing</code>。那我们正式开始吧。</p>
+<h4 id="测试代码编写">测试代码编写</h4>
+<p>先写出我们的第一个测试用例吧。<br>如果输入数字，或者所给数字的长度都不等于4，则返回-1。</p>
+<pre><code><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'should'</span>),
+  Digits = <span class="built_in">require</span>(<span class="string">'../src/digits'</span>).Digits;
+
+describe(<span class="string">'Digits'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="comment">// Digits.compare(inputNum, givenNum);</span>
+  describe(<span class="string">'#compare()'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    it(<span class="string">'should return -1 when input and given number length isnt 4'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      Digits.compare(<span class="string">'123'</span>, <span class="string">''</span>).should.equal(-<span class="number">1</span>);
+      Digits.compare(<span class="string">'123'</span>, <span class="literal">null</span>).should.equal(-<span class="number">1</span>);
+      Digits.compare(<span class="string">'123'</span>, <span class="string">'1234'</span>).should.equal(-<span class="number">1</span>);
+      Digits.compare(<span class="literal">null</span>, <span class="string">'1234'</span>).should.equal(-<span class="number">1</span>);
+    });
+  });
+});
+</code></pre><p>嗯，代码看起来不错，我们尝试着 <code>mocha</code> 跑一下。啊哦，意料之中，变红了：<img src="/images/mocha_error.png" alt="mocha error"></p>
+<p>什么原因喃？原来我们根本没有写实现代码，你这不废话么？确实是这样，这就是TDD中的第一步，<strong>红</strong>。接下来，我们就编写一些代码，让它变绿吧。</p>
+<h4 id="实现代码编写">实现代码编写</h4>
+<p>我们定义一个简单的Digits的function吧，通过 <code>exports.Digits = Digits;</code> 将函数接口暴露出去。就像这样：</p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">Digits</span><span class="params">()</span> </span>{}
+
+Digits.compare = <span class="function"><span class="keyword">function</span><span class="params">(inputNum, givenNum)</span> </span>{
+  <span class="keyword">var</span> len = <span class="number">4</span>;
+
+  <span class="keyword">if</span> (inputNum === <span class="literal">null</span> ||
+    givenNum === <span class="literal">null</span> ||
+    inputNum.length !== len ||
+    givenNum.length !== len) {
+    <span class="keyword">return</span> -<span class="number">1</span>;
+  }
+}
+
+exports.Digits = Digits;
+</code></pre><p>看吧，看起来也很不错的样子，那我们继续跑一下测试吧。啊哈，意料之中，变<strong>绿</strong>了：<img src="/images/mocha_success.png" alt="mocha success"></p>
+<h4 id="repeat">repeat</h4>
+<p>由红变绿之后，这个task也就相当于是完成了。我们又可以按照这样的一个步骤，再写新的测试，然后再将它实现出来。到此为止，一个基本的 JavaScript TDD流程也就完了，趁着热乎劲儿。我们把这个 <code>compare</code> 函数的其他测试也一并写了吧。代码如下：</p>
+<p><strong>digitsSepc.js</strong></p>
+<pre><code><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'should'</span>),
+  Digits = <span class="built_in">require</span>(<span class="string">'../src/digits'</span>).Digits;
+
+describe(<span class="string">'Digits'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="comment">// Digits.compare(inputNum, givenNum);</span>
+  describe(<span class="string">'#compare()'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    it(<span class="string">'should return -1 when input and given number length isnt 4'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      Digits.compare(<span class="string">'123'</span>, <span class="string">''</span>).should.equal(-<span class="number">1</span>);
+      Digits.compare(<span class="string">'123'</span>, <span class="literal">null</span>).should.equal(-<span class="number">1</span>);
+      Digits.compare(<span class="string">'123'</span>, <span class="string">'1234'</span>).should.equal(-<span class="number">1</span>);
+      Digits.compare(<span class="literal">null</span>, <span class="string">'1234'</span>).should.equal(-<span class="number">1</span>);
+    });
+
+    it(<span class="string">'should return 4A0B when input numbers matched given numbers'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      Digits.compare(<span class="string">'1234'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'4A0B'</span>);
+      Digits.compare(<span class="string">'5678'</span>, <span class="string">'5678'</span>).should.equal(<span class="string">'4A0B'</span>);
+    });
+
+    it(<span class="string">'should return 2A2B when 2 input numbers matched given numbers, and other 2 exist but not the right order'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      Digits.compare(<span class="string">'2134'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A2B'</span>);
+      Digits.compare(<span class="string">'1324'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A2B'</span>);
+      Digits.compare(<span class="string">'3214'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A2B'</span>);
+      Digits.compare(<span class="string">'4231'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A2B'</span>);
+    });
+
+    it(<span class="string">'should return 2A0B when 2 input numbers matched given numbers, and other 2 was wrong numbers'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      Digits.compare(<span class="string">'1256'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A0B'</span>);
+      Digits.compare(<span class="string">'7238'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A0B'</span>);
+      Digits.compare(<span class="string">'7834'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A0B'</span>);
+      Digits.compare(<span class="string">'1784'</span>, <span class="string">'1234'</span>).should.equal(<span class="string">'2A0B'</span>);
+    });
+  });
+});
+</code></pre><p><strong>digits.js</strong></p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">Digits</span><span class="params">()</span> </span>{}
+
+Digits.compare = <span class="function"><span class="keyword">function</span><span class="params">(inputNum, givenNum)</span> </span>{
+  <span class="keyword">var</span> len = <span class="number">4</span>,
+    aCount = <span class="number">0</span>,
+    bCount = <span class="number">0</span>;
+
+  <span class="keyword">if</span> (inputNum === <span class="literal">null</span> ||
+    givenNum === <span class="literal">null</span> ||
+    inputNum.length !== len ||
+    givenNum.length !== len) {
+    <span class="keyword">return</span> -<span class="number">1</span>;
+  }
+
+  <span class="keyword">if</span> (inputNum === givenNum) {
+    <span class="keyword">return</span> <span class="string">'4A0B'</span>;
+  }
+
+  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; i++) {
+    <span class="keyword">if</span> (inputNum[i] === givenNum[i]) {
+      aCount++;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (givenNum.indexOf(inputNum[i]) !== -<span class="number">1</span>) {
+      bCount++;
+    }
+  }
+
+  <span class="keyword">return</span> aCount + <span class="string">'A'</span> + bCount + <span class="string">'B'</span>;
+}
+
+exports.Digits = Digits;
+</code></pre><p>最后再来跑一遍 <code>mocha -R spec</code>，结果如下(大功告成啦)：<img src="/images/mocha_successes.png" alt="mocha successes"></p>
+<h3 id="结语">结语</h3>
+<p>大功告成了，此时的你其实可以洗洗睡了，不用再担心你的程序有问题啦。你的测试告诉你，你的程序都是绿色可行的。当然，如果你测试写有的问题就别当别说咯。<br>测试代码会有一些什么好处呢？</p>
+<blockquote>
+<ul>
+<li>测试代码在那里，可以保证你以后修改代码时，或者重构时不会对已有的功能产生影响。</li>
+</ul>
+</blockquote>
+<p>这条是很重要的，也是相当重要的。如果没有测试代码的保证，你无从知道你自己所改的代码，对已有的代码会产生什么样的影响。与其每次上线时都得加班改BUG，为啥不先写好测试，上线时早些洗洗睡了呢？</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h3 id="开发现状">开发现状</h3>
+<p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多]]>
+    </summary>
+    
+      <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
+    
+      <category term="TDD" scheme="http://owenyang0.github.io/tags/TDD/"/>
+    
+      <category term="Mocha" scheme="http://owenyang0.github.io/tags/Mocha/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <link href="http://owenyang0.github.io/2014/12/03/hello-world/"/>
+    <id>http://owenyang0.github.io/2014/12/03/hello-world/</id>
+    <published>2014-12-03T12:00:29.000Z</published>
+    <updated>2014-12-13T08:11:36.000Z</updated>
+    <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">trobuleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick_Start">Quick Start</h2>
+<h3 id="Create_a_new_post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run_server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate_static_files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io]]>
+    </summary>
+    
+  </entry>
+  
+</feed>
