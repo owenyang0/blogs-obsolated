@@ -482,8 +482,8 @@ a:focus {
   position: relative;
   width: 80%;
   max-width: 700px;
-  margin: 2rem auto;
-  padding-bottom: 2rem;
+  margin: 1rem auto;
+  padding-bottom: 0.5rem;
   border-bottom: #ebf2f6 1px solid;
 }
 .post-header {
@@ -496,9 +496,11 @@ a:focus {
   border-left: 3px solid #f00;
 }
 .post-title {
-  margin: 10px 0;
+  margin: 0;
   text-transform: uppercase;
   text-align: left;
+  border-bottom: 1px dashed #eee;
+  padding: 5px 0;
 }
 .post-title a:hover {
   color: #287398;
@@ -519,10 +521,16 @@ a:focus {
 .post-meta {
   font-size: 0.9rem;
   display: block;
-  margin-top: 20px;
+  margin: 20px 0;
+  margin-top: 10px;
+  color: #888;
+}
+.post-meta time {
+  color: #3a4145;
 }
 .post-meta a {
   color: #888;
+  font-style: italic;
 }
 .post-meta a:hover {
   color: #333;
@@ -535,6 +543,10 @@ a:focus {
 .post-excerpt p {
   margin: 1.6rem 0 0 0;
   line-height: 1.6em;
+}
+.read-more {
+  display: block;
+  margin: 3rem 0 1.5rem;
 }
 .excerpt-link {
   padding: 6px 15px;
