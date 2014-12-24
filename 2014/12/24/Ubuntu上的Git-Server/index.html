@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Ubuntu上的Git Server | OwenYang&#39;S Ideas</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+
+  <meta name="generator" content="OwenYang'S Ideas">
+
+  
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="site-head"  style="background: #24282b url(/img/img-bg.jpg) 0 -20%" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="/img/logo.svg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">OwenYang'S Ideas</h1>
+            <h2 class="blog-description"><button id="showMenu">Show Menu</button></h2>
+        </div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <h1 class="post-title">Ubuntu上的Git Server</h1>
+    <span class="post-meta">
+      <time datetime="2014-12-24T12:48:00.000Z" itemprop="datePublished">
+          Dec 24 2014
+      </time>
+    
+    
+    | 
+    <a href='/tags/ubuntu/'>ubuntu</a>, 
+    
+    <a href='/tags/git/'>git</a>, 
+    
+    <a href='/tags/git-server/'>git server</a>, 
+    
+    <a href='/tags/gitolite/'>gitolite</a>
+    
+    
+</span>
+    <section class="post-content">
+      <p>Git是一个开源的版本控制系统，由Linus Torvalds主导，用于支持Linux内核开发。每一个Git工作目录，都是一个完整的代码库，包含所有的提交历史。有能力跟踪所有的代码版本，而不会去依赖于网络与中央服务器。</p>
+<h3 id="安装">安装</h3>
+<p>Git可以通过以下的命令进行安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> apt-get install git</div></pre></td></tr></table></figure>
+
+<h3 id="配置">配置</h3>
+<p>每一个git的用户，在第一次使用的时候都需要通过以下两个命令，进行相应的配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.email <span class="string">"you@example.com"</span></div><div class="line">git config --global user.name <span class="string">"Your Name"</span></div></pre></td></tr></table></figure>
+
+<h3 id="基本用法">基本用法</h3>
+<p>假设用户可以通过SSH的方式访问Server，对于用户想以分布式以及安全的方式使用Git，则已经完全足够了。在服务器端，创建一个新的仓库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git init --bare /path/to/repository</div></pre></td></tr></table></figure>
+
+<p>这会创建一个裸仓库，它不允许我们直接编辑相应的文件。如果你需要在服务器端保留仓库内容的复本，去掉 —bare 选项就好了。</p>
+<p>任何具有SSH权限的客户端，均可以克隆相应的仓库</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone username<span class="variable">@hostname</span><span class="symbol">:/path/to/repository</span></div></pre></td></tr></table></figure>
+
+<p>一旦克隆到了客户端上，用户即可编辑相应的文件，然后提交得分享相应的代码：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /path/to/repository</div><div class="line">  <span class="comment">#( 编辑相应的</span></div><div class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></div><div class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></div></pre></td></tr></table></figure>
+
+<h3 id="安装_gitolite_server">安装 gitolite server</h3>
+<p>虽然以上的那些，对于创建，克隆和修改仓库已经足够。但用户在服务器端安装git，最主要是想要一个传统的源代码控制管理服务器，具有多用户与权限管理的功能。推荐的解决方案是通过以下命令，安装 gitolite server：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> apt-get install gitolite</div></pre></td></tr></table></figure>
+
+<h3 id="配置_gitolite">配置 gitolite</h3>
+<p>相比于大多数的类Unix系统，gitolite server的配置有一些小小的区别。传统的配置文件会存放在 /etc 的目录之下，而gitolite则把自己的配置文件放在一个git的仓库之中。配置一个新的gitolite的第一步，则需要有配置仓库的访问权限。<br>首先，让我们为gitolite创建一个用户，并具体其访问权限。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">sudo</span> <span class="comment">adduser</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">system</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">shell</span> <span class="comment">/bin/bash</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">group</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">disabled</span><span class="literal">-</span><span class="comment">password</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">home</span> <span class="comment">/home/git</span> <span class="comment">git</span></div></pre></td></tr></table></figure>
+
+<p>现在我们想让gitolite知晓仓库管理员的SSH公钥。我们假设当前用户是仓库的管理员。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp ~<span class="regexp">/.ssh/id</span>_rsa.pub /tmp/<span class="variable">$(</span>whoami).pub</div></pre></td></tr></table></figure>
+
+<p>我们切换到git用户，并将管理员的公钥导入gitolite。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">sudo</span> su - git</div><div class="line">gl-setup /tmp/<span class="regexp">*.pub</span></div></pre></td></tr></table></figure>
+
+<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：<br>Gitolite will allow you to make initial changes to its configuration file during the setup process. You can now clone and modify the gitolite configuration repository from your administrator user (the user whose public SSH key you imported). Switch back to that user, then clone the configuration repository:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">exit</div><div class="line">git clone git@<span class="variable">$IP_ADDRESS</span><span class="symbol">:gitolite-admin</span>.git</div><div class="line">cd gitolite-admin</div></pre></td></tr></table></figure>
+
+<p>gitolite-admin目录包含两个子目录，conf 和 keydir。配置文件存放在 conf目录，而keydir目录存放了用户的公钥信息。</p>
+<h3 id="管理gitolite帐户和仓库">管理gitolite帐户和仓库</h3>
+<p>添加一个新的帐户到gitolite很简单：只需要获取用户的SSH公钥信息，以$DESIRED_USER_NAME.pub 的形式放在keydir目录之下即可。值得注意的是，gitolite的用户名不必和系统的用户名相匹配，它们仅仅是用在gitolite的配置文件之中，管理其访问权限的。同样的，删除用户只需要删除其对应的公钥文件即可。所有修改完毕之后，别忘了提交相应的修改，然后通过以下命令推回服务器端：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git <span class="operator"><span class="keyword">commit</span> -a</span></div><div class="line">git push origin <span class="keyword">master</span></div></pre></td></tr></table></figure>
+
+<p>仓库是需要编辑conf/gitolite.conf文件进行管理。通过空格分割，遵守相应的权限规则，指定相应的仓库即可。以下是一些默认的示例。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">repo    gitolite-admin</div><div class="line"><span class="constant">        RW+</span>     =   admin</div><div class="line"><span class="constant">        R</span>       =   alice</div><div class="line"></div><div class="line">repo    project1</div><div class="line"><span class="constant">        RW+</span>     =   alice</div><div class="line"><span class="constant">        RW</span>      =   bob</div><div class="line"><span class="constant">        R</span>       =   denise</div></pre></td></tr></table></figure>
+
+<h3 id="使用服务器">使用服务器</h3>
+<p>要使用新创建的帐户，用户需要gitolite的管理员将其公钥导入到gitolite的配置仓库之中。然后，用户即可拥有相应的项目权限：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">clone</span> git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</div></pre></td></tr></table></figure>
+
+<p>或者为一个已存在的git仓库添加一个远程地址：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="title">git</span> remote add gitolite git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</div></pre></td></tr></table></figure>
+
+<p>如此便搭好了一个简易的，可用的git server。为了更好的查看相应的代码，或者管理，也可使用相对较重的，gitlab开源项目。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?url=http://owenyang0.github.io/2014/12/24/Ubuntu上的Git-Server/&title=Ubuntu上的Git Server | OwenYang&#39;S" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2014/12/24/Ubuntu上的Git-Server/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2014/12/24/Ubuntu上的Git-Server/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2014/12/24/Ubuntu上的Git-Server/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2014/12/14/css-position-relative与display-table-cell深入分析/">
+        css - position relative与display table-cell深入分析 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang'S Ideas</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-57882600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'owenyang';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-mail"  href="/about/"><span>Contact</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>
