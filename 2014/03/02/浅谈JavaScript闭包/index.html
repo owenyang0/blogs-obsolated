@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>浅谈JavaScript闭包 | OwenYang&#39;S Ideas</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+
+  <meta name="generator" content="OwenYang'S Ideas">
+
+  
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="site-head"  style="background: #24282b url(/img/img-bg.jpg) 0 -20%" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="/img/logo.svg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">OwenYang'S Ideas</h1>
+            <h2 class="blog-description"><button id="showMenu">Show Menu</button></h2>
+        </div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <h1 class="post-title">浅谈JavaScript闭包</h1>
+    <span class="post-meta">
+      <time datetime="2014-03-02T15:25:00.000Z" itemprop="datePublished">
+          Mar 2 2014
+      </time>
+    
+    
+    | 
+    <a href='/tags/JavaScript/'>JavaScript</a>, 
+    
+    <a href='/tags/closure/'>closure</a>
+    
+    
+</span>
+    <section class="post-content">
+      <p>JavaScript函数是将要执行的<strong>代码</strong>及执行这些代码的<strong>作用域</strong>构成的一个综合体。计算机术语称这种代码和作用域的综合体为<strong>闭包</strong>。故所有JavaScript函数都是闭包。但我们常说的JavaScript闭包是指，一个嵌套函数被导出到它所定义的作用域外时，才明确地称为<strong>闭包</strong>。</p>
+<h2 id="JavaScript闭包">JavaScript闭包</h2>
+<p>闭包是 <code>JavaScript</code> 一个非常重要的特性，这意味着当前作用域总是能够访问外部作用域中的变量。 因为<strong>函数</strong>是 <code>JavaScript</code> 中唯一拥有自身作用域的结构，因此闭包的创建<strong>依赖于</strong>函数。</p>
+<h2 id="简单写法">简单写法</h2>
+<p>该函数的私有持久变量，可以被多个函数共享</p>
+<pre><code><span class="keyword">var</span> uniqueID = (<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    <span class="comment">// 私有持久值</span>
+    <span class="keyword">var</span> id = <span class="number">0</span>;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> id++;
+    }
+})();
+</code></pre><h2 id="循环中的闭包">循环中的闭包</h2>
+<p>一个常见的错误出现在<strong>循环</strong>中使用闭包，开发人员在循环语句里创建函数（内部计数）时经常得不到预期的结果，假设我们需要在每次循环中调用循环<strong>序号</strong></p>
+<pre><code><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) {
+    setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+        <span class="built_in">console</span>.log(i);  
+    }, <span class="number">1000</span>);
+}
+</code></pre><p>所输入的内容不是 <code>0-9</code>，取而代之的是打印10次 <code>10</code>。<br>关键原因，在调用<code>console.log(i)</code>时，循环已经结束，同一个上下文中创建的闭包是共用一个[[Scope]]属性，导致<strong>i</strong>已经被修改成了<code>10</code>。<br>在ECMAScript中，同一个父上下文中创建的闭包是共用一个<code>[[Scope]]</code>属性的。也就是说，某个闭包对其中[[Scope]]的变量做修改会影响到其他闭包对其变量的读取。</p>
+<h2 id="解决方式">解决方式</h2>
+<p>避免引用错误，获取正确序号。我们需要引入自执行函数，包裹一下。传入就是<code>i</code>的拷贝，这样就能获取正确的输出。</p>
+<pre><code><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) {
+    (<span class="function"><span class="keyword">function</span><span class="params">(e)</span> </span>{
+        setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="built_in">console</span>.log(e);  
+        }, <span class="number">1000</span>);
+    })(i);
+}
+</code></pre><p>将<code>setTimeout</code>包裹在一个匿名函数中，匿名函数拥有变量<code>e</code>的引用，便不用被循环改变了。   </p>
+<h2 id="使用闭包的断点">使用闭包的断点</h2>
+<p>在此贴上《JavaScript权威指南》中，使用<code>闭包的断点</code>代码。由<code>Steve Yen</code>所写，用来捕获一个函数中的当前作用域（包括局部变量和函数的参数），并返回其结果。</p>
+<pre><code>function inspect(inspector, title) {
+  <span class="keyword">var</span> expression, <span class="literal">result</span>;
+  <span class="keyword">if</span>(<span class="string">"ignore"</span> <span class="keyword">in</span> arguments.callee) {
+    <span class="keyword">return</span>;
+  }
+
+  <span class="keyword">while</span>(<span class="literal">true</span>) {
+    <span class="keyword">var</span> message = <span class="string">""</span>;
+    <span class="keyword">if</span>(title) {
+      message = title + <span class="string">"\n"</span>;
+    }
+
+    <span class="keyword">if</span>(expression) {
+      message += <span class="string">"\n"</span> + expression + <span class="string">" ==&gt; "</span> + <span class="literal">result</span> + <span class="string">"\n"</span>;
+    } <span class="keyword">else</span> {
+      expression = <span class="string">""</span>;
+    }
+
+    expression += <span class="string">"Enter an expression to evaluate:"</span>;
+    expression = prompt(message, expression);
+
+    <span class="keyword">if</span>(!expression) {
+      <span class="keyword">return</span>;
+    }
+
+    <span class="literal">result</span> = inspector(expression);
+  }
+}
+</code></pre><h2 id="用断点技术计算阶乘的函数">用断点技术计算阶乘的函数</h2>
+<pre><code>function factorial(n) {
+  <span class="keyword">var</span> inspector = function($) {
+    <span class="keyword">return</span> eval($);
+  }
+
+  // inspect.ignore = <span class="literal">true</span>;
+  inspect(inspector, <span class="string">"Entering factorial()"</span>);
+
+  <span class="keyword">var</span> <span class="literal">result</span> = <span class="number">1</span>;
+  <span class="keyword">while</span>(n &gt; <span class="number">1</span>) {
+    <span class="literal">result</span> *= n;
+    n--;
+    inspect(inspector, <span class="string">"factorial() loop"</span>);
+  }
+
+  inspect(inspector, <span class="string">"Exiting factorial()"</span>);
+  <span class="keyword">return</span> <span class="literal">result</span>;
+}
+</code></pre><h2 id="参考">参考</h2>
+<ul>
+<li><a href="http://www.amazon.cn/JavaScript%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BC%97%E6%8B%89%E7%BA%B3%E6%A0%B9/dp/B0012UMVYA/ref=sr_1_2?ie=UTF8&amp;qid=1393770256&amp;sr=8-2&amp;keywords=javascript+%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97" target="_blank" rel="external">JavaScript权威指南</a>  </li>
+<li><a href="http://bonsaiden.github.io/JavaScript-Garden/zh/#function.closures" target="_blank" rel="external">Closure</a></li>
+</ul>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?url=http://owenyang0.github.io/2014/03/02/浅谈JavaScript闭包/&title=浅谈JavaScript闭包 | OwenYang&#39;S" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2014/03/02/浅谈JavaScript闭包/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2014/03/02/浅谈JavaScript闭包/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2014/03/02/浅谈JavaScript闭包/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2014/12/04/JavaScript-TDD-with-Mocha/">
+        ← JavaScript TDD with Mocha
+    </a>
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2014/02/17/实习那几月/">
+        实习那几月 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang'S Ideas</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-57882600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'owenyang';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-mail"  href="/about/"><span>Contact</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>

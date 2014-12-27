@@ -83,7 +83,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone username<span class="variable">@hostname</span><span class="symbol">:/path/to/repository</span></div></pre></td></tr></table></figure>
 
 <p>一旦克隆到了客户端上，用户即可编辑相应的文件，然后提交得分享相应的代码：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /path/to/repository</div><div class="line">  <span class="comment">#( 编辑相应的</span></div><div class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></div><div class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /path/to/repository <span class="comment"># 进入目录，编辑</span></div><div class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></div><div class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></div></pre></td></tr></table></figure>
 
 <h3 id="安装_gitolite_server">安装 gitolite server</h3>
 <p>虽然以上的那些，对于创建，克隆和修改仓库已经足够。但用户在服务器端安装git，最主要是想要一个传统的源代码控制管理服务器，具有多用户与权限管理的功能。推荐的解决方案是通过以下命令，安装 gitolite server：</p>
@@ -99,7 +99,7 @@
 <p>我们切换到git用户，并将管理员的公钥导入gitolite。</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">sudo</span> su - git</div><div class="line">gl-setup /tmp/<span class="regexp">*.pub</span></div></pre></td></tr></table></figure>
 
-<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：<br>Gitolite will allow you to make initial changes to its configuration file during the setup process. You can now clone and modify the gitolite configuration repository from your administrator user (the user whose public SSH key you imported). Switch back to that user, then clone the configuration repository:</p>
+<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">exit</div><div class="line">git clone git@<span class="variable">$IP_ADDRESS</span><span class="symbol">:gitolite-admin</span>.git</div><div class="line">cd gitolite-admin</div></pre></td></tr></table></figure>
 
 <p>gitolite-admin目录包含两个子目录，conf 和 keydir。配置文件存放在 conf目录，而keydir目录存放了用户的公钥信息。</p>

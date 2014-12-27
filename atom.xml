@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://owenyang0.github.io/"/>
-  <updated>2014-12-24T12:50:43.898Z</updated>
+  <updated>2014-12-27T15:56:20.238Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://owenyang0.github.io/2014/12/24/Ubuntu%E4%B8%8A%E7%9A%84Git-Server/"/>
     <id>http://owenyang0.github.io/2014/12/24/Ubuntu上的Git-Server/</id>
     <published>2014-12-24T12:48:00.000Z</published>
-    <updated>2014-12-24T12:49:25.000Z</updated>
+    <updated>2014-12-25T08:41:17.000Z</updated>
     <content type="html"><![CDATA[<p>Git是一个开源的版本控制系统，由Linus Torvalds主导，用于支持Linux内核开发。每一个Git工作目录，都是一个完整的代码库，包含所有的提交历史。有能力跟踪所有的代码版本，而不会去依赖于网络与中央服务器。</p>
 <h3 id="安装">安装</h3>
 <p>Git可以通过以下的命令进行安装</p>
@@ -38,7 +38,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone username<span class="variable">@hostname</span><span class="symbol">:/path/to/repository</span></div></pre></td></tr></table></figure>
 
 <p>一旦克隆到了客户端上，用户即可编辑相应的文件，然后提交得分享相应的代码：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /path/to/repository</div><div class="line">  <span class="comment">#( 编辑相应的</span></div><div class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></div><div class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /path/to/repository <span class="comment"># 进入目录，编辑</span></div><div class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></div><div class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></div></pre></td></tr></table></figure>
 
 <h3 id="安装_gitolite_server">安装 gitolite server</h3>
 <p>虽然以上的那些，对于创建，克隆和修改仓库已经足够。但用户在服务器端安装git，最主要是想要一个传统的源代码控制管理服务器，具有多用户与权限管理的功能。推荐的解决方案是通过以下命令，安装 gitolite server：</p>
@@ -54,7 +54,7 @@
 <p>我们切换到git用户，并将管理员的公钥导入gitolite。</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">sudo</span> su - git</div><div class="line">gl-setup /tmp/<span class="regexp">*.pub</span></div></pre></td></tr></table></figure>
 
-<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：<br>Gitolite will allow you to make initial changes to its configuration file during the setup process. You can now clone and modify the gitolite configuration repository from your administrator user (the user whose public SSH key you imported). Switch back to that user, then clone the configuration repository:</p>
+<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">exit</div><div class="line">git clone git@<span class="variable">$IP_ADDRESS</span><span class="symbol">:gitolite-admin</span>.git</div><div class="line">cd gitolite-admin</div></pre></td></tr></table></figure>
 
 <p>gitolite-admin目录包含两个子目录，conf 和 keydir。配置文件存放在 conf目录，而keydir目录存放了用户的公钥信息。</p>
@@ -461,6 +461,107 @@ exports.Digits = Digits;
       <category term="TDD" scheme="http://owenyang0.github.io/tags/TDD/"/>
     
       <category term="Mocha" scheme="http://owenyang0.github.io/tags/Mocha/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[浅谈JavaScript闭包]]></title>
+    <link href="http://owenyang0.github.io/2014/03/02/%E6%B5%85%E8%B0%88JavaScript%E9%97%AD%E5%8C%85/"/>
+    <id>http://owenyang0.github.io/2014/03/02/浅谈JavaScript闭包/</id>
+    <published>2014-03-02T15:25:00.000Z</published>
+    <updated>2014-12-27T15:55:24.000Z</updated>
+    <content type="html"><![CDATA[<p>JavaScript函数是将要执行的<strong>代码</strong>及执行这些代码的<strong>作用域</strong>构成的一个综合体。计算机术语称这种代码和作用域的综合体为<strong>闭包</strong>。故所有JavaScript函数都是闭包。但我们常说的JavaScript闭包是指，一个嵌套函数被导出到它所定义的作用域外时，才明确地称为<strong>闭包</strong>。</p>
+<h2 id="JavaScript闭包">JavaScript闭包</h2>
+<p>闭包是 <code>JavaScript</code> 一个非常重要的特性，这意味着当前作用域总是能够访问外部作用域中的变量。 因为<strong>函数</strong>是 <code>JavaScript</code> 中唯一拥有自身作用域的结构，因此闭包的创建<strong>依赖于</strong>函数。</p>
+<h2 id="简单写法">简单写法</h2>
+<p>该函数的私有持久变量，可以被多个函数共享</p>
+<pre><code><span class="keyword">var</span> uniqueID = (<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    <span class="comment">// 私有持久值</span>
+    <span class="keyword">var</span> id = <span class="number">0</span>;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> id++;
+    }
+})();
+</code></pre><h2 id="循环中的闭包">循环中的闭包</h2>
+<p>一个常见的错误出现在<strong>循环</strong>中使用闭包，开发人员在循环语句里创建函数（内部计数）时经常得不到预期的结果，假设我们需要在每次循环中调用循环<strong>序号</strong></p>
+<pre><code><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) {
+    setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+        <span class="built_in">console</span>.log(i);  
+    }, <span class="number">1000</span>);
+}
+</code></pre><p>所输入的内容不是 <code>0-9</code>，取而代之的是打印10次 <code>10</code>。<br>关键原因，在调用<code>console.log(i)</code>时，循环已经结束，同一个上下文中创建的闭包是共用一个[[Scope]]属性，导致<strong>i</strong>已经被修改成了<code>10</code>。<br>在ECMAScript中，同一个父上下文中创建的闭包是共用一个<code>[[Scope]]</code>属性的。也就是说，某个闭包对其中[[Scope]]的变量做修改会影响到其他闭包对其变量的读取。</p>
+<h2 id="解决方式">解决方式</h2>
+<p>避免引用错误，获取正确序号。我们需要引入自执行函数，包裹一下。传入就是<code>i</code>的拷贝，这样就能获取正确的输出。</p>
+<pre><code><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) {
+    (<span class="function"><span class="keyword">function</span><span class="params">(e)</span> </span>{
+        setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="built_in">console</span>.log(e);  
+        }, <span class="number">1000</span>);
+    })(i);
+}
+</code></pre><p>将<code>setTimeout</code>包裹在一个匿名函数中，匿名函数拥有变量<code>e</code>的引用，便不用被循环改变了。   </p>
+<h2 id="使用闭包的断点">使用闭包的断点</h2>
+<p>在此贴上《JavaScript权威指南》中，使用<code>闭包的断点</code>代码。由<code>Steve Yen</code>所写，用来捕获一个函数中的当前作用域（包括局部变量和函数的参数），并返回其结果。</p>
+<pre><code>function inspect(inspector, title) {
+  <span class="keyword">var</span> expression, <span class="literal">result</span>;
+  <span class="keyword">if</span>(<span class="string">"ignore"</span> <span class="keyword">in</span> arguments.callee) {
+    <span class="keyword">return</span>;
+  }
+
+  <span class="keyword">while</span>(<span class="literal">true</span>) {
+    <span class="keyword">var</span> message = <span class="string">""</span>;
+    <span class="keyword">if</span>(title) {
+      message = title + <span class="string">"\n"</span>;
+    }
+
+    <span class="keyword">if</span>(expression) {
+      message += <span class="string">"\n"</span> + expression + <span class="string">" ==&gt; "</span> + <span class="literal">result</span> + <span class="string">"\n"</span>;
+    } <span class="keyword">else</span> {
+      expression = <span class="string">""</span>;
+    }
+
+    expression += <span class="string">"Enter an expression to evaluate:"</span>;
+    expression = prompt(message, expression);
+
+    <span class="keyword">if</span>(!expression) {
+      <span class="keyword">return</span>;
+    }
+
+    <span class="literal">result</span> = inspector(expression);
+  }
+}
+</code></pre><h2 id="用断点技术计算阶乘的函数">用断点技术计算阶乘的函数</h2>
+<pre><code>function factorial(n) {
+  <span class="keyword">var</span> inspector = function($) {
+    <span class="keyword">return</span> eval($);
+  }
+
+  // inspect.ignore = <span class="literal">true</span>;
+  inspect(inspector, <span class="string">"Entering factorial()"</span>);
+
+  <span class="keyword">var</span> <span class="literal">result</span> = <span class="number">1</span>;
+  <span class="keyword">while</span>(n &gt; <span class="number">1</span>) {
+    <span class="literal">result</span> *= n;
+    n--;
+    inspect(inspector, <span class="string">"factorial() loop"</span>);
+  }
+
+  inspect(inspector, <span class="string">"Exiting factorial()"</span>);
+  <span class="keyword">return</span> <span class="literal">result</span>;
+}
+</code></pre><h2 id="参考">参考</h2>
+<ul>
+<li><a href="http://www.amazon.cn/JavaScript%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BC%97%E6%8B%89%E7%BA%B3%E6%A0%B9/dp/B0012UMVYA/ref=sr_1_2?ie=UTF8&amp;qid=1393770256&amp;sr=8-2&amp;keywords=javascript+%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97" target="_blank" rel="external">JavaScript权威指南</a>  </li>
+<li><a href="http://bonsaiden.github.io/JavaScript-Garden/zh/#function.closures" target="_blank" rel="external">Closure</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>JavaScript函数是将要执行的<strong>代码</strong>及执行这些代码的<strong>作用域</strong>构成的一个综合体。计算机术语称这种代码和作用域的综合体为<strong>闭包</strong>。故所有JavaScript函数都是闭包。但我们常]]>
+    </summary>
+    
+      <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
+    
+      <category term="closure" scheme="http://owenyang0.github.io/tags/closure/"/>
     
   </entry>
   
