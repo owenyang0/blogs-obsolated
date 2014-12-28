@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://owenyang0.github.io/"/>
-  <updated>2014-12-27T15:56:20.238Z</updated>
+  <updated>2014-12-28T14:09:19.351Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://owenyang0.github.io/2014/12/24/Ubuntu%E4%B8%8A%E7%9A%84Git-Server/"/>
     <id>http://owenyang0.github.io/2014/12/24/Ubuntu上的Git-Server/</id>
     <published>2014-12-24T12:48:00.000Z</published>
-    <updated>2014-12-25T08:41:17.000Z</updated>
+    <updated>2014-12-28T14:08:42.000Z</updated>
     <content type="html"><![CDATA[<p>Git是一个开源的版本控制系统，由Linus Torvalds主导，用于支持Linux内核开发。每一个Git工作目录，都是一个完整的代码库，包含所有的提交历史。有能力跟踪所有的代码版本，而不会去依赖于网络与中央服务器。</p>
 <h3 id="安装">安装</h3>
 <p>Git可以通过以下的命令进行安装</p>
@@ -46,7 +46,7 @@
 
 <h3 id="配置_gitolite">配置 gitolite</h3>
 <p>相比于大多数的类Unix系统，gitolite server的配置有一些小小的区别。传统的配置文件会存放在 /etc 的目录之下，而gitolite则把自己的配置文件放在一个git的仓库之中。配置一个新的gitolite的第一步，则需要有配置仓库的访问权限。<br>首先，让我们为gitolite创建一个用户，并具体其访问权限。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">sudo</span> <span class="comment">adduser</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">system</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">shell</span> <span class="comment">/bin/bash</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">group</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">disabled</span><span class="literal">-</span><span class="comment">password</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">home</span> <span class="comment">/home/git</span> <span class="comment">git</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> adduser --system --shell /bin/bash --group --disabled-password --home /home/git git</div></pre></td></tr></table></figure>
 
 <p>现在我们想让gitolite知晓仓库管理员的SSH公钥。我们假设当前用户是仓库的管理员。</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp ~<span class="regexp">/.ssh/id</span>_rsa.pub /tmp/<span class="variable">$(</span>whoami).pub</div></pre></td></tr></table></figure>
@@ -63,7 +63,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git <span class="operator"><span class="keyword">commit</span> -a</span></div><div class="line">git push origin <span class="keyword">master</span></div></pre></td></tr></table></figure>
 
 <p>仓库是需要编辑conf/gitolite.conf文件进行管理。通过空格分割，遵守相应的权限规则，指定相应的仓库即可。以下是一些默认的示例。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">repo    gitolite-admin</div><div class="line"><span class="constant">        RW+</span>     =   admin</div><div class="line"><span class="constant">        R</span>       =   alice</div><div class="line"></div><div class="line">repo    project1</div><div class="line"><span class="constant">        RW+</span>     =   alice</div><div class="line"><span class="constant">        RW</span>      =   bob</div><div class="line"><span class="constant">        R</span>       =   denise</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">repo    gitolite-admin</div><div class="line"><span class="constant">        RW+</span>     =   admin</div><div class="line"><span class="constant">        R</span>       =   alice</div><div class="line">repo    project1</div><div class="line"><span class="constant">        RW+</span>     =   alice</div><div class="line"><span class="constant">        RW</span>      =   bob</div><div class="line"><span class="constant">        R</span>       =   denise</div></pre></td></tr></table></figure>
 
 <h3 id="使用服务器">使用服务器</h3>
 <p>要使用新创建的帐户，用户需要gitolite的管理员将其公钥导入到gitolite的配置仓库之中。然后，用户即可拥有相应的项目权限：</p>
