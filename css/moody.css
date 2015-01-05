@@ -427,7 +427,7 @@ th {
 }
 body {
   font-family: 'Open Sans', 'Hiragino Sans GB', '微软雅黑', 'Helvetica Neue', sans-serif;
-  font-size: 18px;
+  font-size: 17px;
   color: #3a4145;
   background: #fff;
 }
@@ -688,4 +688,7 @@ tt {
   background: transparent;
   border: none;
   padding: 0;
+}
+.line {
+  height: 18px;
 }
