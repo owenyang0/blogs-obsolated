@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>React JS快速开始手册 | OwenYang&#39;S Ideas</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+
+  <meta name="generator" content="OwenYang'S Ideas">
+
+  
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="header">
+    <a href="#" class="logo">OwenYang'S Ideas</a>
+    <nav class="header__nav">
+        <ul class="header__nav-list">
+            <li class="nav-item"><a href=".">Home</a></li>
+            <li class="nav-item"><a href="/about">About</a></li>
+        </ul>
+    </nav>
+    <div class="hero">
+          <div class="hero__background">
+            <img src="/img/background.jpg">
+          </div>
+        <div class="hero__cover on"></div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <h1 class="post-title">React JS快速开始手册</h1>
+    <span class="post-meta">
+      <time datetime="2015-01-17T03:19:11.000Z" itemprop="datePublished">
+          Jan 17 2015
+      </time>
+    
+    
+    | 
+    <a href='/tags/React/'>React</a>, 
+    
+    <a href='/tags/ReactJS/'>ReactJS</a>, 
+    
+    <a href='/tags/JS/'>JS</a>, 
+    
+    <a href='/tags/JavaScript/'>JavaScript</a>, 
+    
+    <a href='/tags/Facebook/'>Facebook</a>
+    
+    
+</span>
+    <section class="post-content">
+      <p>怎样用React JS构建一个用户界面？本文将快速地给你一个React JS的概览。代码，请君移步<a href="https://github.com/owenyang0/react-starter" target="_blank" rel="external">react-starter</a></p>
+<h2 id="概念">概念</h2>
+<p>React只有很少的API，这使得它很容易去学习与理解。当然，使用它也是相当有意思的。但是，简约却并不简单。在我们开始之前，有一些概念是需要去理解的。</p>
+<h3 id="React元素(React_elements)">React元素(React elements)</h3>
+<p>React元素是用于呈现HTML结构的JavaScript对象。它们不会存在于浏览器中，只是用于描述浏览器中的元素，比如<code>h1</code>, <code>div</code> 或者 <code>section</code>等等。</p>
+<h3 id="模块(Components)">模块(Components)</h3>
+<p>模块是开发者创建的React元素。它们通过比用户界面的范围要大，因为它们同时包含了其结构与功能。想像一下导航栏，点赞按钮，图片上传这些模块的概念。</p>
+<h3 id="JSX">JSX</h3>
+<p>JSX是一种用于创建React元素和模块的技术，或者说是规范、语言。比如 <code>&lt;h1&gt;Hello&lt;/h1&gt;</code> 便是一个用JSX所写的React元素。同样的React元素，可以用原生的JavaScript实现，即 <code>React.DOM.h1(null, &#39;Hello&#39;);</code>。相比原生的JavaScript，JSX更加简洁。会让你花更少的精力去读和写代码，在上线的时候将其转换成原生的JavaScript即可。</p>
+<h3 id="虚拟DOM(Virtual_DOM)">虚拟DOM(Virtual DOM)</h3>
+<p>虚拟DOM是一个JavaScript的树形结构，包含了React元素和模块。React通过渲染虚拟DOM到浏览器，使得用户界面得以显示。React也会观察虚拟DOM的变化，根据虚拟DOM自动地改变浏览器DOM元素。</p>
+<p>了解了这些概念之后，我们就可以畅快地敲React代码了。这里将会创建一系列的用户界面，每一个界面都将提前添加一层功能层。我们会做一个类似instagram的应用 - 当然，这个很粗糙。</p>
+<h2 id="渲染(Rendering)">渲染(Rendering)</h2>
+<p>业务的第一步是渲染一个虚拟的元素(React元素或者模块都可以)。由于每一个虚拟元素都存在于内存之中，所以我们必须显式地告诉React，将其渲染到浏览器的DOM之中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">React.render(<span class="xml"><span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> /&gt;</span>, document.body);</span></div></pre></td></tr></table></figure>
+
+<p><code>render</code> 函数接受两个参数，一个是虚拟元素，一个是真实的DOM节点。React就是获取到虚拟元素之后，将其插入到所给的节点之中。此时，在浏览器中便可以看到照片了。</p>
+<h2 id="模块(Components)-1">模块(Components)</h2>
+<p>模块是React的核心与灵魂。它们可以自定义React元素。经常由单一的功能或者结构扩展而来。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> /&gt;</span></span></div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> /&gt;</span>, document.body);</div></pre></td></tr></table></figure>
+
+<p><code>createClass</code> 函数接受一个对象，该对象实现了<code>render</code> 的函数。<br>这个<code>Photo</code>模块被构建好，<code>&lt;Photo /&gt;</code>，然后渲染到document body中。<br>该模块并没有比上一个React图像元素做更多的事情，但这却更加有利于在功能和结构上进行扩展。</p>
+<h2 id="属性(Props)">属性(Props)</h2>
+<p>属性可以认为是模块的一些配置选项。它们以参数(arguments)的形式传递给模块，看起来就像HTML的属性(attributes)。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">{this.props.imageURL}</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="title">span</span>&gt;</span>{this.props.caption}<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">imageURL</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> <span class="attribute">caption</span>=<span class="value">'Headset'</span> /&gt;</span>, document.body);</div></pre></td></tr></table></figure>
+
+<p>在<code>render</code> 函数里面，两个属性(props)传到了<code>Photo</code>模块，<code>imageURL</code> 和 <code>caption</code>。<code>imageURL</code>属性被用作React元素中的<code>src</code>。而<code>caption</code>属性则以纯文本的方式在React中的span元素使用。</p>
+<p>值得一提的是，模块永远不应该去改变属性的的值，它们是不可变的。如果一个模块有一个可变的数据，那应该应用使用状态对象(state object)。</p>
+<h2 id="状态(State)">状态(State)</h2>
+<p>状态对象是一个模块的内部对象。它会持有可变的数据。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  toggleLiked: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">this</span>.setState({</div><div class="line">      liked: !<span class="keyword">this</span>.state.liked</div><div class="line">    });</div><div class="line">  },</div><div class="line"></div><div class="line">  getInitialState: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> {</div><div class="line">      liked: <span class="literal">false</span></div><div class="line">    }</div><div class="line">  },</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">var</span> buttonClass = <span class="keyword">this</span>.state.liked ? <span class="string">'active'</span> : <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">{this.props.src}</span> /&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'bar'</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">button</span> <span class="attribute">onClick</span>=<span class="value">{this.toggleLiked}</span> <span class="attribute">className</span>=<span class="value">{buttonClass}</span>&gt;</span></div><div class="line">            ♥</div><div class="line">          <span class="tag">&lt;/<span class="title">button</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">span</span>&gt;</span>{this.props.caption}<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> <span class="attribute">caption</span>=<span class="value">'Headset'</span>/&gt;</span>, document.body);</div></pre></td></tr></table></figure>
+
+<p>在模块中引入状态，会增加一点点的复杂度。</p>
+<p>在这模块中，有一个新的函数<code>getInitialState</code>。当模块初始化的时候，React会调用这个函数。而返回的对象则作为React的初始化状态(看函数名就知道)。<br>还有一个新的函数叫<code>toggleLiked</code>。这个函数调用了模块上的setState方法，可以改变状态<code>liked</code>的值。<br>通过模块的render函数，变量<code>buttonClass</code>被赋值成了’active’或者空，这都依赖于<code>liked</code>状态。<br><code>buttonClass</code>是React按钮元素的class名字。按钮还拥有一个<code>onClick</code>的事件回调，指向<code>toggleLiked</code>函数。</p>
+<p>当模块渲染成浏览器DOM的时候，究竟发生全过程：</p>
+<ul>
+<li>当按钮点击被触发时，调用了<code>toggleLiked</code></li>
+<li><code>liked</code>的状态被改变</li>
+<li>React将模块再次渲染成虚拟DOM</li>
+<li>新的虚拟DOM与旧的虚拟DOM相比较</li>
+<li>React将改变的部分隔离，然后更新到浏览器DOM</li>
+</ul>
+<p>在这个场景中，React会改变button上的类名。</p>
+<h2 id="组合(Composition)">组合(Composition)</h2>
+<p>组合的意思是说，将小的分散的模块组成一个大的整体。比如<code>Photo</code>模块可以在<code>PhotoGallery</code>中使用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  toggleLiked: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">this</span>.setState({</div><div class="line">      liked: !<span class="keyword">this</span>.state.liked</div><div class="line">    });</div><div class="line">  },</div><div class="line"></div><div class="line">  getInitialState: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> {</div><div class="line">      liked: <span class="literal">false</span></div><div class="line">    }</div><div class="line">  },</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">var</span> buttonClass = <span class="keyword">this</span>.state.liked ? <span class="string">'active'</span> : <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">{this.props.src}</span> /&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'bar'</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">button</span> <span class="attribute">onClick</span>=<span class="value">{this.toggleLiked}</span> <span class="attribute">className</span>=<span class="value">{buttonClass}</span>&gt;</span></div><div class="line">            ♥</div><div class="line">          <span class="tag">&lt;/<span class="title">button</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">span</span>&gt;</span>{this.props.caption}<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">var PhotoGallery = React.createClass({</div><div class="line"></div><div class="line">  getDataFromServer: function() {</div><div class="line">    return [{</div><div class="line">      url: 'http://owenyang0.github.io/img/background.jpg',</div><div class="line">      caption: 'Headset'</div><div class="line">    },</div><div class="line">    {</div><div class="line">      url: 'http://owenyang0.github.io/images/mocha.png',</div><div class="line">      caption: 'Mocha'</div><div class="line">    },</div><div class="line">    {</div><div class="line">      url: 'http://owenyang0.github.io/images/catalog.png',</div><div class="line">      caption: 'Catelog'</div><div class="line">    }];</div><div class="line">  },</div><div class="line"></div><div class="line">  render: function() {</div><div class="line">    var data = this.getDataFromServer();</div><div class="line"></div><div class="line">    var photos = data.map(function(photo) {</div><div class="line">      return <span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">src</span>=<span class="value">{photo.url}</span> <span class="attribute">caption</span>=<span class="value">{photo.caption}</span> /&gt;</span></div><div class="line">    });</div><div class="line"></div><div class="line">    return (</div><div class="line">      <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo-gallery'</span>&gt;</span></div><div class="line">        {photos}</div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">PhotoGallery</span> /&gt;</span>, document.body);</div></pre></td></tr></table></figure>
+
+<p>这个<code>Photo</code>模块完完全全和上面的一样。但新的<code>PhotoGallery</code>模块会生成<code>Photo</code>模块。该场景中，伪造了返回包含三个对象的数组的数据，每一个对象都返回一个url和其标题。通过循环，生成了三个<code>Photo</code>的模块，将最终的返回值插入到<code>render</code>函数之中。</p>
+<h2 id="小结">小结</h2>
+<p>用React来构建你的用户界面，我想这也差不多了。React的文档手册，包含了所有的细节。强烈推荐大家去读一下。<br>同样的，该文也没有涉及你本地环境安装的细节。<a href="http://facebook.github.io/react/docs/getting-started.html" target="_blank" rel="external">文档</a>都会有的。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?url=http://owenyang0.github.io/2015/01/17/The-React-Quick-Start-Guide/&title=React JS快速开始手册 | OwenYang&#39;S" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2015/01/17/The-React-Quick-Start-Guide/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2015/01/17/The-React-Quick-Start-Guide/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2015/01/17/The-React-Quick-Start-Guide/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2015/01/04/ECMAScript-6中的数组操作方法/">
+        ECMAScript 6中的数组操作方法 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang'S Ideas</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-57882600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'owenyang';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-mail"  href="/about/"><span>Contact</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>
