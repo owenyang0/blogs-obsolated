@@ -471,12 +471,21 @@ a:focus {
   overflow: hidden;
 }
 .logo {
+  display: block;
+  width: 200px;
+  margin-left: 50px;
   font-size: 36px;
   color: #fff;
   line-height: 70px;
-  height: 70px;
-  padding-left: 50px;
+  padding: 0 10px;
+  text-align: center;
   font-family: 'League Gothic';
+}
+.logo:hover,
+.logo:focus {
+  background-color: #287398;
+  color: #fff;
+  text-decoration: none;
 }
 .header__nav {
   position: absolute;
@@ -521,6 +530,7 @@ a:focus {
 .hero {
   height: 450px;
   overflow: hidden;
+  position: relative;
 }
 .hero__background img {
   width: 100%;
