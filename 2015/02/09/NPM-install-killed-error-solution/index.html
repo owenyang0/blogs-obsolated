@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>NPM install - killed error solution | OwenYang&#39;S IDEAS</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+
+  <meta name="generator" content="OwenYang'S IDEAS">
+
+  
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+
+      <header class="header">
+    <a href="#" class="logo">OwenYang'S IDEAS</a>
+    <nav class="header__nav">
+        <ul class="header__nav-list">
+            <li class="nav-item"><a href=".">Home</a></li>
+            <li class="nav-item"><a href="/about">About</a></li>
+        </ul>
+    </nav>
+    <div class="hero">
+          <div class="hero__background">
+            <img src="/img/background.jpg">
+          </div>
+        <div class="hero__cover on"></div>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <h1 class="post-title">NPM install - killed error solution</h1>
+    <span class="post-meta">
+      <time datetime="2015-02-09T11:29:46.000Z" itemprop="datePublished">
+          Feb 9 2015
+      </time>
+    
+    
+    | 
+    <a href='/tags/npm/'>npm</a>, 
+    
+    <a href='/tags/npm-install/'>npm install</a>, 
+    
+    <a href='/tags/killed/'>killed</a>, 
+    
+    <a href='/tags/memory/'>memory</a>, 
+    
+    <a href='/tags/npm-install-killed/'>npm install killed</a>
+    
+    
+</span>
+    <section class="post-content">
+      <p>在接手一个Node项目的时候，<code>npm install</code>。却出现了”killed”的错误。以为是Node版本的问题，熟练地切换了0.11与0.10版，同样无解。<br>由于新的npm版本吧，<code>npm install</code>的时候已经无法看到常规的log信息了。以<code>npm install -d</code>查看安装的过程，发现无任何特殊的地方。在一定程度的时候，直接被”killed”。关于<code>npm install -d</code>可以看 <a href="https://docs.npmjs.com/misc/config" target="_blank" rel="external">npm config</a></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"><span class="symbol">v:</span> --version</span></div><div class="line">-<span class="ruby">h, -?, --help, -<span class="constant">H</span><span class="symbol">:</span> --usage</span></div><div class="line">-<span class="ruby">s, --<span class="symbol">silent:</span> --loglevel silent</span></div><div class="line">-<span class="ruby">q, --<span class="symbol">quiet:</span> --loglevel warn</span></div><div class="line">-<span class="ruby"><span class="symbol">d:</span> --loglevel info</span></div><div class="line">-<span class="ruby">dd, --<span class="symbol">verbose:</span> --loglevel verbose</span></div><div class="line">-<span class="ruby"><span class="symbol">ddd:</span> --loglevel silly</span></div><div class="line">-<span class="ruby"><span class="symbol">g:</span> --global</span></div><div class="line">-<span class="ruby"><span class="constant">C</span><span class="symbol">:</span> --prefix</span></div><div class="line">-<span class="ruby"><span class="symbol">l:</span> --long</span></div><div class="line">-<span class="ruby"><span class="symbol">m:</span> --message</span></div><div class="line">-<span class="ruby">p, --<span class="symbol">porcelain:</span> --parseable</span></div><div class="line">-<span class="ruby"><span class="symbol">reg:</span> --registry</span></div><div class="line">-<span class="ruby"><span class="symbol">f:</span> --force</span></div><div class="line">-<span class="ruby"><span class="symbol">desc:</span> --description</span></div><div class="line">-<span class="ruby"><span class="constant">S</span><span class="symbol">:</span> --save</span></div><div class="line">-<span class="ruby"><span class="constant">D</span><span class="symbol">:</span> --save-dev</span></div><div class="line">-<span class="ruby"><span class="constant">O</span><span class="symbol">:</span> --save-optional</span></div><div class="line">-<span class="ruby"><span class="constant">B</span><span class="symbol">:</span> --save-bundle</span></div><div class="line">-<span class="ruby"><span class="constant">E</span><span class="symbol">:</span> --save-exact</span></div><div class="line">-<span class="ruby"><span class="symbol">y:</span> --yes</span></div><div class="line">-<span class="ruby"><span class="symbol">n:</span> --yes <span class="keyword">false</span></span></div><div class="line">ll and la commands: ls --long</div></pre></td></tr></table></figure>
+
+<p>最后才想到，可能是内存不够了。由于是以vagrant启动的一台ubuntu14.04的虚拟机，默认只有500M的内存。而且该项目会用到一些底层的npm包，会编译一些代码。这就导致了内存不够用。<br>可以查一下相应的系统log，在路径 <code>/var/log</code>之下，确认自己的问题。如<code>/var/log/syslog</code> 和 <code>/var/log/messages</code>等。</p>
+<h3 id="Solution">Solution</h3>
+<h4 id="1-_增大内存。">1. 增大内存。</h4>
+<p>由于我是虚拟机，所有增大内存相对简单。在vagrantfile里，只需要增加一条：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">config.vm.provider <span class="string">"virtualbox"</span> <span class="built_in">do</span> |v|</div><div class="line">  v.memory = <span class="number">1024</span></div><div class="line"><span class="function"><span class="keyword">end</span></span></div></pre></td></tr></table></figure>
+
+<p>即可。</p>
+<h4 id="2-_利用swap_file实现虚拟内存">2. 利用swap file实现虚拟内存</h4>
+<p>使用</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> swapon <span class="operator">-s</span></div></pre></td></tr></table></figure>
+
+<p>查看系统是否配置了交换区域。没有的话， 便直接开始创建swap file。<br>创建一个1G的文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> fallocate <span class="operator">-l</span> <span class="number">1</span>G /swapfile</div></pre></td></tr></table></figure>
+
+<p>使用</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span> -<span class="keyword">lh</span> /swapfile</div></pre></td></tr></table></figure>
+
+<p>确认是否是自己所需要的文件大小。</p>
+<p><strong>启用Swap文件</strong><br>首先调整文件的权限，若该文件能被其他用户随意的读写，则会产生很大的安全隐患。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> chmod <span class="number">600</span> /swapfile</div></pre></td></tr></table></figure>
+
+<p>现在安全多了，可以让系统开始设置交换区域了。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> mkswap /swapfile</div></pre></td></tr></table></figure>
+
+<p>启用该文件</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> swapon /swapfile</div></pre></td></tr></table></figure>
+
+<p>现在基本的步骤已经完成了，可以使用最初的命令验证swap file是否正确使用。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> swapon <span class="operator">-s</span></div><div class="line"></div><div class="line">Filename                    Type          Size     Used     Priority</div><div class="line">/swapfile                               file          <span class="number">1048572</span>     <span class="number">0</span>     -<span class="number">1</span></div></pre></td></tr></table></figure>
+
+<p>交换分区已经成功设置，系统会在必要的时候使用它。</p>
+<p><strong>注意</strong><br>现在已经启用了swap文件，但当我们重启的时候，系统不会自动地启用该swap文件。可以通过修改<code>fstab</code>文件实现开机使用swap文件。<br>用root权限编辑</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> vim /etc/fstab</div></pre></td></tr></table></figure>
+
+<p>在文件的最后，需要添加一行告诉操作系统自动使用swap文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/swapfile   <span class="keyword">none</span>    <span class="built_in">swap</span>    sw    <span class="number">0</span>   <span class="number">0</span></div></pre></td></tr></table></figure>
+
+<p>如此再<code>npm install</code> 的时候，便解决了所有的问题了。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?url=http://owenyang0.github.io/2015/02/09/NPM-install-killed-error-solution/&title=NPM install - killed error solution | OwenYang&#39;S" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2015/02/09/NPM-install-killed-error-solution/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2015/02/09/NPM-install-killed-error-solution/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2015/02/09/NPM-install-killed-error-solution/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2015/01/17/The-React-Quick-Start-Guide/">
+        React JS快速开始手册 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-57882600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'owenyang';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+  </div>
+</div>
+
+<nav  class="outer-nav top horizontal">
+
+          <a class="icon-home"  href="/"><span>Home</span></a>
+
+          <a class="icon-mail"  href="/about/"><span>Contact</span></a>
+
+</nav>
+
+</div>
+</body>
+</html>
