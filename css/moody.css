@@ -575,6 +575,7 @@ a:focus {
 }
 .post-title a {
   color: #23456b;
+  display: block;
 }
 .post-title a:hover {
   color: #274951;
