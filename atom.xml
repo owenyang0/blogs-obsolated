@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://owenyang0.github.io/"/>
-  <updated>2015-02-15T15:02:02.175Z</updated>
+  <updated>2015-02-22T06:42:32.923Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -13,6 +13,39 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[2014压过的辙痕]]></title>
+    <link href="http://owenyang0.github.io/2015/02/22/2014%E5%8E%8B%E8%BF%87%E7%9A%84%E8%BE%99%E7%97%95/"/>
+    <id>http://owenyang0.github.io/2015/02/22/2014压过的辙痕/</id>
+    <published>2015-02-22T06:30:55.000Z</published>
+    <updated>2015-02-22T06:40:42.000Z</updated>
+    <content type="html"><![CDATA[<p>2014过去2个月有余，才回过神来做一下去年的总结。自己的拖延症也是厉害，此时也希望不会太晚。不过，好歹也才刚过春节。<br>一年，从去学校毕业了。<br>一年，从实习到了试用，从新蛋到了TW。<br>一年，大家各奔东西，世界留给了一群追梦的人。<br>一年，又开始了一段新的人生罢。</p>
+<p>现在都记不得最初的梦想了，自己的追逐的意义依旧还是存在的，只是少了当初那份一往无前的勇气。<br>去年<br><img src="/images/goal_2014.png" alt="2014 goal"><br>今年<br><img src="/images/goal_2015.png" alt="2015 goal"><br>去年的整个计划是开始读书，可是真正执行起来才会发现并非想像中的那么容易。当然，也有其他，只是其他还算得上不易。</p>
+<h3 id="1-_读书">1. 读书</h3>
+<p>人人都会，却又不是人人都会的技能。<a href="http://book.douban.com/people/owenyang0/" target="_blank" rel="external">http://book.douban.com/people/owenyang0/</a><br>我开始学会用豆瓣来Track自己的读书进度，年终还可以用来分析分析自己的读书倾向。不得不说豆瓣在这个方面，做得也还是不错的。给书友提供了一个平台，分享与交流。<br>相比一些个大神，一年上百本书的战果，我这根本不值一提。不过，自己也慢慢开始了自己的读书习惯，与计划。</p>
+<h3 id="2-_写博">2. 写博</h3>
+<p>想写，却又不容易坚持的习惯。<a href="http://www.cnblogs.com/owenyang/" target="_blank" rel="external">http://www.cnblogs.com/owenyang/</a><br>一直想写一些，或者坚持写一些博客，来记录自己的平凡但不应该平淡的生活。但实际情况，却还是一样：不太容易坚持。一年下来，总共有10篇博文。细看又是那么的不均匀，其中有4篇是在12月所写。原来效率，也不会是平均分布到整年。抓住时间，用每一分秒提高效率。</p>
+<h3 id="3-_初心">3. 初心</h3>
+<p>想忘，又不忘，想而不舍忘。<br>和某人，在某时，去过某些地方。却又在，某时，走向了远方。既然，风筝早已远去，任你在风中如何摇曳，也终究拉不回曾经的时光。风在吹，某在飞，时光无法回流，选择只有向前而走。随心而行，是那么的不靠谱，不行动意味着不作为。有过开心，欢乐，但更多是在失去后所保留的执著。</p>
+<p>去年也成往事，还是今年的计划吧。<br><strong>1.读书：</strong>有人说，一年读50本书，才算得上是读书人。粗算一下，一周就得读一本，想想压力也是挺大的。去年一年的时间，也才20本。第二年，也别过分高估自己。今年30本吧。<br><strong>2.写博：</strong>别去想自己写多少，去想自己有多少可以写吧。保持不断学习的热情，一直学习下去，与分享下去。不只是技术，还有其他。<br><strong>3.初心：</strong>初心？初心是什么？不懂，忘了。只是希望自己的这一年，走得不会太艰难。</p>
+<p>最后一句话，留给自己：心态，别抑郁，要乐观，诚对人，能坚持，追梦想。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>2014过去2个月有余，才回过神来做一下去年的总结。自己的拖延症也是厉害，此时也希望不会太晚。不过，好歹也才刚过春节。<br>一年，从去学校毕业了。<br>一年，从实习到了试用，从新蛋到了TW。<br>一年，大家各奔东西，世界留给了一群追梦的人。<br>一年，又开始了一段新]]>
+    </summary>
+    
+      <category term="2014" scheme="http://owenyang0.github.io/tags/2014/"/>
+    
+      <category term="2015" scheme="http://owenyang0.github.io/tags/2015/"/>
+    
+      <category term="goal" scheme="http://owenyang0.github.io/tags/goal/"/>
+    
+      <category term="summary" scheme="http://owenyang0.github.io/tags/summary/"/>
+    
+      <category term="plan" scheme="http://owenyang0.github.io/tags/plan/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[ECMAScript 6中字符串的新特性]]></title>
