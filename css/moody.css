@@ -553,6 +553,12 @@ a:focus {
   margin: 50px auto;
   padding-bottom: 10px;
 }
+@media screen and (max-width: 480px) {
+  .content {
+    width: 100%;
+    margin-top: 0;
+  }
+}
 .content__hero {
   background-size: cover;
   background-position: center;
