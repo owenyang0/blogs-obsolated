@@ -462,7 +462,7 @@ a:focus {
 }
 .header {
   z-index: 1;
-  background: #242424;
+  background-color: #274951;
   left: 0;
   right: 0;
   top: 0;
@@ -470,13 +470,20 @@ a:focus {
   padding-bottom: 0;
   overflow: hidden;
 }
+.header__container {
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
 .logo {
   display: block;
-  width: 200px;
-  margin-left: 50px;
+  width: 140px;
   font-size: 36px;
+  font-size: 18px;
   color: #fff;
-  line-height: 70px;
+  background-color: #19768c;
+  line-height: 40px;
   padding: 0 10px;
   text-align: center;
   font-family: 'League Gothic';
@@ -491,8 +498,8 @@ a:focus {
   position: absolute;
   right: 0;
   top: 0;
-  height: 70px;
-  line-height: 70px;
+  height: 40px;
+  line-height: 40px;
 }
 .header__nav-list {
   list-style: none;
@@ -503,7 +510,7 @@ a:focus {
   z-index: 1;
   position: relative;
   text-align: center;
-  font-size: 18px;
+  font-size: 12px;
   height: 43px;
   margin-left: 20px;
   padding-left: 20px;
@@ -515,9 +522,9 @@ a:focus {
   z-index: -1;
   background: url("/img/icons.png") 0 -798px no-repeat;
   width: 7px;
-  height: 15px;
-  top: 30px;
-  left: -3px;
+  height: 14px;
+  top: 14px;
+  left: 0px;
 }
 .nav-item a {
   color: #fff;
