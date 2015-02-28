@@ -12,7 +12,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="/css/screen.css" />
-  <link rel="stylesheet" type="text/css" href="/css/style.css" />
   <link rel="stylesheet" href="/css/moody.css" type="text/css">
 
   <meta name="generator" content="OwenYang'S IDEAS">
@@ -32,25 +31,29 @@
   <div class="container">
     <!-- wrapper -->
     <div class="wrapper">
-
       <header class="header">
     <a href="/" class="logo">OwenYang'S IDEAS</a>
     <nav class="header__nav">
         <ul class="header__nav-list">
-            <li class="nav-item"><a href="/">Home</a></li>
-            <li class="nav-item"><a href="/about">About</a></li>
+            
+                <li class="nav-item">
+                    <a class="icon-home"  href="/">Home</a>
+                    </li>
+            
+                <li class="nav-item">
+                    <a class="icon-mail"  href="/about/">Contact</a>
+                    </li>
+            
+
         </ul>
     </nav>
-    <div class="hero">
-          <div class="hero__background">
-            <img src="/img/background.jpg">
-          </div>
-        <div class="hero__cover on"></div>
-    </div>
 </header>
 
       
 <main class="content" role="main">
+  <div class="content__hero" style="background-image: url(/img/background.jpg)">
+    <span class="overlay"></span>
+  </div>
   
   <article class="post">
     <header class="post-header">
@@ -370,18 +373,8 @@ JavaScript闭包
 
 
 
-
+    </div>
   </div>
-</div>
-
-<nav  class="outer-nav top horizontal">
-
-          <a class="icon-home"  href="/"><span>Home</span></a>
-
-          <a class="icon-mail"  href="/about/"><span>Contact</span></a>
-
-</nav>
-
 </div>
 </body>
 </html>
