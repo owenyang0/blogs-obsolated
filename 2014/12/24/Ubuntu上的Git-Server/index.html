@@ -13,10 +13,11 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="/css/screen.css" />
   <link rel="stylesheet" href="/css/moody.css" type="text/css">
-
   <meta name="generator" content="OwenYang'S IDEAS">
 
   
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
   
   
 
@@ -63,69 +64,36 @@
     
     
     | 
-    <a href='/tags/ubuntu/'>ubuntu</a>, 
-    
     <a href='/tags/git/'>git</a>, 
     
     <a href='/tags/git-server/'>git server</a>, 
     
-    <a href='/tags/gitolite/'>gitolite</a>
+    <a href='/tags/gitolite/'>gitolite</a>, 
+    
+    <a href='/tags/ubuntu/'>ubuntu</a>
     
     
 </span>
     <section class="post-content">
       <p>Git是一个开源的版本控制系统，由Linus Torvalds主导，用于支持Linux内核开发。每一个Git工作目录，都是一个完整的代码库，包含所有的提交历史。有能力跟踪所有的代码版本，而不会去依赖于网络与中央服务器。</p>
-<h3 id="安装">安装</h3>
-<p>Git可以通过以下的命令进行安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> apt-get install git</div></pre></td></tr></table></figure>
-
-<h3 id="配置">配置</h3>
-<p>每一个git的用户，在第一次使用的时候都需要通过以下两个命令，进行相应的配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.email <span class="string">"you@example.com"</span></div><div class="line">git config --global user.name <span class="string">"Your Name"</span></div></pre></td></tr></table></figure>
-
-<h3 id="基本用法">基本用法</h3>
-<p>假设用户可以通过SSH的方式访问Server，对于用户想以分布式以及安全的方式使用Git，则已经完全足够了。在服务器端，创建一个新的仓库。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git init --bare /path/to/repository</div></pre></td></tr></table></figure>
-
+<h3 id="安装">安装</h3><p>Git可以通过以下的命令进行安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure></p>
+<h3 id="配置">配置</h3><p>每一个git的用户，在第一次使用的时候都需要通过以下两个命令，进行相应的配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email <span class="string">"you@example.com"</span></span><br><span class="line">git config --global user.name <span class="string">"Your Name"</span></span><br></pre></td></tr></table></figure>
+<h3 id="基本用法">基本用法</h3><p>假设用户可以通过SSH的方式访问Server，对于用户想以分布式以及安全的方式使用Git，则已经完全足够了。在服务器端，创建一个新的仓库。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init --bare /path/to/repository</span><br></pre></td></tr></table></figure></p>
 <p>这会创建一个裸仓库，它不允许我们直接编辑相应的文件。如果你需要在服务器端保留仓库内容的复本，去掉 —bare 选项就好了。</p>
-<p>任何具有SSH权限的客户端，均可以克隆相应的仓库</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone username<span class="variable">@hostname</span><span class="symbol">:/path/to/repository</span></div></pre></td></tr></table></figure>
-
-<p>一旦克隆到了客户端上，用户即可编辑相应的文件，然后提交得分享相应的代码：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /path/to/repository <span class="comment"># 进入目录，编辑</span></div><div class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></div><div class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></div></pre></td></tr></table></figure>
-
-<h3 id="安装_gitolite_server">安装 gitolite server</h3>
-<p>虽然以上的那些，对于创建，克隆和修改仓库已经足够。但用户在服务器端安装git，最主要是想要一个传统的源代码控制管理服务器，具有多用户与权限管理的功能。推荐的解决方案是通过以下命令，安装 gitolite server：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> apt-get install gitolite</div></pre></td></tr></table></figure>
-
-<h3 id="配置_gitolite">配置 gitolite</h3>
-<p>相比于大多数的类Unix系统，gitolite server的配置有一些小小的区别。传统的配置文件会存放在 /etc 的目录之下，而gitolite则把自己的配置文件放在一个git的仓库之中。配置一个新的gitolite的第一步，则需要有配置仓库的访问权限。<br>首先，让我们为gitolite创建一个用户，并具体其访问权限。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> adduser --system --shell /bin/bash --group --disabled-password --home /home/git git</div></pre></td></tr></table></figure>
-
-<p>现在我们想让gitolite知晓仓库管理员的SSH公钥。我们假设当前用户是仓库的管理员。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp ~<span class="regexp">/.ssh/id</span>_rsa.pub /tmp/<span class="variable">$(</span>whoami).pub</div></pre></td></tr></table></figure>
-
-<p>我们切换到git用户，并将管理员的公钥导入gitolite。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">sudo</span> su - git</div><div class="line">gl-setup /tmp/<span class="regexp">*.pub</span></div></pre></td></tr></table></figure>
-
-<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">exit</div><div class="line">git clone git@<span class="variable">$IP_ADDRESS</span><span class="symbol">:gitolite-admin</span>.git</div><div class="line">cd gitolite-admin</div></pre></td></tr></table></figure>
-
+<p>任何具有SSH权限的客户端，均可以克隆相应的仓库<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone username<span class="variable">@hostname</span><span class="symbol">:/path/to/repository</span></span><br></pre></td></tr></table></figure></p>
+<p>一旦克隆到了客户端上，用户即可编辑相应的文件，然后提交得分享相应的代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /path/to/repository <span class="comment"># 进入目录，编辑</span></span><br><span class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></span><br><span class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="安装_gitolite_server">安装 gitolite server</h3><p>虽然以上的那些，对于创建，克隆和修改仓库已经足够。但用户在服务器端安装git，最主要是想要一个传统的源代码控制管理服务器，具有多用户与权限管理的功能。推荐的解决方案是通过以下命令，安装 gitolite server：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install gitolite</span><br></pre></td></tr></table></figure></p>
+<h3 id="配置_gitolite">配置 gitolite</h3><p>相比于大多数的类Unix系统，gitolite server的配置有一些小小的区别。传统的配置文件会存放在 /etc 的目录之下，而gitolite则把自己的配置文件放在一个git的仓库之中。配置一个新的gitolite的第一步，则需要有配置仓库的访问权限。<br>首先，让我们为gitolite创建一个用户，并具体其访问权限。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser --system --shell /bin/bash --group --disabled-password --home /home/git git</span><br></pre></td></tr></table></figure></p>
+<p>现在我们想让gitolite知晓仓库管理员的SSH公钥。我们假设当前用户是仓库的管理员。<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp ~<span class="regexp">/.ssh/id</span>_rsa.pub /tmp/<span class="variable">$(</span>whoami).pub</span><br></pre></td></tr></table></figure></p>
+<p>我们切换到git用户，并将管理员的公钥导入gitolite。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">sudo</span> su - git</span><br><span class="line">gl-setup /tmp/<span class="regexp">*.pub</span></span><br></pre></td></tr></table></figure></p>
+<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span></span><br><span class="line">git <span class="built_in">clone</span> git@<span class="variable">$IP_ADDRESS</span>:gitolite-admin.git</span><br><span class="line"><span class="built_in">cd</span> gitolite-admin</span><br></pre></td></tr></table></figure></p>
 <p>gitolite-admin目录包含两个子目录，conf 和 keydir。配置文件存放在 conf目录，而keydir目录存放了用户的公钥信息。</p>
-<h3 id="管理gitolite帐户和仓库">管理gitolite帐户和仓库</h3>
-<p>添加一个新的帐户到gitolite很简单：只需要获取用户的SSH公钥信息，以$DESIRED_USER_NAME.pub 的形式放在keydir目录之下即可。值得注意的是，gitolite的用户名不必和系统的用户名相匹配，它们仅仅是用在gitolite的配置文件之中，管理其访问权限的。同样的，删除用户只需要删除其对应的公钥文件即可。所有修改完毕之后，别忘了提交相应的修改，然后通过以下命令推回服务器端：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git <span class="operator"><span class="keyword">commit</span> -a</span></div><div class="line">git push origin <span class="keyword">master</span></div></pre></td></tr></table></figure>
-
+<h3 id="管理gitolite帐户和仓库">管理gitolite帐户和仓库</h3><p>添加一个新的帐户到gitolite很简单：只需要获取用户的SSH公钥信息，以$DESIRED_USER_NAME.pub 的形式放在keydir目录之下即可。值得注意的是，gitolite的用户名不必和系统的用户名相匹配，它们仅仅是用在gitolite的配置文件之中，管理其访问权限的。同样的，删除用户只需要删除其对应的公钥文件即可。所有修改完毕之后，别忘了提交相应的修改，然后通过以下命令推回服务器端：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="operator"><span class="keyword">commit</span> -a</span><br><span class="line">git push origin <span class="keyword">master</span></span></span><br></pre></td></tr></table></figure></p>
 <p>仓库是需要编辑conf/gitolite.conf文件进行管理。通过空格分割，遵守相应的权限规则，指定相应的仓库即可。以下是一些默认的示例。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">repo    gitolite-admin</div><div class="line"><span class="constant">        RW+</span>     =   admin</div><div class="line"><span class="constant">        R</span>       =   alice</div><div class="line">repo    project1</div><div class="line"><span class="constant">        RW+</span>     =   alice</div><div class="line"><span class="constant">        RW</span>      =   bob</div><div class="line"><span class="constant">        R</span>       =   denise</div></pre></td></tr></table></figure>
-
-<h3 id="使用服务器">使用服务器</h3>
-<p>要使用新创建的帐户，用户需要gitolite的管理员将其公钥导入到gitolite的配置仓库之中。然后，用户即可拥有相应的项目权限：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">clone</span> git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</div></pre></td></tr></table></figure>
-
-<p>或者为一个已存在的git仓库添加一个远程地址：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="title">git</span> remote add gitolite git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</div></pre></td></tr></table></figure>
-
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">repo    gitolite-admin</span><br><span class="line"><span class="constant">        RW+</span>     =   admin</span><br><span class="line"><span class="constant">        R</span>       =   alice</span><br><span class="line">repo    project1</span><br><span class="line"><span class="constant">        RW+</span>     =   alice</span><br><span class="line"><span class="constant">        RW</span>      =   bob</span><br><span class="line"><span class="constant">        R</span>       =   denise</span><br></pre></td></tr></table></figure>
+<h3 id="使用服务器">使用服务器</h3><p>要使用新创建的帐户，用户需要gitolite的管理员将其公钥导入到gitolite的配置仓库之中。然后，用户即可拥有相应的项目权限：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</span><br></pre></td></tr></table></figure></p>
+<p>或者为一个已存在的git仓库添加一个远程地址：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">git</span> remote add gitolite git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</span><br></pre></td></tr></table></figure></p>
 <p>如此便搭好了一个简易的，可用的git server。为了更好的查看相应的代码，或者管理，也可使用相对较重的，gitlab开源项目。</p>
 
     </section>
@@ -183,6 +151,8 @@
 
       
 <footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
   
   <div class="inner">
      <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>

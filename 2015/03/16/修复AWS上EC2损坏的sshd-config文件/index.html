@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>修复AWS上EC2损坏的sshd_config文件 | OwenYang&#39;S IDEAS</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+  <meta name="generator" content="OwenYang'S IDEAS">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+      <header class="header">
+    <div class="header__container">
+        <a href="/" class="logo">OwenYang'S IDEAS</a>
+        <nav class="header__nav">
+            <ul class="header__nav-list">
+                
+                    <li class="nav-item">
+                        <a class="icon-home"  href="/">Home</a>
+                        </li>
+                
+                    <li class="nav-item">
+                        <a class="icon-mail"  href="/about/">Contact</a>
+                        </li>
+                
+
+            </ul>
+        </nav>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <h1 class="post-title">修复AWS上EC2损坏的sshd_config文件</h1>
+    <span class="post-meta">
+      <time datetime="2015-03-16T12:11:09.000Z" itemprop="datePublished">
+          Mar 16 2015
+      </time>
+    
+    
+    | 
+    <a href='/tags/amazon-web-services/'>amazon-web-services</a>, 
+    
+    <a href='/tags/aws/'>aws</a>, 
+    
+    <a href='/tags/ec2/'>ec2</a>, 
+    
+    <a href='/tags/linux/'>linux</a>, 
+    
+    <a href='/tags/passwd/'>passwd</a>, 
+    
+    <a href='/tags/ssh/'>ssh</a>
+    
+    
+</span>
+    <section class="post-content">
+      <p><strong>常识：</strong> AWS是没有root用户的，登陆也都是通过SSH KEY完成授权认证。</p>
+<p><strong>背景：</strong> 正在AWS上搭一个<code>CI</code> (GO)，与<code>gitlab</code>，为了将其进行集成，需将gitlab的deploy key设置成GO的SSH KEY。然而，GO创建的是无密码的用户go，导致无法进入用户go的home目录。<br>正常 <code>su go</code> 无法切换到go用户，当时又恰巧正在看SSH的config文件：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/etc/</span>ssh<span class="regexp">/sshd_config</span></span><br></pre></td></tr></table></figure></p>
+<p>里面有一条 <code>PermitEmptyPasswords no</code>，接着便私自改成了<code>yes</code>，无用。<code>PermitRootLogin no</code>，改成 <code>yes</code>，依旧无用。<br><strong>注：</strong>废话，肯定没用啊，这是设置SSH的。</p>
+<p>正确的做法：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su go</span><br></pre></td></tr></table></figure></p>
+<p>当修改之后，没改回来，当我退出AWS之后就杯具了。再也登陆到AWS上，因为登陆时却输密码，而实际却是没有密码。此时真想多天说一句：X。</p>
+<p>Google了很多解决方案，都说得是用Live CD，重新引导进入，然后挂载有sshd_config文件的磁盘并修复它。这在EC2上是根本不可能的，能做的只有把root磁盘卷拆卸，再装载到另外的EC2实例上，并修改相应的文件。以下便是详细操作：</p>
+<ol>
+<li>关闭当前EC2实例</li>
+<li>将有错误sshd_config的磁盘(EBS)拆卸</li>
+<li><p>当磁盘重新装载到另一个EC2实例上，并挂载该磁盘<br>拆卸与装载都在AWS的console界面操作，装载成功后，可用以下命令挂载（我的新的磁盘名字是 xdf)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /mnt/other</span><br><span class="line">sudo mount /dev/xvdf /mnt/other</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑损坏的文件sshd_config，修复配置与语法错误</p>
+</li>
+<li><p>反挂载并拆卸掉该磁盘</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo umount /mnt/other</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再次将该磁盘装载到原EC2实例上</p>
+</li>
+<li>启动原EC2实例，测试修改结果</li>
+</ol>
+<p>这些做完之后，一切都如以前一样。又可以通过SSH KEY连上原来的实例。</p>
+<h3 id="结论">结论</h3><p>教训是，永远别再一次做这种事。在适当的时候，也可以给你的编辑器sudo的权限，vim的配置<br><figure class="highlight erlang-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function_or_atom">cnoremap</span> <span class="function_or_atom">w</span><span class="exclamation_mark">!</span><span class="exclamation_mark">!</span> <span class="comment">%!sudo tee &gt; /dev/null %</span></span><br></pre></td></tr></table></figure></p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?url=http://owenyang0.github.io/2015/03/16/修复AWS上EC2损坏的sshd-config文件/&title=修复AWS上EC2损坏的sshd_config文件 | OwenYang&#39;S" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2015/03/16/修复AWS上EC2损坏的sshd-config文件/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2015/03/16/修复AWS上EC2损坏的sshd-config文件/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2015/03/16/修复AWS上EC2损坏的sshd-config文件/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2015/02/22/2014压过的辙痕/">
+        2014压过的辙痕 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="https://github.com/owenyang0/moody">moody</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-57882600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'owenyang';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

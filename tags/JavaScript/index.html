@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>Tag: JavaScript | OwenYang&#39;S IDEAS</title>
+  <title>OwenYang&#39;S IDEAS</title>
   <meta name="description" content="" />
   <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
   <meta name="HandheldFriendly" content="True" />
@@ -13,10 +13,11 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="/css/screen.css" />
   <link rel="stylesheet" href="/css/moody.css" type="text/css">
-
   <meta name="generator" content="OwenYang'S IDEAS">
 
   
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
   
   
 
@@ -65,8 +66,7 @@
       <p>
       
         本文将覆盖在ECMAScript 6 (ES6)中，字符串的新特性。
-Unicode 码位(code point)转义
-Unicode字符码位的长度是21位[2]。而JavaScript的字符串，是16位的，以UTF-16的方式编码。因此，超出16位码长的码位范围(the Basic Multilingual Pane, BMP, 基本多文种平面)则用两个JavaScript字符表示。直到现在，如果想用数字指定这样的码位，需要两个叫Un
+Unicode 码位(code point)转义Unicode字符码位的长度是21位[2]。而JavaScript的字符串，是16位的，以UTF-16的方式编码。因此，超出16位码长的码位范围(the Basic Multilingual Pane, BMP, 基本多文种平面)则用两个JavaScript字符表示。直到现在，如果想用数字指定这样的码位，需要两个叫Uni
       
       </p>
       
@@ -80,15 +80,15 @@ Unicode字符码位的长度是21位[2]。而JavaScript的字符串，是16位�
     
     
     | 
-    <a href='/tags/Template/'>Template</a>, 
-    
-    <a href='/tags/Template-String/'>Template String</a>, 
-    
-    <a href='/tags/JavaScript/'>JavaScript</a>, 
+    <a href='/tags/ECMAScript-6/'>ECMAScript 6</a>, 
     
     <a href='/tags/ES6/'>ES6</a>, 
     
-    <a href='/tags/ECMAScript-6/'>ECMAScript 6</a>
+    <a href='/tags/JavaScript/'>JavaScript</a>, 
+    
+    <a href='/tags/Template/'>Template</a>, 
+    
+    <a href='/tags/Template-String/'>Template String</a>
     
     
 </span>
@@ -104,10 +104,8 @@ Unicode字符码位的长度是21位[2]。而JavaScript的字符串，是16位�
       <p>
       
         怎样用React JS构建一个用户界面？本文将快速地给你一个React JS的概览。代码，请君移步react-starter
-概念
-React只有很少的API，这使得它很容易去学习与理解。当然，使用它也是相当有意思的。但是，简约却并不简单。在我们开始之前，有一些概念是需要去理解的。
-React元素(React elements)
-React元素是用于呈现HTML结构的JavaScript对象。它们不会存在于浏览器中，只是用于描述浏览器中
+概念React只有很少的API，这使得它很容易去学习与理解。当然，使用它也是相当有意思的。但是，简约却并不简单。在我们开始之前，有一些概念是需要去理解的。
+React元素(React elements)React元素是用于呈现HTML结构的JavaScript对象。它们不会存在于浏览器中，只是用于描述浏览器中的元
       
       </p>
       
@@ -121,15 +119,15 @@ React元素是用于呈现HTML结构的JavaScript对象。它们不会存在于�
     
     
     | 
-    <a href='/tags/React/'>React</a>, 
-    
-    <a href='/tags/ReactJS/'>ReactJS</a>, 
+    <a href='/tags/Facebook/'>Facebook</a>, 
     
     <a href='/tags/JS/'>JS</a>, 
     
     <a href='/tags/JavaScript/'>JavaScript</a>, 
     
-    <a href='/tags/Facebook/'>Facebook</a>
+    <a href='/tags/React/'>React</a>, 
+    
+    <a href='/tags/ReactJS/'>ReactJS</a>
     
     
 </span>
@@ -146,12 +144,10 @@ React元素是用于呈现HTML结构的JavaScript对象。它们不会存在于�
       
         本文介绍ECMAScript 6即将带给我们新的数组操作方法，以及在怎样在现有浏览器应用这些新的数组特性。
 Note: 我将使用交替使用构造器(constructor)和类(class)两个术语。
-类方法
-数组(Array)自身所拥有的方法。
-Array.from(arrayLike, mapFunc?, thisArg?)
-Array.from()的基本功能是，转换两种类型的对象成数组。
+类方法数组(Array)自身所拥有的方法。
+Array.from(arrayLike, mapFunc?, thisArg?)Array.from()的基本功能是，转换两种类型的对象成数组。
 
-类数组对象(Array-like objec
+类数组对象(Array-like objects
       
       </p>
       
@@ -165,11 +161,11 @@ Array.from()的基本功能是，转换两种类型的对象成数组。
     
     
     | 
-    <a href='/tags/ES6/'>ES6</a>, 
+    <a href='/tags/Array/'>Array</a>, 
     
     <a href='/tags/ECMAScript-6/'>ECMAScript 6</a>, 
     
-    <a href='/tags/Array/'>Array</a>, 
+    <a href='/tags/ES6/'>ES6</a>, 
     
     <a href='/tags/JavaScript/'>JavaScript</a>
     
@@ -188,8 +184,7 @@ Array.from()的基本功能是，转换两种类型的对象成数组。
       
         修改tab或者window的标题，是一项较老的实践。Gmail 用它来提示用户新的聊天消息，当有新的page通过AJAX加载的时候，本站同样用它更新tab title。这是怎样做到的呢？当时是通过设置document对象。
 1document.title = 'Hello!'; // New title :)
-
-有一个常识性的错误是：你会以为应该去修改 window.title。但实际上，你应该使用document对象，否则你做的肯定是
+有一个常识性的错误是：你会以为应该去修改 window.title。但实际上，你应该使用document对象，否则你做的肯定是无
       
       </p>
       
@@ -220,8 +215,7 @@ Array.from()的基本功能是，转换两种类型的对象成数组。
     <section class="post-excerpt">
       <p>
       
-        开发现状
-当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。为了不至于让上线的版本挂掉挂掉，少不了就是 人肉测试。在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 人肉测试 不在本博的讨论范围。
+        开发现状当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。为了不至于让上线的版本挂掉挂掉，少不了就是 人肉测试。在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 人肉测试 不在本博的讨论范围。
 测试大体分为以下几类
 
 
@@ -230,8 +224,7 @@ Array.from()的基本功能是，转换两种类型的对象成数组。
 功能测试
 
 
-测试驱动开发
-TDD(Test-Driven Development) 从根本上
+测试驱动开发TDD(Test-Driven Development) 从根本上改变
       
       </p>
       
@@ -247,9 +240,9 @@ TDD(Test-Driven Development) 从根本上
     | 
     <a href='/tags/JavaScript/'>JavaScript</a>, 
     
-    <a href='/tags/TDD/'>TDD</a>, 
+    <a href='/tags/Mocha/'>Mocha</a>, 
     
-    <a href='/tags/Mocha/'>Mocha</a>
+    <a href='/tags/TDD/'>TDD</a>
     
     
 </span>
@@ -265,8 +258,7 @@ TDD(Test-Driven Development) 从根本上
       <p>
       
         JavaScript函数是将要执行的代码及执行这些代码的作用域构成的一个综合体。计算机术语称这种代码和作用域的综合体为闭包。故所有JavaScript函数都是闭包。但我们常说的JavaScript闭包是指，一个嵌套函数被导出到它所定义的作用域外时，才明确地称为闭包。
-JavaScript闭包
-闭包是 JavaScript 一个非常重要的特性，这意味着当前作用域总是能够访问外部作用域中的变量。 因为函数是 JavaScript 中唯一拥有
+JavaScript闭包闭包是 JavaScript 一个非常重要的特性，这意味着当前作用域总是能够访问外部作用域中的变量。 因为函数是 JavaScript 中唯一拥有自
       
       </p>
       
@@ -300,6 +292,8 @@ JavaScript闭包
 
       
 <footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
   
   <div class="inner">
      <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>

@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://owenyang0.github.io/"/>
-  <updated>2015-02-28T09:46:01.656Z</updated>
+  <updated>2015-03-16T12:21:57.000Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -12,7 +12,56 @@
     <email><![CDATA[usay@outlook.com]]></email>
   </author>
   
-  <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[修复AWS上EC2损坏的sshd_config文件]]></title>
+    <link href="http://owenyang0.github.io/2015/03/16/%E4%BF%AE%E5%A4%8DAWS%E4%B8%8AEC2%E6%8D%9F%E5%9D%8F%E7%9A%84sshd-config%E6%96%87%E4%BB%B6/"/>
+    <id>http://owenyang0.github.io/2015/03/16/修复AWS上EC2损坏的sshd-config文件/</id>
+    <published>2015-03-16T12:11:09.000Z</published>
+    <updated>2015-03-16T12:21:57.000Z</updated>
+    <content type="html"><![CDATA[<p><strong>常识：</strong> AWS是没有root用户的，登陆也都是通过SSH KEY完成授权认证。</p>
+<p><strong>背景：</strong> 正在AWS上搭一个<code>CI</code> (GO)，与<code>gitlab</code>，为了将其进行集成，需将gitlab的deploy key设置成GO的SSH KEY。然而，GO创建的是无密码的用户go，导致无法进入用户go的home目录。<br>正常 <code>su go</code> 无法切换到go用户，当时又恰巧正在看SSH的config文件：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/etc/</span>ssh<span class="regexp">/sshd_config</span></span><br></pre></td></tr></table></figure></p>
+<p>里面有一条 <code>PermitEmptyPasswords no</code>，接着便私自改成了<code>yes</code>，无用。<code>PermitRootLogin no</code>，改成 <code>yes</code>，依旧无用。<br><strong>注：</strong>废话，肯定没用啊，这是设置SSH的。</p>
+<p>正确的做法：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su go</span><br></pre></td></tr></table></figure></p>
+<p>当修改之后，没改回来，当我退出AWS之后就杯具了。再也登陆到AWS上，因为登陆时却输密码，而实际却是没有密码。此时真想多天说一句：X。</p>
+<p>Google了很多解决方案，都说得是用Live CD，重新引导进入，然后挂载有sshd_config文件的磁盘并修复它。这在EC2上是根本不可能的，能做的只有把root磁盘卷拆卸，再装载到另外的EC2实例上，并修改相应的文件。以下便是详细操作：</p>
+<ol>
+<li>关闭当前EC2实例</li>
+<li>将有错误sshd_config的磁盘(EBS)拆卸</li>
+<li><p>当磁盘重新装载到另一个EC2实例上，并挂载该磁盘<br>拆卸与装载都在AWS的console界面操作，装载成功后，可用以下命令挂载（我的新的磁盘名字是 xdf)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /mnt/other</span><br><span class="line">sudo mount /dev/xvdf /mnt/other</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑损坏的文件sshd_config，修复配置与语法错误</p>
+</li>
+<li><p>反挂载并拆卸掉该磁盘</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo umount /mnt/other</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再次将该磁盘装载到原EC2实例上</p>
+</li>
+<li>启动原EC2实例，测试修改结果</li>
+</ol>
+<p>这些做完之后，一切都如以前一样。又可以通过SSH KEY连上原来的实例。</p>
+<h3 id="结论">结论</h3><p>教训是，永远别再一次做这种事。在适当的时候，也可以给你的编辑器sudo的权限，vim的配置<br><figure class="highlight erlang-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function_or_atom">cnoremap</span> <span class="function_or_atom">w</span><span class="exclamation_mark">!</span><span class="exclamation_mark">!</span> <span class="comment">%!sudo tee &gt; /dev/null %</span></span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><strong>常识：</strong> AWS是没有root用户的，登陆也都是通过SSH KEY完成授权认证。</p>
+<p><strong>背景：</strong> 正在AWS上搭一个<code>CI</code> (GO)，与<code>gitlab</code>，为]]>
+    </summary>
+    
+      <category term="amazon-web-services" scheme="http://owenyang0.github.io/tags/amazon-web-services/"/>
+    
+      <category term="aws" scheme="http://owenyang0.github.io/tags/aws/"/>
+    
+      <category term="ec2" scheme="http://owenyang0.github.io/tags/ec2/"/>
+    
+      <category term="linux" scheme="http://owenyang0.github.io/tags/linux/"/>
+    
+      <category term="passwd" scheme="http://owenyang0.github.io/tags/passwd/"/>
+    
+      <category term="ssh" scheme="http://owenyang0.github.io/tags/ssh/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[2014压过的辙痕]]></title>
@@ -22,12 +71,9 @@
     <updated>2015-02-22T06:40:42.000Z</updated>
     <content type="html"><![CDATA[<p>2014过去2个月有余，才回过神来做一下去年的总结。自己的拖延症也是厉害，此时也希望不会太晚。不过，好歹也才刚过春节。<br>一年，从去学校毕业了。<br>一年，从实习到了试用，从新蛋到了TW。<br>一年，大家各奔东西，世界留给了一群追梦的人。<br>一年，又开始了一段新的人生罢。</p>
 <p>现在都记不得最初的梦想了，自己的追逐的意义依旧还是存在的，只是少了当初那份一往无前的勇气。<br>去年<br><img src="/images/goal_2014.png" alt="2014 goal"><br>今年<br><img src="/images/goal_2015.png" alt="2015 goal"><br>去年的整个计划是开始读书，可是真正执行起来才会发现并非想像中的那么容易。当然，也有其他，只是其他还算得上不易。</p>
-<h3 id="1-_读书">1. 读书</h3>
-<p>人人都会，却又不是人人都会的技能。<a href="http://book.douban.com/people/owenyang0/" target="_blank" rel="external">http://book.douban.com/people/owenyang0/</a><br>我开始学会用豆瓣来Track自己的读书进度，年终还可以用来分析分析自己的读书倾向。不得不说豆瓣在这个方面，做得也还是不错的。给书友提供了一个平台，分享与交流。<br>相比一些个大神，一年上百本书的战果，我这根本不值一提。不过，自己也慢慢开始了自己的读书习惯，与计划。</p>
-<h3 id="2-_写博">2. 写博</h3>
-<p>想写，却又不容易坚持的习惯。<a href="http://www.cnblogs.com/owenyang/" target="_blank" rel="external">http://www.cnblogs.com/owenyang/</a><br>一直想写一些，或者坚持写一些博客，来记录自己的平凡但不应该平淡的生活。但实际情况，却还是一样：不太容易坚持。一年下来，总共有10篇博文。细看又是那么的不均匀，其中有4篇是在12月所写。原来效率，也不会是平均分布到整年。抓住时间，用每一分秒提高效率。</p>
-<h3 id="3-_初心">3. 初心</h3>
-<p>想忘，又不忘，想而不舍忘。<br>和某人，在某时，去过某些地方。却又在，某时，走向了远方。既然，风筝早已远去，任你在风中如何摇曳，也终究拉不回曾经的时光。风在吹，某在飞，时光无法回流，选择只有向前而走。随心而行，是那么的不靠谱，不行动意味着不作为。有过开心，欢乐，但更多是在失去后所保留的执著。</p>
+<h3 id="1-_读书">1. 读书</h3><p>人人都会，却又不是人人都会的技能。<a href="http://book.douban.com/people/owenyang0/" target="_blank" rel="external">http://book.douban.com/people/owenyang0/</a><br>我开始学会用豆瓣来Track自己的读书进度，年终还可以用来分析分析自己的读书倾向。不得不说豆瓣在这个方面，做得也还是不错的。给书友提供了一个平台，分享与交流。<br>相比一些个大神，一年上百本书的战果，我这根本不值一提。不过，自己也慢慢开始了自己的读书习惯，与计划。</p>
+<h3 id="2-_写博">2. 写博</h3><p>想写，却又不容易坚持的习惯。<a href="http://www.cnblogs.com/owenyang/" target="_blank" rel="external">http://www.cnblogs.com/owenyang/</a><br>一直想写一些，或者坚持写一些博客，来记录自己的平凡但不应该平淡的生活。但实际情况，却还是一样：不太容易坚持。一年下来，总共有10篇博文。细看又是那么的不均匀，其中有4篇是在12月所写。原来效率，也不会是平均分布到整年。抓住时间，用每一分秒提高效率。</p>
+<h3 id="3-_初心">3. 初心</h3><p>想忘，又不忘，想而不舍忘。<br>和某人，在某时，去过某些地方。却又在，某时，走向了远方。既然，风筝早已远去，任你在风中如何摇曳，也终究拉不回曾经的时光。风在吹，某在飞，时光无法回流，选择只有向前而走。随心而行，是那么的不靠谱，不行动意味着不作为。有过开心，欢乐，但更多是在失去后所保留的执著。</p>
 <p>去年也成往事，还是今年的计划吧。<br><strong>1.读书：</strong>有人说，一年读50本书，才算得上是读书人。粗算一下，一周就得读一本，想想压力也是挺大的。去年一年的时间，也才20本。第二年，也别过分高估自己。今年30本吧。<br><strong>2.写博：</strong>别去想自己写多少，去想自己有多少可以写吧。保持不断学习的热情，一直学习下去，与分享下去。不只是技术，还有其他。<br><strong>3.初心：</strong>初心？初心是什么？不懂，忘了。只是希望自己的这一年，走得不会太艰难。</p>
 <p>最后一句话，留给自己：心态，别抑郁，要乐观，诚对人，能坚持，追梦想。</p>
 ]]></content>
@@ -41,9 +87,9 @@
     
       <category term="goal" scheme="http://owenyang0.github.io/tags/goal/"/>
     
-      <category term="summary" scheme="http://owenyang0.github.io/tags/summary/"/>
-    
       <category term="plan" scheme="http://owenyang0.github.io/tags/plan/"/>
+    
+      <category term="summary" scheme="http://owenyang0.github.io/tags/summary/"/>
     
   </entry>
   
@@ -54,68 +100,27 @@
     <published>2015-02-12T12:26:43.000Z</published>
     <updated>2015-02-12T13:29:02.000Z</updated>
     <content type="html"><![CDATA[<p>本文将覆盖在ECMAScript 6 (ES6)中，字符串的新特性。</p>
-<h2 id="Unicode_码位(code_point)转义">Unicode 码位(code point)转义</h2>
-<p>Unicode字符码位的长度是21位<a href="http://speakingjs.com/es5/ch24.html" target="_blank" rel="external">[2]</a>。而JavaScript的字符串，是16位的，以UTF-16的方式编码。因此，超出16位码长的码位范围(the Basic Multilingual Pane, BMP, 基本多文种平面)则用两个JavaScript字符表示。直到现在，如果想用数字指定这样的码位，需要两个叫Unicode转义符的东西。以下，则会以相应的码位(0x1F680)打印出一个火箭。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">'\uD83D\uDE80'</span>);</div></pre></td></tr></table></figure>
-
-<p>在ECMAScript 6中，有一个新的Unicode转义符，能让你指定任意的码位（不用再管是否是16位）：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">'\u{1F680}'</span>);</div></pre></td></tr></table></figure>
-
-<h2 id="字符串的插值，多行及原始字符语法">字符串的插值，多行及原始字符语法</h2>
-<p>模板字符串 <a href="http://www.2ality.com/2011/09/quasi-literals.html" target="_blank" rel="external">[3]</a>提供了3个有意思的特性。<br><strong>1. 模板字符中，支持字符串插值：</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> first = <span class="string">'Jane'</span>;</div><div class="line"><span class="keyword">let</span> last = <span class="string">'Doe'</span>;</div><div class="line"><span class="built_in">console</span>.log(`Hello ${first} ${last}!`);</div><div class="line"><span class="comment">// Hello Jane Doe!</span></div></pre></td></tr></table></figure>
-
-<p><strong>2. 模板字符串可以包含多行：</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> multiLine = `</div><div class="line">  This is</div><div class="line">  a string</div><div class="line">  <span class="keyword">with</span> multiple</div><div class="line">  lines`;</div></pre></td></tr></table></figure>
-
-<p><strong>3. 模板字符串可以是原始的：</strong><br>若使用<code>String.raw</code> 作为模板字符串的前缀，则模板字符串可以是<em>原始(raw)</em>的。反斜线也不再是特殊字符，<code>\n</code> 也不会被解释成换行符：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> raw = <span class="built_in">String</span>.raw`Not a newline: \n`;</div><div class="line"><span class="built_in">console</span>.log(raw === <span class="string">'Not a newline: \\n'</span>); <span class="comment">// true</span></div></pre></td></tr></table></figure>
-
-<h2 id="字符串迭代那些事">字符串迭代那些事</h2>
-<p>字符串是可迭代的 <a href="http://www.2ality.com/2013/06/iterators-generators.html" target="_blank" rel="external">[4]</a>，这就意味着可以使用<code>for-of</code> 去迭代其中的字符：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> ch of <span class="string">'abc'</span>) {</div><div class="line">    <span class="built_in">console</span>.log(ch);</div><div class="line">}</div><div class="line"><span class="comment">// Output:</span></div><div class="line"><span class="comment">// a</span></div><div class="line"><span class="comment">// b</span></div><div class="line"><span class="comment">// c</span></div></pre></td></tr></table></figure>
-
-<p>亦可用展开运行符(…) 将字符串转换成数组：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> chars = [...<span class="string">'abc'</span>];</div><div class="line"><span class="comment">// ['a', 'b', 'c']</span></div></pre></td></tr></table></figure>
-
-<h3 id="处理Unicode的码位">处理Unicode的码位</h3>
-<p>字符串迭代器，会以码位边界将字符串进行划分。这将导致迭代器的返回值，会是一个或两个字符：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> ch of <span class="string">'x\uD83D\uDE80y'</span>) {</div><div class="line">    <span class="built_in">console</span>.log(ch.length);</div><div class="line">}</div><div class="line"><span class="comment">// Output:</span></div><div class="line"><span class="comment">// 1</span></div><div class="line"><span class="comment">// 2</span></div><div class="line"><span class="comment">// 1</span></div></pre></td></tr></table></figure>
-
-<p>这将会为我提供一个快速而简单的方法，去计算字符串Unicode码位的数量：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; [...<span class="string">'x\uD83D\uDE80y'</span>].length</div><div class="line"><span class="number">3</span></div></pre></td></tr></table></figure>
-
-<p>这同样会在，不包含基本多文种平面(non-BMP)码位的字符串操作中提供方便。如：反转字符串：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> str = <span class="string">'x\uD83D\uDE80y'</span>;</div><div class="line"></div><div class="line"><span class="comment">// ES5: \uD83D\uDE80 are (incorrectly) reversed</span></div><div class="line"><span class="built_in">console</span>.log(str.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>));</div><div class="line"><span class="comment">// 'y\uDE80\uD83Dx'</span></div><div class="line"></div><div class="line"><span class="comment">// ES6: order of \uD83D\uDE80 is preserved</span></div><div class="line"><span class="built_in">console</span>.log([...str].reverse().join(<span class="string">''</span>));</div><div class="line"><span class="comment">// 'y\uD83D\uDE80x'</span></div></pre></td></tr></table></figure>
-
+<h2 id="Unicode_码位(code_point)转义">Unicode 码位(code point)转义</h2><p>Unicode字符码位的长度是21位<a href="http://speakingjs.com/es5/ch24.html" target="_blank" rel="external">[2]</a>。而JavaScript的字符串，是16位的，以UTF-16的方式编码。因此，超出16位码长的码位范围(the Basic Multilingual Pane, BMP, 基本多文种平面)则用两个JavaScript字符表示。直到现在，如果想用数字指定这样的码位，需要两个叫Unicode转义符的东西。以下，则会以相应的码位(0x1F680)打印出一个火箭。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'\uD83D\uDE80'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>在ECMAScript 6中，有一个新的Unicode转义符，能让你指定任意的码位（不用再管是否是16位）：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'\u&#123;1F680&#125;'</span>);</span><br></pre></td></tr></table></figure></p>
+<h2 id="字符串的插值，多行及原始字符语法">字符串的插值，多行及原始字符语法</h2><p>模板字符串 <a href="http://www.2ality.com/2011/09/quasi-literals.html" target="_blank" rel="external">[3]</a>提供了3个有意思的特性。<br><strong>1. 模板字符中，支持字符串插值：</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> first = <span class="string">'Jane'</span>;</span><br><span class="line"><span class="keyword">let</span> last = <span class="string">'Doe'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(`Hello $&#123;first&#125; $&#123;last&#125;!`);</span><br><span class="line"><span class="comment">// Hello Jane Doe!</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>2. 模板字符串可以包含多行：</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> multiLine = `</span><br><span class="line">  This is</span><br><span class="line">  a string</span><br><span class="line">  <span class="keyword">with</span> multiple</span><br><span class="line">  lines`;</span><br></pre></td></tr></table></figure></p>
+<p><strong>3. 模板字符串可以是原始的：</strong><br>若使用<code>String.raw</code> 作为模板字符串的前缀，则模板字符串可以是<em>原始(raw)</em>的。反斜线也不再是特殊字符，<code>\n</code> 也不会被解释成换行符：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> raw = <span class="built_in">String</span>.raw`Not a newline: \n`;</span><br><span class="line"><span class="built_in">console</span>.log(raw === <span class="string">'Not a newline: \\n'</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="字符串迭代那些事">字符串迭代那些事</h2><p>字符串是可迭代的 <a href="http://www.2ality.com/2013/06/iterators-generators.html" target="_blank" rel="external">[4]</a>，这就意味着可以使用<code>for-of</code> 去迭代其中的字符：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> ch of <span class="string">'abc'</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(ch);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Output:</span></span><br><span class="line"><span class="comment">// a</span></span><br><span class="line"><span class="comment">// b</span></span><br><span class="line"><span class="comment">// c</span></span><br></pre></td></tr></table></figure></p>
+<p>亦可用展开运行符(…) 将字符串转换成数组：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> chars = [...<span class="string">'abc'</span>];</span><br><span class="line"><span class="comment">// ['a', 'b', 'c']</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="处理Unicode的码位">处理Unicode的码位</h3><p>字符串迭代器，会以码位边界将字符串进行划分。这将导致迭代器的返回值，会是一个或两个字符：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> ch of <span class="string">'x\uD83D\uDE80y'</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(ch.length);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Output:</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure></p>
+<p>这将会为我提供一个快速而简单的方法，去计算字符串Unicode码位的数量：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; [...<span class="string">'x\uD83D\uDE80y'</span>].length</span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
+<p>这同样会在，不包含基本多文种平面(non-BMP)码位的字符串操作中提供方便。如：反转字符串：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str = <span class="string">'x\uD83D\uDE80y'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ES5: \uD83D\uDE80 are (incorrectly) reversed</span></span><br><span class="line"><span class="built_in">console</span>.log(str.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>));</span><br><span class="line"><span class="comment">// 'y\uDE80\uD83Dx'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ES6: order of \uD83D\uDE80 is preserved</span></span><br><span class="line"><span class="built_in">console</span>.log([...str].reverse().join(<span class="string">''</span>));</span><br><span class="line"><span class="comment">// 'y\uD83D\uDE80x'</span></span><br></pre></td></tr></table></figure></p>
 <p>这是在firefox控制台中，两个反转之后的结果：<br><img src="/images/firefox_unicode.png" alt="Unicode in Firefox"></p>
-<h3 id="码位中数值">码位中数值</h3>
-<p>有一个新的方法 <code>codePointAt()</code> 将返回字符串，给定索引的码位数字值：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> str = <span class="string">'x\uD83D\uDE80y'</span>;</div><div class="line"><span class="built_in">console</span>.log(str.codePointAt(<span class="number">0</span>).toString(<span class="number">16</span>)); <span class="comment">// 78</span></div><div class="line"><span class="built_in">console</span>.log(str.codePointAt(<span class="number">1</span>).toString(<span class="number">16</span>)); <span class="comment">// 1f680</span></div><div class="line"><span class="built_in">console</span>.log(str.codePointAt(<span class="number">3</span>).toString(<span class="number">16</span>)); <span class="comment">// 79</span></div></pre></td></tr></table></figure>
-
-<p>该方法在与字符串迭代操作结合时，也能很好的运行使用：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> ch of <span class="string">'x\uD83D\uDE80y'</span>) {</div><div class="line">    <span class="built_in">console</span>.log(ch.codePointAt(<span class="number">0</span>).toString(<span class="number">16</span>));</div><div class="line">}</div><div class="line"><span class="comment">// Output:</span></div><div class="line"><span class="comment">// 78</span></div><div class="line"><span class="comment">// 1f680</span></div><div class="line"><span class="comment">// 79</span></div></pre></td></tr></table></figure>
-
-<p>与方法<code>codePointAt()</code>相对的则是<code>String.fromCodePoint()</code>：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">String</span>.fromCodePoint(<span class="number">0x78</span>, <span class="number">0x1f680</span>, <span class="number">0x79</span>) === <span class="string">'x\uD83D\uDE80y'</span></div><div class="line"><span class="literal">true</span></div></pre></td></tr></table></figure>
-
-<h2 id="包含与重要字符串的方法">包含与重要字符串的方法</h2>
-<p>有三个方法，可以检查一个字符串是否存在于另一个字符串：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="string">'hello'</span>.startsWith(<span class="string">'hell'</span>)</div><div class="line"><span class="literal">true</span></div><div class="line">&gt; <span class="string">'hello'</span>.endsWith(<span class="string">'ello'</span>)</div><div class="line"><span class="literal">true</span></div><div class="line">&gt; <span class="string">'hello'</span>.includes(<span class="string">'ell'</span>)</div><div class="line"><span class="literal">true</span></div></pre></td></tr></table></figure>
-
-<p>每一个方法都有一个可选的，第二个参数。可以指定被搜寻字符串的开始或结束位置：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="string">'hello'</span>.startsWith(<span class="string">'ello'</span>, <span class="number">1</span>)</div><div class="line"><span class="literal">true</span></div><div class="line">&gt; <span class="string">'hello'</span>.endsWith(<span class="string">'hell'</span>, <span class="number">4</span>)</div><div class="line"><span class="literal">true</span></div><div class="line"></div><div class="line">&gt; <span class="string">'hello'</span>.includes(<span class="string">'ell'</span>, <span class="number">1</span>)</div><div class="line"><span class="literal">true</span></div><div class="line">&gt; <span class="string">'hello'</span>.includes(<span class="string">'ell'</span>, <span class="number">2</span>)</div><div class="line"><span class="literal">false</span></div></pre></td></tr></table></figure>
-
-<p>方法<code>repeat()</code> 则用以重复某个字符串：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="string">'doo '</span>.repeat(<span class="number">3</span>)</div><div class="line"><span class="string">'doo doo doo '</span></div></pre></td></tr></table></figure>
-
-<h2 id="所有新方法">所有新方法</h2>
-<h3 id="模板字符串：">模板字符串：</h3>
-<ul>
+<h3 id="码位中数值">码位中数值</h3><p>有一个新的方法 <code>codePointAt()</code> 将返回字符串，给定索引的码位数字值：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str = <span class="string">'x\uD83D\uDE80y'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(str.codePointAt(<span class="number">0</span>).toString(<span class="number">16</span>)); <span class="comment">// 78</span></span><br><span class="line"><span class="built_in">console</span>.log(str.codePointAt(<span class="number">1</span>).toString(<span class="number">16</span>)); <span class="comment">// 1f680</span></span><br><span class="line"><span class="built_in">console</span>.log(str.codePointAt(<span class="number">3</span>).toString(<span class="number">16</span>)); <span class="comment">// 79</span></span><br></pre></td></tr></table></figure></p>
+<p>该方法在与字符串迭代操作结合时，也能很好的运行使用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> ch of <span class="string">'x\uD83D\uDE80y'</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(ch.codePointAt(<span class="number">0</span>).toString(<span class="number">16</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Output:</span></span><br><span class="line"><span class="comment">// 78</span></span><br><span class="line"><span class="comment">// 1f680</span></span><br><span class="line"><span class="comment">// 79</span></span><br></pre></td></tr></table></figure></p>
+<p>与方法<code>codePointAt()</code>相对的则是<code>String.fromCodePoint()</code>：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">String</span>.fromCodePoint(<span class="number">0x78</span>, <span class="number">0x1f680</span>, <span class="number">0x79</span>) === <span class="string">'x\uD83D\uDE80y'</span></span><br><span class="line"><span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="包含与重要字符串的方法">包含与重要字符串的方法</h2><p>有三个方法，可以检查一个字符串是否存在于另一个字符串：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="string">'hello'</span>.startsWith(<span class="string">'hell'</span>)</span><br><span class="line"><span class="literal">true</span></span><br><span class="line">&gt; <span class="string">'hello'</span>.endsWith(<span class="string">'ello'</span>)</span><br><span class="line"><span class="literal">true</span></span><br><span class="line">&gt; <span class="string">'hello'</span>.includes(<span class="string">'ell'</span>)</span><br><span class="line"><span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
+<p>每一个方法都有一个可选的，第二个参数。可以指定被搜寻字符串的开始或结束位置：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="string">'hello'</span>.startsWith(<span class="string">'ello'</span>, <span class="number">1</span>)</span><br><span class="line"><span class="literal">true</span></span><br><span class="line">&gt; <span class="string">'hello'</span>.endsWith(<span class="string">'hell'</span>, <span class="number">4</span>)</span><br><span class="line"><span class="literal">true</span></span><br><span class="line"></span><br><span class="line">&gt; <span class="string">'hello'</span>.includes(<span class="string">'ell'</span>, <span class="number">1</span>)</span><br><span class="line"><span class="literal">true</span></span><br><span class="line">&gt; <span class="string">'hello'</span>.includes(<span class="string">'ell'</span>, <span class="number">2</span>)</span><br><span class="line"><span class="literal">false</span></span><br></pre></td></tr></table></figure></p>
+<p>方法<code>repeat()</code> 则用以重复某个字符串：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="string">'doo '</span>.repeat(<span class="number">3</span>)</span><br><span class="line"><span class="string">'doo doo doo '</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="所有新方法">所有新方法</h2><h3 id="模板字符串：">模板字符串：</h3><ul>
 <li>String.raw(callSite, …substitutions) : string<br>用于产生<em>原始(raw)</em>字串(反斜杠不会被转义)。</li>
 </ul>
-<h3 id="Unicode和码位：">Unicode和码位：</h3>
-<ul>
+<h3 id="Unicode和码位：">Unicode和码位：</h3><ul>
 <li><p>String.fromCodePoint(…codePoints : number[]) : string<br>将数字值码位转换成字符串。</p>
 </li>
 <li><p>String.prototype.codePointAt(pos) : number<br>返回码位开始位置的数字值(会包含一个或两个JavaScript的字符)。</p>
@@ -123,8 +128,7 @@
 <li><p>String.prototype.normalize(form? : string) : string<br>不同的码位组合，最后可能有一致的显示。<a href="">Unicode normalization</a>可以将它们转化成同样的值，这会被叫做规范的表示方式(canonical representation)。这将有助于比较和查找字符串。在一般的文本之中，’NFC’是一种被推荐的形式。</p>
 </li>
 </ul>
-<h3 id="查找字符串：">查找字符串：</h3>
-<ul>
+<h3 id="查找字符串：">查找字符串：</h3><ul>
 <li><p>String.prototype.startsWith(searchString, position=0) : boolean<br>检查一个字符串是否以另一个字符串(searchString)开始。位置(position)指定从哪开始执行检查。</p>
 </li>
 <li><p>String.prototype.endsWith(searchString, endPosition=searchString.length) : boolean<br>检查一个字符串是否以另一个字符串(searchString)结尾。结束位置(endPosition)指定在哪执行结尾检查。</p>
@@ -132,12 +136,10 @@
 <li><p>String.prototype.includes(searchString, position=0) : boolean<br>检查一个字符字符串是否包含另一个字符串(searchString)。位置(position)指定从哪开始检查。</p>
 </li>
 </ul>
-<h3 id="重复字符串：">重复字符串：</h3>
-<ul>
+<h3 id="重复字符串：">重复字符串：</h3><ul>
 <li>String.prototype.repeat(count) : string<br>返回给定字符串N次。</li>
 </ul>
-<h2 id="参考">参考</h2>
-<ol>
+<h2 id="参考">参考</h2><ol>
 <li><a href="http://www.2ality.com/2014/08/es6-today.html" target="_blank" rel="external">Using ECMAScript 6 today</a></li>
 <li>Chapter 24, “<a href="http://speakingjs.com/es5/ch24.html" target="_blank" rel="external">Unicode and JavaScript</a>” of “Speaking JavaScript”; includes an introduction to Unicode.</li>
 <li><a href="http://www.2ality.com/2011/09/quasi-literals.html" target="_blank" rel="external">Template strings: embedded DSLs in ECMAScript 6</a></li>
@@ -147,19 +149,18 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>本文将覆盖在ECMAScript 6 (ES6)中，字符串的新特性。</p>
-<h2 id="Unicode_码位(code_point)转义">Unicode 码位(code point)转义</h2>
-<p>Unicode字符码位的长度是21位<a href="http]]>
+<h2 id="Unicode_码位(code_point)转义">Unicode 码位(code point)转义</h2><p>Unicode字符码位的长度是21位<a href="http:]]>
     </summary>
+    
+      <category term="ECMAScript 6" scheme="http://owenyang0.github.io/tags/ECMAScript-6/"/>
+    
+      <category term="ES6" scheme="http://owenyang0.github.io/tags/ES6/"/>
+    
+      <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
     
       <category term="Template" scheme="http://owenyang0.github.io/tags/Template/"/>
     
       <category term="Template String" scheme="http://owenyang0.github.io/tags/Template-String/"/>
-    
-      <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
-    
-      <category term="ES6" scheme="http://owenyang0.github.io/tags/ES6/"/>
-    
-      <category term="ECMAScript 6" scheme="http://owenyang0.github.io/tags/ECMAScript-6/"/>
     
   </entry>
   
@@ -169,59 +170,34 @@
     <id>http://owenyang0.github.io/2015/02/09/NPM-install-killed-error-solution/</id>
     <published>2015-02-09T11:29:46.000Z</published>
     <updated>2015-02-09T11:36:23.000Z</updated>
-    <content type="html"><![CDATA[<p>在接手一个Node项目的时候，<code>npm install</code>。却出现了”killed”的错误。以为是Node版本的问题，熟练地切换了0.11与0.10版，同样无解。<br>由于新的npm版本吧，<code>npm install</code>的时候已经无法看到常规的log信息了。以<code>npm install -d</code>查看安装的过程，发现无任何特殊的地方。在一定程度的时候，直接被”killed”。关于<code>npm install -d</code>可以看 <a href="https://docs.npmjs.com/misc/config" target="_blank" rel="external">npm config</a></p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"><span class="symbol">v:</span> --version</span></div><div class="line">-<span class="ruby">h, -?, --help, -<span class="constant">H</span><span class="symbol">:</span> --usage</span></div><div class="line">-<span class="ruby">s, --<span class="symbol">silent:</span> --loglevel silent</span></div><div class="line">-<span class="ruby">q, --<span class="symbol">quiet:</span> --loglevel warn</span></div><div class="line">-<span class="ruby"><span class="symbol">d:</span> --loglevel info</span></div><div class="line">-<span class="ruby">dd, --<span class="symbol">verbose:</span> --loglevel verbose</span></div><div class="line">-<span class="ruby"><span class="symbol">ddd:</span> --loglevel silly</span></div><div class="line">-<span class="ruby"><span class="symbol">g:</span> --global</span></div><div class="line">-<span class="ruby"><span class="constant">C</span><span class="symbol">:</span> --prefix</span></div><div class="line">-<span class="ruby"><span class="symbol">l:</span> --long</span></div><div class="line">-<span class="ruby"><span class="symbol">m:</span> --message</span></div><div class="line">-<span class="ruby">p, --<span class="symbol">porcelain:</span> --parseable</span></div><div class="line">-<span class="ruby"><span class="symbol">reg:</span> --registry</span></div><div class="line">-<span class="ruby"><span class="symbol">f:</span> --force</span></div><div class="line">-<span class="ruby"><span class="symbol">desc:</span> --description</span></div><div class="line">-<span class="ruby"><span class="constant">S</span><span class="symbol">:</span> --save</span></div><div class="line">-<span class="ruby"><span class="constant">D</span><span class="symbol">:</span> --save-dev</span></div><div class="line">-<span class="ruby"><span class="constant">O</span><span class="symbol">:</span> --save-optional</span></div><div class="line">-<span class="ruby"><span class="constant">B</span><span class="symbol">:</span> --save-bundle</span></div><div class="line">-<span class="ruby"><span class="constant">E</span><span class="symbol">:</span> --save-exact</span></div><div class="line">-<span class="ruby"><span class="symbol">y:</span> --yes</span></div><div class="line">-<span class="ruby"><span class="symbol">n:</span> --yes <span class="keyword">false</span></span></div><div class="line">ll and la commands: ls --long</div></pre></td></tr></table></figure>
-
+    <content type="html"><![CDATA[<p>在接手一个Node项目的时候，<code>npm install</code>。却出现了”killed”的错误。以为是Node版本的问题，熟练地切换了0.11与0.10版，同样无解。<br>由于新的npm版本吧，<code>npm install</code>的时候已经无法看到常规的log信息了。以<code>npm install -d</code>查看安装的过程，发现无任何特殊的地方。在一定程度的时候，直接被”killed”。关于<code>npm install -d</code>可以看 <a href="https://docs.npmjs.com/misc/config" target="_blank" rel="external">npm config</a><br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">-<span class="ruby"><span class="symbol">v:</span> --version</span><br><span class="line"></span>-<span class="ruby">h, -?, --help, -<span class="constant">H</span><span class="symbol">:</span> --usage</span><br><span class="line"></span>-<span class="ruby">s, --<span class="symbol">silent:</span> --loglevel silent</span><br><span class="line"></span>-<span class="ruby">q, --<span class="symbol">quiet:</span> --loglevel warn</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">d:</span> --loglevel info</span><br><span class="line"></span>-<span class="ruby">dd, --<span class="symbol">verbose:</span> --loglevel verbose</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">ddd:</span> --loglevel silly</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">g:</span> --global</span><br><span class="line"></span>-<span class="ruby"><span class="constant">C</span><span class="symbol">:</span> --prefix</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">l:</span> --long</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">m:</span> --message</span><br><span class="line"></span>-<span class="ruby">p, --<span class="symbol">porcelain:</span> --parseable</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">reg:</span> --registry</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">f:</span> --force</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">desc:</span> --description</span><br><span class="line"></span>-<span class="ruby"><span class="constant">S</span><span class="symbol">:</span> --save</span><br><span class="line"></span>-<span class="ruby"><span class="constant">D</span><span class="symbol">:</span> --save-dev</span><br><span class="line"></span>-<span class="ruby"><span class="constant">O</span><span class="symbol">:</span> --save-optional</span><br><span class="line"></span>-<span class="ruby"><span class="constant">B</span><span class="symbol">:</span> --save-bundle</span><br><span class="line"></span>-<span class="ruby"><span class="constant">E</span><span class="symbol">:</span> --save-exact</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">y:</span> --yes</span><br><span class="line"></span>-<span class="ruby"><span class="symbol">n:</span> --yes <span class="keyword">false</span></span><br><span class="line"></span>ll and la commands: ls --long</span><br></pre></td></tr></table></figure></p>
 <p>最后才想到，可能是内存不够了。由于是以vagrant启动的一台ubuntu14.04的虚拟机，默认只有500M的内存。而且该项目会用到一些底层的npm包，会编译一些代码。这就导致了内存不够用。<br>可以查一下相应的系统log，在路径 <code>/var/log</code>之下，确认自己的问题。如<code>/var/log/syslog</code> 和 <code>/var/log/messages</code>等。</p>
-<h3 id="Solution">Solution</h3>
-<h4 id="1-_增大内存。">1. 增大内存。</h4>
-<p>由于我是虚拟机，所有增大内存相对简单。在vagrantfile里，只需要增加一条：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">config.vm.provider <span class="string">"virtualbox"</span> <span class="built_in">do</span> |v|</div><div class="line">  v.memory = <span class="number">1024</span></div><div class="line"><span class="function"><span class="keyword">end</span></span></div></pre></td></tr></table></figure>
-
+<h3 id="Solution">Solution</h3><h4 id="1-_增大内存。">1. 增大内存。</h4><p>由于我是虚拟机，所有增大内存相对简单。在vagrantfile里，只需要增加一条：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">config.vm.provider <span class="string">"virtualbox"</span> <span class="built_in">do</span> |v|</span><br><span class="line">  v.memory = <span class="number">1024</span></span><br><span class="line"><span class="function"><span class="keyword">end</span></span></span><br></pre></td></tr></table></figure></p>
 <p>即可。</p>
-<h4 id="2-_利用swap_file实现虚拟内存">2. 利用swap file实现虚拟内存</h4>
-<p>使用</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> swapon <span class="operator">-s</span></div></pre></td></tr></table></figure>
-
-<p>查看系统是否配置了交换区域。没有的话， 便直接开始创建swap file。<br>创建一个1G的文件。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> fallocate <span class="operator">-l</span> <span class="number">1</span>G /swapfile</div></pre></td></tr></table></figure>
-
-<p>使用</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span> -<span class="keyword">lh</span> /swapfile</div></pre></td></tr></table></figure>
-
+<h4 id="2-_利用swap_file实现虚拟内存">2. 利用swap file实现虚拟内存</h4><p>使用<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo swapon <span class="operator">-s</span></span><br></pre></td></tr></table></figure></p>
+<p>查看系统是否配置了交换区域。没有的话， 便直接开始创建swap file。<br>创建一个1G的文件。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo fallocate <span class="operator">-l</span> <span class="number">1</span>G /swapfile</span><br></pre></td></tr></table></figure></p>
+<p>使用<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ls</span> -<span class="keyword">lh</span> /swapfile</span><br></pre></td></tr></table></figure></p>
 <p>确认是否是自己所需要的文件大小。</p>
-<p><strong>启用Swap文件</strong><br>首先调整文件的权限，若该文件能被其他用户随意的读写，则会产生很大的安全隐患。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> chmod <span class="number">600</span> /swapfile</div></pre></td></tr></table></figure>
-
-<p>现在安全多了，可以让系统开始设置交换区域了。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> mkswap /swapfile</div></pre></td></tr></table></figure>
-
-<p>启用该文件</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> swapon /swapfile</div></pre></td></tr></table></figure>
-
-<p>现在基本的步骤已经完成了，可以使用最初的命令验证swap file是否正确使用。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> swapon <span class="operator">-s</span></div><div class="line"></div><div class="line">Filename                    Type          Size     Used     Priority</div><div class="line">/swapfile                               file          <span class="number">1048572</span>     <span class="number">0</span>     -<span class="number">1</span></div></pre></td></tr></table></figure>
-
+<p><strong>启用Swap文件</strong><br>首先调整文件的权限，若该文件能被其他用户随意的读写，则会产生很大的安全隐患。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">sudo</span> chmod <span class="number">600</span> /swapfile</span><br></pre></td></tr></table></figure></p>
+<p>现在安全多了，可以让系统开始设置交换区域了。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">sudo</span> mkswap /swapfile</span><br></pre></td></tr></table></figure></p>
+<p>启用该文件<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">sudo</span> swapon /swapfile</span><br></pre></td></tr></table></figure></p>
+<p>现在基本的步骤已经完成了，可以使用最初的命令验证swap file是否正确使用。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo swapon -<span class="literal">s</span></span><br><span class="line"></span><br><span class="line">Filename                    <span class="keyword">Type</span>          Size     Used     Priority</span><br><span class="line">/swapfile                               <span class="keyword">file</span>          1048572     0     -1</span><br></pre></td></tr></table></figure></p>
 <p>交换分区已经成功设置，系统会在必要的时候使用它。</p>
-<p><strong>注意</strong><br>现在已经启用了swap文件，但当我们重启的时候，系统不会自动地启用该swap文件。可以通过修改<code>fstab</code>文件实现开机使用swap文件。<br>用root权限编辑</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> vim /etc/fstab</div></pre></td></tr></table></figure>
-
-<p>在文件的最后，需要添加一行告诉操作系统自动使用swap文件。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/swapfile   <span class="keyword">none</span>    <span class="built_in">swap</span>    sw    <span class="number">0</span>   <span class="number">0</span></div></pre></td></tr></table></figure>
-
+<p><strong>注意</strong><br>现在已经启用了swap文件，但当我们重启的时候，系统不会自动地启用该swap文件。可以通过修改<code>fstab</code>文件实现开机使用swap文件。<br>用root权限编辑<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim <span class="regexp">/etc/</span>fstab</span><br></pre></td></tr></table></figure></p>
+<p>在文件的最后，需要添加一行告诉操作系统自动使用swap文件。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/swapfile   <span class="keyword">none</span>    <span class="built_in">swap</span>    sw    <span class="number">0</span>   <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
 <p>如此再<code>npm install</code> 的时候，便解决了所有的问题了。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>在接手一个Node项目的时候，<code>npm install</code>。却出现了”killed”的错误。以为是Node版本的问题，熟练地切换了0.11与0.10版，同样无解。<br>由于新的npm版本吧，<code>npm install</code>的时候已经无法]]>
     </summary>
     
-      <category term="npm" scheme="http://owenyang0.github.io/tags/npm/"/>
-    
-      <category term="npm install" scheme="http://owenyang0.github.io/tags/npm-install/"/>
-    
       <category term="killed" scheme="http://owenyang0.github.io/tags/killed/"/>
     
       <category term="memory" scheme="http://owenyang0.github.io/tags/memory/"/>
+    
+      <category term="npm" scheme="http://owenyang0.github.io/tags/npm/"/>
+    
+      <category term="npm install" scheme="http://owenyang0.github.io/tags/npm-install/"/>
     
       <category term="npm install killed" scheme="http://owenyang0.github.io/tags/npm-install-killed/"/>
     
@@ -234,37 +210,24 @@
     <published>2015-01-17T03:19:11.000Z</published>
     <updated>2015-01-18T01:03:46.000Z</updated>
     <content type="html"><![CDATA[<p>怎样用React JS构建一个用户界面？本文将快速地给你一个React JS的概览。代码，请君移步<a href="https://github.com/owenyang0/react-starter" target="_blank" rel="external">react-starter</a></p>
-<h2 id="概念">概念</h2>
-<p>React只有很少的API，这使得它很容易去学习与理解。当然，使用它也是相当有意思的。但是，简约却并不简单。在我们开始之前，有一些概念是需要去理解的。</p>
-<h3 id="React元素(React_elements)">React元素(React elements)</h3>
-<p>React元素是用于呈现HTML结构的JavaScript对象。它们不会存在于浏览器中，只是用于描述浏览器中的元素，比如<code>h1</code>, <code>div</code> 或者 <code>section</code>等等。</p>
-<h3 id="模块(Components)">模块(Components)</h3>
-<p>模块是开发者创建的React元素。它们通过比用户界面的范围要大，因为它们同时包含了其结构与功能。想像一下导航栏，点赞按钮，图片上传这些模块的概念。</p>
-<h3 id="JSX">JSX</h3>
-<p>JSX是一种用于创建React元素和模块的技术，或者说是规范、语言。比如 <code>&lt;h1&gt;Hello&lt;/h1&gt;</code> 便是一个用JSX所写的React元素。同样的React元素，可以用原生的JavaScript实现，即 <code>React.DOM.h1(null, &#39;Hello&#39;);</code>。相比原生的JavaScript，JSX更加简洁。会让你花更少的精力去读和写代码，在上线的时候将其转换成原生的JavaScript即可。</p>
-<h3 id="虚拟DOM(Virtual_DOM)">虚拟DOM(Virtual DOM)</h3>
-<p>虚拟DOM是一个JavaScript的树形结构，包含了React元素和模块。React通过渲染虚拟DOM到浏览器，使得用户界面得以显示。React也会观察虚拟DOM的变化，根据虚拟DOM自动地改变浏览器DOM元素。</p>
+<h2 id="概念">概念</h2><p>React只有很少的API，这使得它很容易去学习与理解。当然，使用它也是相当有意思的。但是，简约却并不简单。在我们开始之前，有一些概念是需要去理解的。</p>
+<h3 id="React元素(React_elements)">React元素(React elements)</h3><p>React元素是用于呈现HTML结构的JavaScript对象。它们不会存在于浏览器中，只是用于描述浏览器中的元素，比如<code>h1</code>, <code>div</code> 或者 <code>section</code>等等。</p>
+<h3 id="模块(Components)">模块(Components)</h3><p>模块是开发者创建的React元素。它们通过比用户界面的范围要大，因为它们同时包含了其结构与功能。想像一下导航栏，点赞按钮，图片上传这些模块的概念。</p>
+<h3 id="JSX">JSX</h3><p>JSX是一种用于创建React元素和模块的技术，或者说是规范、语言。比如 <code>&lt;h1&gt;Hello&lt;/h1&gt;</code> 便是一个用JSX所写的React元素。同样的React元素，可以用原生的JavaScript实现，即 <code>React.DOM.h1(null, &#39;Hello&#39;);</code>。相比原生的JavaScript，JSX更加简洁。会让你花更少的精力去读和写代码，在上线的时候将其转换成原生的JavaScript即可。</p>
+<h3 id="虚拟DOM(Virtual_DOM)">虚拟DOM(Virtual DOM)</h3><p>虚拟DOM是一个JavaScript的树形结构，包含了React元素和模块。React通过渲染虚拟DOM到浏览器，使得用户界面得以显示。React也会观察虚拟DOM的变化，根据虚拟DOM自动地改变浏览器DOM元素。</p>
 <p>了解了这些概念之后，我们就可以畅快地敲React代码了。这里将会创建一系列的用户界面，每一个界面都将提前添加一层功能层。我们会做一个类似instagram的应用 - 当然，这个很粗糙。</p>
-<h2 id="渲染(Rendering)">渲染(Rendering)</h2>
-<p>业务的第一步是渲染一个虚拟的元素(React元素或者模块都可以)。由于每一个虚拟元素都存在于内存之中，所以我们必须显式地告诉React，将其渲染到浏览器的DOM之中。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">React.render(<span class="xml"><span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> /&gt;</span>, document.body);</span></div></pre></td></tr></table></figure>
-
+<h2 id="渲染(Rendering)">渲染(Rendering)</h2><p>业务的第一步是渲染一个虚拟的元素(React元素或者模块都可以)。由于每一个虚拟元素都存在于内存之中，所以我们必须显式地告诉React，将其渲染到浏览器的DOM之中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">React.render(<span class="xml"><span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> /&gt;</span>, document.body);</span></span><br></pre></td></tr></table></figure>
 <p><code>render</code> 函数接受两个参数，一个是虚拟元素，一个是真实的DOM节点。React就是获取到虚拟元素之后，将其插入到所给的节点之中。此时，在浏览器中便可以看到照片了。</p>
-<h2 id="模块(Components)-1">模块(Components)</h2>
-<p>模块是React的核心与灵魂。它们可以自定义React元素。经常由单一的功能或者结构扩展而来。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> /&gt;</span></span></div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> /&gt;</span>, document.body);</div></pre></td></tr></table></figure>
-
+<h2 id="模块(Components)-1">模块(Components)</h2><p>模块是React的核心与灵魂。它们可以自定义React元素。经常由单一的功能或者结构扩展而来。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Photo = React.createClass(&#123;</span><br><span class="line"></span><br><span class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> /&gt;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> /&gt;</span>, document.body);</span></span><br></pre></td></tr></table></figure>
 <p><code>createClass</code> 函数接受一个对象，该对象实现了<code>render</code> 的函数。<br>这个<code>Photo</code>模块被构建好，<code>&lt;Photo /&gt;</code>，然后渲染到document body中。<br>该模块并没有比上一个React图像元素做更多的事情，但这却更加有利于在功能和结构上进行扩展。</p>
-<h2 id="属性(Props)">属性(Props)</h2>
-<p>属性可以认为是模块的一些配置选项。它们以参数(arguments)的形式传递给模块，看起来就像HTML的属性(attributes)。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">{this.props.imageURL}</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="title">span</span>&gt;</span>{this.props.caption}<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">imageURL</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> <span class="attribute">caption</span>=<span class="value">'Headset'</span> /&gt;</span>, document.body);</div></pre></td></tr></table></figure>
-
+<h2 id="属性(Props)">属性(Props)</h2><p>属性可以认为是模块的一些配置选项。它们以参数(arguments)的形式传递给模块，看起来就像HTML的属性(attributes)。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Photo = React.createClass(&#123;</span><br><span class="line"></span><br><span class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">&#123;this.props.imageURL&#125;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">span</span>&gt;</span>&#123;this.props.caption&#125;<span class="tag">&lt;/<span class="title">span</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">imageURL</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> <span class="attribute">caption</span>=<span class="value">'Headset'</span> /&gt;</span>, document.body);</span></span><br></pre></td></tr></table></figure>
 <p>在<code>render</code> 函数里面，两个属性(props)传到了<code>Photo</code>模块，<code>imageURL</code> 和 <code>caption</code>。<code>imageURL</code>属性被用作React元素中的<code>src</code>。而<code>caption</code>属性则以纯文本的方式在React中的span元素使用。</p>
 <p>值得一提的是，模块永远不应该去改变属性的的值，它们是不可变的。如果一个模块有一个可变的数据，那应该应用使用状态对象(state object)。</p>
-<h2 id="状态(State)">状态(State)</h2>
-<p>状态对象是一个模块的内部对象。它会持有可变的数据。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  toggleLiked: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">this</span>.setState({</div><div class="line">      liked: !<span class="keyword">this</span>.state.liked</div><div class="line">    });</div><div class="line">  },</div><div class="line"></div><div class="line">  getInitialState: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> {</div><div class="line">      liked: <span class="literal">false</span></div><div class="line">    }</div><div class="line">  },</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">var</span> buttonClass = <span class="keyword">this</span>.state.liked ? <span class="string">'active'</span> : <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">{this.props.src}</span> /&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'bar'</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">button</span> <span class="attribute">onClick</span>=<span class="value">{this.toggleLiked}</span> <span class="attribute">className</span>=<span class="value">{buttonClass}</span>&gt;</span></div><div class="line">            ♥</div><div class="line">          <span class="tag">&lt;/<span class="title">button</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">span</span>&gt;</span>{this.props.caption}<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> <span class="attribute">caption</span>=<span class="value">'Headset'</span>/&gt;</span>, document.body);</div></pre></td></tr></table></figure>
-
+<h2 id="状态(State)">状态(State)</h2><p>状态对象是一个模块的内部对象。它会持有可变的数据。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Photo = React.createClass(&#123;</span><br><span class="line"></span><br><span class="line">  toggleLiked: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      liked: !<span class="keyword">this</span>.state.liked</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  getInitialState: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      liked: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> buttonClass = <span class="keyword">this</span>.state.liked ? <span class="string">'active'</span> : <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">&#123;this.props.src&#125;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'bar'</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">button</span> <span class="attribute">onClick</span>=<span class="value">&#123;this.toggleLiked&#125;</span> <span class="attribute">className</span>=<span class="value">&#123;buttonClass&#125;</span>&gt;</span></span><br><span class="line">            ♥</span><br><span class="line">          <span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">span</span>&gt;</span>&#123;this.props.caption&#125;<span class="tag">&lt;/<span class="title">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">React.render(<span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">src</span>=<span class="value">'http://owenyang0.github.io/img/background.jpg'</span> <span class="attribute">caption</span>=<span class="value">'Headset'</span>/&gt;</span>, document.body);</span></span><br></pre></td></tr></table></figure>
 <p>在模块中引入状态，会增加一点点的复杂度。</p>
 <p>在这模块中，有一个新的函数<code>getInitialState</code>。当模块初始化的时候，React会调用这个函数。而返回的对象则作为React的初始化状态(看函数名就知道)。<br>还有一个新的函数叫<code>toggleLiked</code>。这个函数调用了模块上的setState方法，可以改变状态<code>liked</code>的值。<br>通过模块的render函数，变量<code>buttonClass</code>被赋值成了’active’或者空，这都依赖于<code>liked</code>状态。<br><code>buttonClass</code>是React按钮元素的class名字。按钮还拥有一个<code>onClick</code>的事件回调，指向<code>toggleLiked</code>函数。</p>
 <p>当模块渲染成浏览器DOM的时候，究竟发生全过程：</p>
@@ -276,27 +239,23 @@
 <li>React将改变的部分隔离，然后更新到浏览器DOM</li>
 </ul>
 <p>在这个场景中，React会改变button上的类名。</p>
-<h2 id="组合(Composition)">组合(Composition)</h2>
-<p>组合的意思是说，将小的分散的模块组成一个大的整体。比如<code>Photo</code>模块可以在<code>PhotoGallery</code>中使用：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Photo = React.createClass({</div><div class="line"></div><div class="line">  toggleLiked: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">this</span>.setState({</div><div class="line">      liked: !<span class="keyword">this</span>.state.liked</div><div class="line">    });</div><div class="line">  },</div><div class="line"></div><div class="line">  getInitialState: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> {</div><div class="line">      liked: <span class="literal">false</span></div><div class="line">    }</div><div class="line">  },</div><div class="line"></div><div class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">var</span> buttonClass = <span class="keyword">this</span>.state.liked ? <span class="string">'active'</span> : <span class="string">''</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">{this.props.src}</span> /&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'bar'</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">button</span> <span class="attribute">onClick</span>=<span class="value">{this.toggleLiked}</span> <span class="attribute">className</span>=<span class="value">{buttonClass}</span>&gt;</span></div><div class="line">            ♥</div><div class="line">          <span class="tag">&lt;/<span class="title">button</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="title">span</span>&gt;</span>{this.props.caption}<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">var PhotoGallery = React.createClass({</div><div class="line"></div><div class="line">  getDataFromServer: function() {</div><div class="line">    return [{</div><div class="line">      url: 'http://owenyang0.github.io/img/background.jpg',</div><div class="line">      caption: 'Headset'</div><div class="line">    },</div><div class="line">    {</div><div class="line">      url: 'http://owenyang0.github.io/images/mocha.png',</div><div class="line">      caption: 'Mocha'</div><div class="line">    },</div><div class="line">    {</div><div class="line">      url: 'http://owenyang0.github.io/images/catalog.png',</div><div class="line">      caption: 'Catelog'</div><div class="line">    }];</div><div class="line">  },</div><div class="line"></div><div class="line">  render: function() {</div><div class="line">    var data = this.getDataFromServer();</div><div class="line"></div><div class="line">    var photos = data.map(function(photo) {</div><div class="line">      return <span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">src</span>=<span class="value">{photo.url}</span> <span class="attribute">caption</span>=<span class="value">{photo.caption}</span> /&gt;</span></div><div class="line">    });</div><div class="line"></div><div class="line">    return (</div><div class="line">      <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo-gallery'</span>&gt;</span></div><div class="line">        {photos}</div><div class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line">    )</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">React.render(<span class="tag">&lt;<span class="title">PhotoGallery</span> /&gt;</span>, document.body);</div></pre></td></tr></table></figure>
-
+<h2 id="组合(Composition)">组合(Composition)</h2><p>组合的意思是说，将小的分散的模块组成一个大的整体。比如<code>Photo</code>模块可以在<code>PhotoGallery</code>中使用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Photo = React.createClass(&#123;</span><br><span class="line"></span><br><span class="line">  toggleLiked: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      liked: !<span class="keyword">this</span>.state.liked</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  getInitialState: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      liked: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  render: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> buttonClass = <span class="keyword">this</span>.state.liked ? <span class="string">'active'</span> : <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo'</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">img</span> <span class="attribute">src</span>=<span class="value">&#123;this.props.src&#125;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'bar'</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">button</span> <span class="attribute">onClick</span>=<span class="value">&#123;this.toggleLiked&#125;</span> <span class="attribute">className</span>=<span class="value">&#123;buttonClass&#125;</span>&gt;</span></span><br><span class="line">            ♥</span><br><span class="line">          <span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">span</span>&gt;</span>&#123;this.props.caption&#125;<span class="tag">&lt;/<span class="title">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var PhotoGallery = React.createClass(&#123;</span><br><span class="line"></span><br><span class="line">  getDataFromServer: function() &#123;</span><br><span class="line">    return [&#123;</span><br><span class="line">      url: 'http://owenyang0.github.io/img/background.jpg',</span><br><span class="line">      caption: 'Headset'</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      url: 'http://owenyang0.github.io/images/mocha.png',</span><br><span class="line">      caption: 'Mocha'</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      url: 'http://owenyang0.github.io/images/catalog.png',</span><br><span class="line">      caption: 'Catelog'</span><br><span class="line">    &#125;];</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  render: function() &#123;</span><br><span class="line">    var data = this.getDataFromServer();</span><br><span class="line"></span><br><span class="line">    var photos = data.map(function(photo) &#123;</span><br><span class="line">      return <span class="tag">&lt;<span class="title">Photo</span> <span class="attribute">src</span>=<span class="value">&#123;photo.url&#125;</span> <span class="attribute">caption</span>=<span class="value">&#123;photo.caption&#125;</span> /&gt;</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return (</span><br><span class="line">      <span class="tag">&lt;<span class="title">div</span> <span class="attribute">className</span>=<span class="value">'photo-gallery'</span>&gt;</span></span><br><span class="line">        &#123;photos&#125;</span><br><span class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">React.render(<span class="tag">&lt;<span class="title">PhotoGallery</span> /&gt;</span>, document.body);</span></span><br></pre></td></tr></table></figure></p>
 <p>这个<code>Photo</code>模块完完全全和上面的一样。但新的<code>PhotoGallery</code>模块会生成<code>Photo</code>模块。该场景中，伪造了返回包含三个对象的数组的数据，每一个对象都返回一个url和其标题。通过循环，生成了三个<code>Photo</code>的模块，将最终的返回值插入到<code>render</code>函数之中。</p>
-<h2 id="小结">小结</h2>
-<p>用React来构建你的用户界面，我想这也差不多了。React的文档手册，包含了所有的细节。强烈推荐大家去读一下。<br>同样的，该文也没有涉及你本地环境安装的细节。<a href="http://facebook.github.io/react/docs/getting-started.html" target="_blank" rel="external">文档</a>都会有的。</p>
+<h2 id="小结">小结</h2><p>用React来构建你的用户界面，我想这也差不多了。React的文档手册，包含了所有的细节。强烈推荐大家去读一下。<br>同样的，该文也没有涉及你本地环境安装的细节。<a href="http://facebook.github.io/react/docs/getting-started.html" target="_blank" rel="external">文档</a>都会有的。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>怎样用React JS构建一个用户界面？本文将快速地给你一个React JS的概览。代码，请君移步<a href="https://github.com/owenyang0/react-starter" target="_blank" rel="external">reac]]>
     </summary>
     
-      <category term="React" scheme="http://owenyang0.github.io/tags/React/"/>
-    
-      <category term="ReactJS" scheme="http://owenyang0.github.io/tags/ReactJS/"/>
+      <category term="Facebook" scheme="http://owenyang0.github.io/tags/Facebook/"/>
     
       <category term="JS" scheme="http://owenyang0.github.io/tags/JS/"/>
     
       <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
     
-      <category term="Facebook" scheme="http://owenyang0.github.io/tags/Facebook/"/>
+      <category term="React" scheme="http://owenyang0.github.io/tags/React/"/>
+    
+      <category term="ReactJS" scheme="http://owenyang0.github.io/tags/ReactJS/"/>
     
   </entry>
   
@@ -308,10 +267,8 @@
     <updated>2015-01-05T12:34:34.000Z</updated>
     <content type="html"><![CDATA[<p>本文介绍ECMAScript 6即将带给我们新的数组操作方法，以及在怎样在现有浏览器应用这些新的数组特性。</p>
 <p><strong>Note:</strong> 我将使用交替使用构造器(constructor)和类(class)两个术语。</p>
-<h2 id="类方法">类方法</h2>
-<p>数组(Array)自身所拥有的方法。</p>
-<h3 id="Array-from(arrayLike,_mapFunc?,_thisArg?)">Array.from(arrayLike, mapFunc?, thisArg?)</h3>
-<p><code>Array.from()</code>的基本功能是，转换两种类型的对象成数组。</p>
+<h2 id="类方法">类方法</h2><p>数组(Array)自身所拥有的方法。</p>
+<h3 id="Array-from(arrayLike,_mapFunc?,_thisArg?)">Array.from(arrayLike, mapFunc?, thisArg?)</h3><p><code>Array.from()</code>的基本功能是，转换两种类型的对象成数组。</p>
 <blockquote>
 <p><strong>类数组对象(Array-like objects)</strong></p>
 </blockquote>
@@ -321,85 +278,57 @@
 </blockquote>
 <p>这类对象在取值时，每次只能取一个元素。数组是可迭代的，就如ECMAScript中新的数组结构，映射(Map)和集(Set)。</p>
 <p>以下代码是一个转换类数组对象到数组的一个示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> lis = <span class="built_in">document</span>.querySelectorAll(<span class="string">'ul.fancy li'</span>);</div><div class="line"><span class="built_in">Array</span>.from(lis).forEach(<span class="function"><span class="keyword">function</span> <span class="params">(li)</span> </span>{</div><div class="line">  <span class="built_in">console</span>.log(node);</div><div class="line">});</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> lis = <span class="built_in">document</span>.querySelectorAll(<span class="string">'ul.fancy li'</span>);</span><br><span class="line"><span class="built_in">Array</span>.from(lis).forEach(<span class="function"><span class="keyword">function</span> <span class="params">(li)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(node);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p><code>querySelectorAll()</code>的结果不是一个数组，也不会有<code>forEach()</code>这个方法。这是我们需要在使用这个方法之前，将它转换成数组的原因。</p>
 <p><strong>通过Array.from()使用Mapping</strong><br><code>Array.from()</code>同样也是一个泛型使用<code>map()</code>的替代选择。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> spans = <span class="built_in">document</span>.querySelectorAll(<span class="string">'span.name'</span>);</div><div class="line"></div><div class="line"><span class="comment">// map(), generically:</span></div><div class="line"><span class="keyword">let</span> names1 = <span class="built_in">Array</span>.prototype.map.call(spans, s =&gt; s.textContent);</div><div class="line"></div><div class="line"><span class="comment">// Array.from():</span></div><div class="line"><span class="keyword">let</span> names2 = <span class="built_in">Array</span>.from(spans, s =&gt; s.textContent);</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> spans = <span class="built_in">document</span>.querySelectorAll(<span class="string">'span.name'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// map(), generically:</span></span><br><span class="line"><span class="keyword">let</span> names1 = <span class="built_in">Array</span>.prototype.map.call(spans, s =&gt; s.textContent);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Array.from():</span></span><br><span class="line"><span class="keyword">let</span> names2 = <span class="built_in">Array</span>.from(spans, s =&gt; s.textContent);</span><br></pre></td></tr></table></figure>
 <p>两个方法中的第二个参数，都是箭头函数(arrow function)。<br>在这个示例中，<code>document.querySelectorAll()</code>的结果又是一个类数组对象，而非数组。这就是我们不能直接调用<code>map()</code>的原因。第一个示例中，为了使用<code>forEach()</code>，我们将类数组对象转换成了数组。这里我们通过泛型方法和两个参数版本的<code>Array.from()</code>，而省去了中间步骤。</p>
 <p><strong>Holes</strong><br><code>Array.from()</code>会忽略数组里缺失的元素 - 洞(holes)，它会以未定义的元素(undefined elements)进行对待。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">Array</span>.from([<span class="number">0</span>,,<span class="number">2</span>])</div><div class="line">[ <span class="number">0</span>, <span class="literal">undefined</span>, <span class="number">2</span> ]</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">Array</span>.from([<span class="number">0</span>,,<span class="number">2</span>])</span><br><span class="line">[ <span class="number">0</span>, <span class="literal">undefined</span>, <span class="number">2</span> ]</span><br></pre></td></tr></table></figure>
 <p>这就意味着，你可以使用<code>Array.from()</code>来创建或者填充一个数组：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">5</span>), () =&gt; <span class="string">'a'</span>)</div><div class="line">[ <span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'a'</span> ]</div><div class="line">&gt; <span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">5</span>), (x,i) =&gt; i)</div><div class="line">[ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span> ]</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">5</span>), () =&gt; <span class="string">'a'</span>)</span><br><span class="line">[ <span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'a'</span> ]</span><br><span class="line">&gt; <span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">5</span>), (x,i) =&gt; i)</span><br><span class="line">[ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span> ]</span><br></pre></td></tr></table></figure>
 <p>如果你想用一个固定的值去填充一个数组，那么<code>Array.prototype.fill()</code>(请看下文)将是一个更好的选择。第一个即是以上示例的两种方式。</p>
 <p><strong>在数组(Array)子类中的from()</strong><br>另一个<code>Array.from()</code>的使用场景是，转换类数组对象或可迭代对象到一个数组(Array)子类的一个实例。如你创建了一个Array的子类MyArray，想将此类对象转化成MyArray的一个实例，你就可以简单地使用<code>MyArray.from()</code>。可以这样使用的原因是，在ECMAScript 6中构造器(constructors)会继承下去(父类构造器是它子类构造器的原型(prototype))。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> MyArray extends <span class="built_in">Array</span> {</div><div class="line">  ...</div><div class="line">}</div><div class="line"><span class="keyword">let</span> instanceOfMyArray = MyArray.from(anIterable);</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> MyArray extends <span class="built_in">Array</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> instanceOfMyArray = MyArray.from(anIterable);</span><br></pre></td></tr></table></figure>
 <p>你可以将该功能与映射(mapping)结合起来，在一个你控制结果构造器的地方完成映射操作(map operation)：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// from() – determine the result’s constructor via the receiver</span></div><div class="line"><span class="comment">// (in this case, MyArray)</span></div><div class="line"><span class="keyword">let</span> instanceOfMyArray = MyArray.from([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], x =&gt; x * x);</div><div class="line"></div><div class="line"><span class="comment">// map(): the result is always an instance of Array</span></div><div class="line"><span class="keyword">let</span> instanceOfArray   = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].map(x =&gt; x * x);</div></pre></td></tr></table></figure>
-
-<h3 id="Array-of(…items)">Array.of(…items)</h3>
-<p>如果你想将一组值转换成一个数组，你应该使用数组源文本(array literal)。特别是只有一个值且还是数字的时候，数组的构造器便罢工了。更多<a href="http://speakingjs.com/es5/ch18.html#array_constructor" target="_blank" rel="external">信息</a>请参考。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>, <span class="number">11</span>, <span class="number">8</span>)</div><div class="line">[ <span class="number">3</span>, <span class="number">11</span>, <span class="number">8</span> ]</div><div class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</div><div class="line">[ , ,  ,]</div><div class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3.1</span>)</div><div class="line"><span class="built_in">RangeError</span>: Invalid array length</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from() – determine the result’s constructor via the receiver</span></span><br><span class="line"><span class="comment">// (in this case, MyArray)</span></span><br><span class="line"><span class="keyword">let</span> instanceOfMyArray = MyArray.from([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], x =&gt; x * x);</span><br><span class="line"></span><br><span class="line"><span class="comment">// map(): the result is always an instance of Array</span></span><br><span class="line"><span class="keyword">let</span> instanceOfArray   = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].map(x =&gt; x * x);</span><br></pre></td></tr></table></figure>
+<h3 id="Array-of(…items)">Array.of(…items)</h3><p>如果你想将一组值转换成一个数组，你应该使用数组源文本(array literal)。特别是只有一个值且还是数字的时候，数组的构造器便罢工了。更多<a href="http://speakingjs.com/es5/ch18.html#array_constructor" target="_blank" rel="external">信息</a>请参考。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>, <span class="number">11</span>, <span class="number">8</span>)</span><br><span class="line">[ <span class="number">3</span>, <span class="number">11</span>, <span class="number">8</span> ]</span><br><span class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>)</span><br><span class="line">[ , ,  ,]</span><br><span class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3.1</span>)</span><br><span class="line"><span class="built_in">RangeError</span>: Invalid array length</span><br></pre></td></tr></table></figure>
 <p>便如果要将一组值转换成数字子构造器(sub-constructor)的一个实例，我们应该怎么做呢？这就是<code>Array.of()</code>存在的价值(记住，数组子构造器会继承所有的数组方法，当然也包括<code>of()</code>)。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> MyArray extends <span class="built_in">Array</span> {</div><div class="line">  ...</div><div class="line">}</div><div class="line"><span class="built_in">console</span>.log(MyArray.of(<span class="number">3</span>, <span class="number">11</span>, <span class="number">8</span>) <span class="keyword">instanceof</span> MyArray); <span class="comment">// true</span></div><div class="line"><span class="built_in">console</span>.log(MyArray.of(<span class="number">3</span>).length === <span class="number">1</span>); <span class="comment">// true</span></div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> MyArray extends <span class="built_in">Array</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(MyArray.of(<span class="number">3</span>, <span class="number">11</span>, <span class="number">8</span>) <span class="keyword">instanceof</span> MyArray); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(MyArray.of(<span class="number">3</span>).length === <span class="number">1</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 <p>把值包裹嵌套在数组里，<code>Array.of()</code>会相当方便，而不会有<code>Array()</code>一样怪异的处理方式。但也要注意<code>Array.prototype.map()</code>，此处有坑：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>].map(<span class="built_in">Array</span>.of)</div><div class="line">[ [ <span class="string">'a'</span>, <span class="number">0</span>, [ <span class="string">'a'</span>, <span class="string">'b'</span> ] ],</div><div class="line">[ <span class="string">'b'</span>, <span class="number">1</span>, [ <span class="string">'a'</span>, <span class="string">'b'</span> ] ] ]</div><div class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>].map(x =&gt; <span class="built_in">Array</span>.of(x)) <span class="comment">// better</span></div><div class="line">[ [ <span class="string">'a'</span> ], [ <span class="string">'b'</span> ] ]</div><div class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>].map(x =&gt; [x]) <span class="comment">// best (in this case)</span></div><div class="line">[ [ <span class="string">'a'</span> ], [ <span class="string">'b'</span> ] ]</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>].map(<span class="built_in">Array</span>.of)</span><br><span class="line">[ [ <span class="string">'a'</span>, <span class="number">0</span>, [ <span class="string">'a'</span>, <span class="string">'b'</span> ] ],</span><br><span class="line">[ <span class="string">'b'</span>, <span class="number">1</span>, [ <span class="string">'a'</span>, <span class="string">'b'</span> ] ] ]</span><br><span class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>].map(x =&gt; <span class="built_in">Array</span>.of(x)) <span class="comment">// better</span></span><br><span class="line">[ [ <span class="string">'a'</span> ], [ <span class="string">'b'</span> ] ]</span><br><span class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>].map(x =&gt; [x]) <span class="comment">// best (in this case)</span></span><br><span class="line">[ [ <span class="string">'a'</span> ], [ <span class="string">'b'</span> ] ]</span><br></pre></td></tr></table></figure>
 <p>如你所看，<code>map()</code>会传递三个参数到它的回调里面。最后两个又是经常被忽略的(<a href="http://speakingjs.com/es5/ch15.html#_pitfall_unexpected_optional_parameters" target="_blank" rel="external">详细</a>)。</p>
-<h2 id="原型方法(Prototype_methods)">原型方法(Prototype methods)</h2>
-<p>数组的实例会有很多新的方法可用。</p>
-<h3 id="数组里的迭代(Iterating_over_arrays)">数组里的迭代(Iterating over arrays)</h3>
-<p>以下的方法，会帮助完成在数组里的迭代：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Array</span>.prototype.entries()</div><div class="line"><span class="built_in">Array</span>.prototype.keys()</div><div class="line"><span class="built_in">Array</span>.prototype.values()</div></pre></td></tr></table></figure>
-
+<h2 id="原型方法(Prototype_methods)">原型方法(Prototype methods)</h2><p>数组的实例会有很多新的方法可用。</p>
+<h3 id="数组里的迭代(Iterating_over_arrays)">数组里的迭代(Iterating over arrays)</h3><p>以下的方法，会帮助完成在数组里的迭代：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>.prototype.entries()</span><br><span class="line"><span class="built_in">Array</span>.prototype.keys()</span><br><span class="line"><span class="built_in">Array</span>.prototype.values()</span><br></pre></td></tr></table></figure>
 <p>以上的每一个方法都会返回一串值，却不会作为一个数组返回。它们会通过迭代器，一个接一个的显示。让我们看一个示例(我将使用<code>Array.from()将迭代器的内容放在数组中</code>)：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="built_in">Array</span>.from([ <span class="string">'a'</span>, <span class="string">'b'</span> ].keys())</div><div class="line">[ <span class="number">0</span>, <span class="number">1</span> ]</div><div class="line">&gt; <span class="built_in">Array</span>.from([ <span class="string">'a'</span>, <span class="string">'b'</span> ].values())</div><div class="line">[ <span class="string">'a'</span>, <span class="string">'b'</span> ]</div><div class="line">&gt; <span class="built_in">Array</span>.from([ <span class="string">'a'</span>, <span class="string">'b'</span> ].entries())</div><div class="line">[ [ <span class="number">0</span>, <span class="string">'a'</span> ],</div><div class="line">[ <span class="number">1</span>, <span class="string">'b'</span> ] ]</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">Array</span>.from([ <span class="string">'a'</span>, <span class="string">'b'</span> ].keys())</span><br><span class="line">[ <span class="number">0</span>, <span class="number">1</span> ]</span><br><span class="line">&gt; <span class="built_in">Array</span>.from([ <span class="string">'a'</span>, <span class="string">'b'</span> ].values())</span><br><span class="line">[ <span class="string">'a'</span>, <span class="string">'b'</span> ]</span><br><span class="line">&gt; <span class="built_in">Array</span>.from([ <span class="string">'a'</span>, <span class="string">'b'</span> ].entries())</span><br><span class="line">[ [ <span class="number">0</span>, <span class="string">'a'</span> ],</span><br><span class="line">[ <span class="number">1</span>, <span class="string">'b'</span> ] ]</span><br></pre></td></tr></table></figure>
 <p>你可以结合<code>entries()</code>和ECMAScript 6中的<code>for-of</code>循环，方便地将迭代对象拆解成key-value对：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> [index, elem] of [<span class="string">'a'</span>, <span class="string">'b'</span>].entries()) {</div><div class="line">  <span class="built_in">console</span>.log(index, elem);</div><div class="line">}</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> [index, elem] of [<span class="string">'a'</span>, <span class="string">'b'</span>].entries()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(index, elem);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>Note:</strong> 这段代码已经可以在最新的Firefox浏览器里运行了。t Firefox.</p>
-<h3 id="查找数组元素">查找数组元素</h3>
-<p><code>Array.prototype.find(predicate, thisArg?)</code> 会返回满足回调函数的第一个元素。如果没有任何一个元素满足条件，它会返回<code>undefined</code>。比如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt; [<span class="number">6</span>, -<span class="number">5</span>, <span class="number">8</span>].find(x =&gt; x &lt; <span class="number">0</span>)</div><div class="line">-<span class="number">5</span></div><div class="line">&gt; [<span class="number">6</span>, <span class="number">5</span>, <span class="number">8</span>].find(x =&gt; x &lt; <span class="number">0</span>)</div><div class="line"><span class="literal">undefined</span></div></pre></td></tr></table></figure>
-
+<h3 id="查找数组元素">查找数组元素</h3><p><code>Array.prototype.find(predicate, thisArg?)</code> 会返回满足回调函数的第一个元素。如果没有任何一个元素满足条件，它会返回<code>undefined</code>。比如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; [<span class="number">6</span>, -<span class="number">5</span>, <span class="number">8</span>].find(x =&gt; x &lt; <span class="number">0</span>)</span><br><span class="line">-<span class="number">5</span></span><br><span class="line">&gt; [<span class="number">6</span>, <span class="number">5</span>, <span class="number">8</span>].find(x =&gt; x &lt; <span class="number">0</span>)</span><br><span class="line"><span class="literal">undefined</span></span><br></pre></td></tr></table></figure>
 <p><code>Array.prototype.findIndex(predicate, thisArg?)</code><br>会返回满足回调函数的第一个元素的索引。如果找不任何满足的元素，则返回-1。比如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt; [<span class="number">6</span>, -<span class="number">5</span>, <span class="number">8</span>].findIndex(x =&gt; x &lt; <span class="number">0</span>)</div><div class="line"><span class="number">1</span></div><div class="line">&gt; [<span class="number">6</span>, <span class="number">5</span>, <span class="number">8</span>].findIndex(x =&gt; x &lt; <span class="number">0</span>)</div><div class="line">-<span class="number">1</span></div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; [<span class="number">6</span>, -<span class="number">5</span>, <span class="number">8</span>].findIndex(x =&gt; x &lt; <span class="number">0</span>)</span><br><span class="line"><span class="number">1</span></span><br><span class="line">&gt; [<span class="number">6</span>, <span class="number">5</span>, <span class="number">8</span>].findIndex(x =&gt; x &lt; <span class="number">0</span>)</span><br><span class="line">-<span class="number">1</span></span><br></pre></td></tr></table></figure>
 <p>两个find*方法都会忽略洞(holes)，即不会关注undefined的元素。回调的完成函数签名是：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">predicate(element, index, array)</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">predicate(element, index, array)</span><br></pre></td></tr></table></figure>
 <p><strong>通过findIndex()找NaN</strong></p>
 <p><code>Array.prototype.indexOf()</code>有一个大家所熟知的限制，那就是不能查找NaN。因为它用恒等(===)查找匹配元素：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; [<span class="literal">NaN</span>].indexOf(<span class="literal">NaN</span>)</div><div class="line">-<span class="number">1</span></div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; [<span class="literal">NaN</span>].indexOf(<span class="literal">NaN</span>)</span><br><span class="line">-<span class="number">1</span></span><br></pre></td></tr></table></figure>
 <p>使用<code>findIndex()</code>，你就可以使用<code>Object.is()</code>，这就不会产生这样的问题：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; [<span class="literal">NaN</span>].findIndex(y =&gt; <span class="built_in">Object</span>.is(<span class="literal">NaN</span>, y))</div><div class="line"><span class="number">0</span></div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; [<span class="literal">NaN</span>].findIndex(y =&gt; <span class="built_in">Object</span>.is(<span class="literal">NaN</span>, y))</span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
 <p>你同样也可以采用更通用的方式，创建一个帮助函数<code>elemIs()</code>：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="function"><span class="keyword">function</span> <span class="title">elemIs</span><span class="params">(x)</span> </span>{ <span class="keyword">return</span> <span class="built_in">Object</span>.is.bind(<span class="built_in">Object</span>, x) }</div><div class="line">&gt; [<span class="literal">NaN</span>].findIndex(elemIs(<span class="literal">NaN</span>))</div><div class="line"><span class="number">0</span></div></pre></td></tr></table></figure>
-
-<h3 id="Array-prototype-fill(value,_start?,_end?)">Array.prototype.fill(value, start?, end?)</h3>
-<p>用所给的数值，填充一个数组：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>].fill(<span class="number">7</span>)</div><div class="line">[ <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span> ]</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="function"><span class="keyword">function</span> <span class="title">elemIs</span><span class="params">(x)</span> </span>&#123; <span class="keyword">return</span> <span class="built_in">Object</span>.is.bind(<span class="built_in">Object</span>, x) &#125;</span><br><span class="line">&gt; [<span class="literal">NaN</span>].findIndex(elemIs(<span class="literal">NaN</span>))</span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="Array-prototype-fill(value,_start?,_end?)">Array.prototype.fill(value, start?, end?)</h3><p>用所给的数值，填充一个数组：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>].fill(<span class="number">7</span>)</span><br><span class="line">[ <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span> ]</span><br></pre></td></tr></table></figure>
 <p>洞(Holes)也不会有任何的特殊对待：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>).fill(<span class="number">7</span>)</div><div class="line">[ <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span> ]</div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>).fill(<span class="number">7</span>)</span><br><span class="line">[ <span class="number">7</span>, <span class="number">7</span>, <span class="number">7</span> ]</span><br></pre></td></tr></table></figure>
 <p>你也可以限制你填充的起始与结束：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>].fill(<span class="number">7</span>, <span class="number">1</span>, <span class="number">2</span>)</div><div class="line">[ <span class="string">'a'</span>, <span class="number">7</span>, <span class="string">'c'</span> ]</div></pre></td></tr></table></figure>
-
-<h2 id="什么时候可以使用新的数组方法？">什么时候可以使用新的数组方法？</h2>
-<p>有一些方法已经可以在浏览器里使用了。通过，你可以通过kangax查看兼容性<a href="http://kangax.github.io/compat-table/es6/" target="_blank" rel="external">ECMAScript 6 compatibility table</a>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>].fill(<span class="number">7</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">[ <span class="string">'a'</span>, <span class="number">7</span>, <span class="string">'c'</span> ]</span><br></pre></td></tr></table></figure>
+<h2 id="什么时候可以使用新的数组方法？">什么时候可以使用新的数组方法？</h2><p>有一些方法已经可以在浏览器里使用了。通过，你可以通过kangax查看兼容性<a href="http://kangax.github.io/compat-table/es6/" target="_blank" rel="external">ECMAScript 6 compatibility table</a>。</p>
 <p>Paul Miller的 <a href="https://github.com/paulmillr/es6-shim" target="_blank" rel="external">es6-shim</a>库可以将ES6转换成ES5。</p>
-<h2 id="参考">参考</h2>
-<ul>
+<h2 id="参考">参考</h2><ul>
 <li><a href="http://www.2ality.com/2014/05/es6-array-methods.html" target="_blank" rel="external">http://www.2ality.com/2014/05/es6-array-methods.html</a></li>
 <li><a href="http://speakingjs.com/es5/ch18.html#array_holes" target="_blank" rel="external">Holes in Arrays</a> (Speaking JavaScript)</li>
 </ul>
@@ -410,11 +339,11 @@
 <h2 id="类方]]>
     </summary>
     
-      <category term="ES6" scheme="http://owenyang0.github.io/tags/ES6/"/>
+      <category term="Array" scheme="http://owenyang0.github.io/tags/Array/"/>
     
       <category term="ECMAScript 6" scheme="http://owenyang0.github.io/tags/ECMAScript-6/"/>
     
-      <category term="Array" scheme="http://owenyang0.github.io/tags/Array/"/>
+      <category term="ES6" scheme="http://owenyang0.github.io/tags/ES6/"/>
     
       <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
     
@@ -427,72 +356,38 @@
     <published>2014-12-24T12:48:00.000Z</published>
     <updated>2014-12-28T14:08:42.000Z</updated>
     <content type="html"><![CDATA[<p>Git是一个开源的版本控制系统，由Linus Torvalds主导，用于支持Linux内核开发。每一个Git工作目录，都是一个完整的代码库，包含所有的提交历史。有能力跟踪所有的代码版本，而不会去依赖于网络与中央服务器。</p>
-<h3 id="安装">安装</h3>
-<p>Git可以通过以下的命令进行安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> apt-get install git</div></pre></td></tr></table></figure>
-
-<h3 id="配置">配置</h3>
-<p>每一个git的用户，在第一次使用的时候都需要通过以下两个命令，进行相应的配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.email <span class="string">"you@example.com"</span></div><div class="line">git config --global user.name <span class="string">"Your Name"</span></div></pre></td></tr></table></figure>
-
-<h3 id="基本用法">基本用法</h3>
-<p>假设用户可以通过SSH的方式访问Server，对于用户想以分布式以及安全的方式使用Git，则已经完全足够了。在服务器端，创建一个新的仓库。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git init --bare /path/to/repository</div></pre></td></tr></table></figure>
-
+<h3 id="安装">安装</h3><p>Git可以通过以下的命令进行安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure></p>
+<h3 id="配置">配置</h3><p>每一个git的用户，在第一次使用的时候都需要通过以下两个命令，进行相应的配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email <span class="string">"you@example.com"</span></span><br><span class="line">git config --global user.name <span class="string">"Your Name"</span></span><br></pre></td></tr></table></figure>
+<h3 id="基本用法">基本用法</h3><p>假设用户可以通过SSH的方式访问Server，对于用户想以分布式以及安全的方式使用Git，则已经完全足够了。在服务器端，创建一个新的仓库。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init --bare /path/to/repository</span><br></pre></td></tr></table></figure></p>
 <p>这会创建一个裸仓库，它不允许我们直接编辑相应的文件。如果你需要在服务器端保留仓库内容的复本，去掉 —bare 选项就好了。</p>
-<p>任何具有SSH权限的客户端，均可以克隆相应的仓库</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone username<span class="variable">@hostname</span><span class="symbol">:/path/to/repository</span></div></pre></td></tr></table></figure>
-
-<p>一旦克隆到了客户端上，用户即可编辑相应的文件，然后提交得分享相应的代码：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /path/to/repository <span class="comment"># 进入目录，编辑</span></div><div class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></div><div class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></div></pre></td></tr></table></figure>
-
-<h3 id="安装_gitolite_server">安装 gitolite server</h3>
-<p>虽然以上的那些，对于创建，克隆和修改仓库已经足够。但用户在服务器端安装git，最主要是想要一个传统的源代码控制管理服务器，具有多用户与权限管理的功能。推荐的解决方案是通过以下命令，安装 gitolite server：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> apt-get install gitolite</div></pre></td></tr></table></figure>
-
-<h3 id="配置_gitolite">配置 gitolite</h3>
-<p>相比于大多数的类Unix系统，gitolite server的配置有一些小小的区别。传统的配置文件会存放在 /etc 的目录之下，而gitolite则把自己的配置文件放在一个git的仓库之中。配置一个新的gitolite的第一步，则需要有配置仓库的访问权限。<br>首先，让我们为gitolite创建一个用户，并具体其访问权限。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> adduser --system --shell /bin/bash --group --disabled-password --home /home/git git</div></pre></td></tr></table></figure>
-
-<p>现在我们想让gitolite知晓仓库管理员的SSH公钥。我们假设当前用户是仓库的管理员。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp ~<span class="regexp">/.ssh/id</span>_rsa.pub /tmp/<span class="variable">$(</span>whoami).pub</div></pre></td></tr></table></figure>
-
-<p>我们切换到git用户，并将管理员的公钥导入gitolite。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">sudo</span> su - git</div><div class="line">gl-setup /tmp/<span class="regexp">*.pub</span></div></pre></td></tr></table></figure>
-
-<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">exit</div><div class="line">git clone git@<span class="variable">$IP_ADDRESS</span><span class="symbol">:gitolite-admin</span>.git</div><div class="line">cd gitolite-admin</div></pre></td></tr></table></figure>
-
+<p>任何具有SSH权限的客户端，均可以克隆相应的仓库<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone username<span class="variable">@hostname</span><span class="symbol">:/path/to/repository</span></span><br></pre></td></tr></table></figure></p>
+<p>一旦克隆到了客户端上，用户即可编辑相应的文件，然后提交得分享相应的代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /path/to/repository <span class="comment"># 进入目录，编辑</span></span><br><span class="line">git commit <span class="operator">-a</span> <span class="comment"># 提交所有修改到本地仓库</span></span><br><span class="line">git push origin master <span class="comment"># 推送修改到服务器端的仓库</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="安装_gitolite_server">安装 gitolite server</h3><p>虽然以上的那些，对于创建，克隆和修改仓库已经足够。但用户在服务器端安装git，最主要是想要一个传统的源代码控制管理服务器，具有多用户与权限管理的功能。推荐的解决方案是通过以下命令，安装 gitolite server：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install gitolite</span><br></pre></td></tr></table></figure></p>
+<h3 id="配置_gitolite">配置 gitolite</h3><p>相比于大多数的类Unix系统，gitolite server的配置有一些小小的区别。传统的配置文件会存放在 /etc 的目录之下，而gitolite则把自己的配置文件放在一个git的仓库之中。配置一个新的gitolite的第一步，则需要有配置仓库的访问权限。<br>首先，让我们为gitolite创建一个用户，并具体其访问权限。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser --system --shell /bin/bash --group --disabled-password --home /home/git git</span><br></pre></td></tr></table></figure></p>
+<p>现在我们想让gitolite知晓仓库管理员的SSH公钥。我们假设当前用户是仓库的管理员。<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp ~<span class="regexp">/.ssh/id</span>_rsa.pub /tmp/<span class="variable">$(</span>whoami).pub</span><br></pre></td></tr></table></figure></p>
+<p>我们切换到git用户，并将管理员的公钥导入gitolite。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">sudo</span> su - git</span><br><span class="line">gl-setup /tmp/<span class="regexp">*.pub</span></span><br></pre></td></tr></table></figure></p>
+<p>Gitolite会允许在安装过程中，对配置文件做一些初期的修改。你现在可以通过管理员用户(即拥有管理员公钥的帐户)，克隆和修改gitolite的配置仓库。切回到管理员账号，克隆配置仓库：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span></span><br><span class="line">git <span class="built_in">clone</span> git@<span class="variable">$IP_ADDRESS</span>:gitolite-admin.git</span><br><span class="line"><span class="built_in">cd</span> gitolite-admin</span><br></pre></td></tr></table></figure></p>
 <p>gitolite-admin目录包含两个子目录，conf 和 keydir。配置文件存放在 conf目录，而keydir目录存放了用户的公钥信息。</p>
-<h3 id="管理gitolite帐户和仓库">管理gitolite帐户和仓库</h3>
-<p>添加一个新的帐户到gitolite很简单：只需要获取用户的SSH公钥信息，以$DESIRED_USER_NAME.pub 的形式放在keydir目录之下即可。值得注意的是，gitolite的用户名不必和系统的用户名相匹配，它们仅仅是用在gitolite的配置文件之中，管理其访问权限的。同样的，删除用户只需要删除其对应的公钥文件即可。所有修改完毕之后，别忘了提交相应的修改，然后通过以下命令推回服务器端：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git <span class="operator"><span class="keyword">commit</span> -a</span></div><div class="line">git push origin <span class="keyword">master</span></div></pre></td></tr></table></figure>
-
+<h3 id="管理gitolite帐户和仓库">管理gitolite帐户和仓库</h3><p>添加一个新的帐户到gitolite很简单：只需要获取用户的SSH公钥信息，以$DESIRED_USER_NAME.pub 的形式放在keydir目录之下即可。值得注意的是，gitolite的用户名不必和系统的用户名相匹配，它们仅仅是用在gitolite的配置文件之中，管理其访问权限的。同样的，删除用户只需要删除其对应的公钥文件即可。所有修改完毕之后，别忘了提交相应的修改，然后通过以下命令推回服务器端：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="operator"><span class="keyword">commit</span> -a</span><br><span class="line">git push origin <span class="keyword">master</span></span></span><br></pre></td></tr></table></figure></p>
 <p>仓库是需要编辑conf/gitolite.conf文件进行管理。通过空格分割，遵守相应的权限规则，指定相应的仓库即可。以下是一些默认的示例。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">repo    gitolite-admin</div><div class="line"><span class="constant">        RW+</span>     =   admin</div><div class="line"><span class="constant">        R</span>       =   alice</div><div class="line">repo    project1</div><div class="line"><span class="constant">        RW+</span>     =   alice</div><div class="line"><span class="constant">        RW</span>      =   bob</div><div class="line"><span class="constant">        R</span>       =   denise</div></pre></td></tr></table></figure>
-
-<h3 id="使用服务器">使用服务器</h3>
-<p>要使用新创建的帐户，用户需要gitolite的管理员将其公钥导入到gitolite的配置仓库之中。然后，用户即可拥有相应的项目权限：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">clone</span> git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</div></pre></td></tr></table></figure>
-
-<p>或者为一个已存在的git仓库添加一个远程地址：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="title">git</span> remote add gitolite git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</div></pre></td></tr></table></figure>
-
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">repo    gitolite-admin</span><br><span class="line"><span class="constant">        RW+</span>     =   admin</span><br><span class="line"><span class="constant">        R</span>       =   alice</span><br><span class="line">repo    project1</span><br><span class="line"><span class="constant">        RW+</span>     =   alice</span><br><span class="line"><span class="constant">        RW</span>      =   bob</span><br><span class="line"><span class="constant">        R</span>       =   denise</span><br></pre></td></tr></table></figure>
+<h3 id="使用服务器">使用服务器</h3><p>要使用新创建的帐户，用户需要gitolite的管理员将其公钥导入到gitolite的配置仓库之中。然后，用户即可拥有相应的项目权限：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</span><br></pre></td></tr></table></figure></p>
+<p>或者为一个已存在的git仓库添加一个远程地址：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">git</span> remote add gitolite git@<span class="variable">$SERVER_IP</span>:<span class="variable">$PROJECT_NAME</span>.git</span><br></pre></td></tr></table></figure></p>
 <p>如此便搭好了一个简易的，可用的git server。为了更好的查看相应的代码，或者管理，也可使用相对较重的，gitlab开源项目。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>Git是一个开源的版本控制系统，由Linus Torvalds主导，用于支持Linux内核开发。每一个Git工作目录，都是一个完整的代码库，包含所有的提交历史。有能力跟踪所有的代码版本，而不会去依赖于网络与中央服务器。</p>
-<h3 id="安装">安装</h3>
-<p>]]>
+<h3 id="安装">安装</h3><p>G]]>
     </summary>
-    
-      <category term="ubuntu" scheme="http://owenyang0.github.io/tags/ubuntu/"/>
     
       <category term="git" scheme="http://owenyang0.github.io/tags/git/"/>
     
       <category term="git server" scheme="http://owenyang0.github.io/tags/git-server/"/>
     
       <category term="gitolite" scheme="http://owenyang0.github.io/tags/gitolite/"/>
+    
+      <category term="ubuntu" scheme="http://owenyang0.github.io/tags/ubuntu/"/>
     
   </entry>
   
@@ -504,35 +399,24 @@
     <updated>2014-12-14T07:49:50.000Z</updated>
     <content type="html"><![CDATA[<p>在很多时候，想使用 <code>display: table;</code> 以及其子元素使用 <code>display: table-cell</code> 都只是为了使用 <code>vertical-align</code> 这一属性。这是一个很简单的常识，但这次在项目上使用却产生意想不到的表现方式。</p>
 <p>因为我在其中又使用了 <code>position: relative;</code> 这样一个属性。同样是一个很简单而标准的属性，我想即使放在一起，肯定也是可以正常工作的。可惜，我错了。</p>
-<h2 id="缘起">缘起</h2>
-<p>就这样的一个简单的样式场景，</p>
+<h2 id="缘起">缘起</h2><p>就这样的一个简单的样式场景，</p>
 <p><strong>Chrome</strong><br><img src="/images/lists.png" alt="lists"><br><strong>FireFox</strong><br><img src="/images/lists-ff.png" alt="lists"></p>
 <p>看着两个图不一样，很难受是吧？开始的时候，即用的是 <code>vertical-align: top;</code> 使用 <code>position: relative;</code>去修这样一个位置。因为icon没有 <code>padding</code>，而文字却是有 <code>line-height</code> 的。直接使用vertical-align: top; 是不够雅观的，必须往下移大概3个px。我就用position: relative; 去调整了一下(当然，使用 <code>padding-top: 3px;</code>的话，就没这么多的后话了)。</p>
 <p>做为一个开发者，一般说来都会习惯用Chrome或者FF调试自己的样式。而幸运的是，我用的是Chrome，Chrome对很多东西都支持很好，我用了position: relative; 在Chrome调好了样式。这就导致了在Chrome上很好的东西，到其他浏览器的时候会丑得像一堆X一样。到FF上的时候，发现这些位置根本不工作。</p>
-<h2 id="代码">代码</h2>
-<p>客户的代码还是就算了，随便写个demo代码吧。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class">.table</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table</span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">10px</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table-cell</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">vertical-align</span>:<span class="value"> top</span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell-icon</span><span class="pseudo">:before</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">content</span>:<span class="value"> <span class="string">"icon"</span></span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="class">.cell-icon</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">20px</span></span></span>;</div><div class="line"><span class="rule">}</span></div></pre></td></tr></table></figure>
-
+<h2 id="代码">代码</h2><p>客户的代码还是就算了，随便写个demo代码吧。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class">.table</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table</span></span>;</span><br><span class="line"><span class="rule">&#125;</span></span></span><br><span class="line"><span class="class">.cell</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">10px</span></span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1px</span> solid <span class="hexcolor">#ccc</span></span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">display</span>:<span class="value"> table-cell</span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">vertical-align</span>:<span class="value"> top</span></span>;</span><br><span class="line"><span class="rule">&#125;</span></span></span><br><span class="line"><span class="class">.cell-icon</span><span class="pseudo">:before</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">content</span>:<span class="value"> <span class="string">"icon"</span></span></span>;</span><br><span class="line"><span class="rule">&#125;</span></span></span><br><span class="line"><span class="class">.cell-icon</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">20px</span></span></span>;</span><br><span class="line"><span class="rule">&#125;</span></span></span><br></pre></td></tr></table></figure>
 <p>目的只是为了让 <code>top: 20px;</code> 工作而已，不用去管它现在是否为业务价值。当然，在客户那里是肯定有价值的。经过测试：</p>
 <p><strong>WORK：</strong><br>Chrome |<br>Safari |<br>IE 8+</p>
 <p>唯FireFox不行，根本不关心你是否有此(position: relative;)属性。</p>
-<h2 id="过程">过程</h2>
-<p>遇到这种情况，当然去查找相关资料，最后查到了CSS规范: <a href="http://www.w3.org/TR/CSS21/visuren.html#choose-position" target="_blank" rel="external">choose-position</a>。里面有一句:</p>
+<h2 id="过程">过程</h2><p>遇到这种情况，当然去查找相关资料，最后查到了CSS规范: <a href="http://www.w3.org/TR/CSS21/visuren.html#choose-position" target="_blank" rel="external">choose-position</a>。里面有一句:</p>
 <blockquote>
 <p>The effect of ‘position:relative’ on table-row-group, table-header-group, table-footer-group, table-row, table-column-group, table-column, table-cell, and table-caption elements is undefined.</p>
 </blockquote>
 <p>大致一意思就是说：<code>position: relative;</code>在table-cell或者其他table元素下都是不工作的，醒醒吧少年。</p>
 <p>实际的情况是：有些浏览器又允许用户在table-cell里使用绝对或者相对定位(在这里可以看到更多详细信息<a href="http://www.w3.org/TR/CSS21/visuren.html#comp-abspos" target="_blank" rel="external">http://www.w3.org/TR/CSS21/visuren.html#comp-abspos</a>)。但浏览器又有权不实现那些开发者想要的规范，毕竟这些都不在W3定义的规范里面。</p>
 <p>所以，到这里已经明了了，不是由于FF不给力，而确实是由于规范里面没有这样要求，那么剩下的，我们去寻找真正的解决办法就好了。</p>
-<h2 id="解决">解决</h2>
-<p><strong>1.</strong><br>以上其实提到过，可以跳过 <code>position: relative;</code>，直接就用 <code>padding-top: 20px;</code> 就好了。但这明显不能满足我们的好奇心。所以，请看方法二。</p>
-<p><strong>2.</strong><br>这需要在table-cell里面在包一层，在这层限定这的position就好了。然后，所有浏览器测试一遍，搞定。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">i</span> <span class="attribute">class</span>=<span class="value">"cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">i</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></div></pre></td></tr></table></figure>
-
+<h2 id="解决">解决</h2><p><strong>1.</strong><br>以上其实提到过，可以跳过 <code>position: relative;</code>，直接就用 <code>padding-top: 20px;</code> 就好了。但这明显不能满足我们的好奇心。所以，请看方法二。</p>
+<p><strong>2.</strong><br>这需要在table-cell里面在包一层，在这层限定这的position就好了。然后，所有浏览器测试一遍，搞定。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"table"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class="tag">&lt;/<span class="title">span</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"cell"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">i</span> <span class="attribute">class</span>=<span class="value">"cell-icon"</span>&gt;</span><span class="tag">&lt;/<span class="title">i</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p><a href="http://owenyang0.github.io/Snippets/html/table-cell/" target="_blank" rel="external">Demo</a></p>
 <p>或者有人会觉得简单，我觉得不。这些都只是经验型的东西，如果此前没遇到过，或许你会花很长时间去搞明白到底是怎么一回事。这在所有的事情面前都是一样的。</p>
 <p>所以，保持学习，努力填坑。</p>
@@ -543,13 +427,13 @@
     
       <category term="css" scheme="http://owenyang0.github.io/tags/css/"/>
     
-      <category term="table-cell" scheme="http://owenyang0.github.io/tags/table-cell/"/>
-    
       <category term="display" scheme="http://owenyang0.github.io/tags/display/"/>
     
       <category term="position" scheme="http://owenyang0.github.io/tags/position/"/>
     
       <category term="relative" scheme="http://owenyang0.github.io/tags/relative/"/>
+    
+      <category term="table-cell" scheme="http://owenyang0.github.io/tags/table-cell/"/>
     
   </entry>
   
@@ -561,10 +445,8 @@
     <updated>2014-12-13T09:46:05.000Z</updated>
     <content type="html"><![CDATA[<p>AEM是Adobe公司所出的商业内容管理系统，全称<strong>阿豆比体验管理系统</strong>(Adobe Experience Manager)，其前身叫<strong>CQ</strong>，分别有<code>CQ5</code> <code>CQ6</code>两个大版本。它提供了整套的网站内容管理系统解决方案，是一个企业级的重型系统。当然，这套系统在中国几乎没什么人知晓。但在澳洲，这系统几乎在所有金融行业遍地开花了。</p>
 <p>基于客户的发展战略，不可避免地开始了<code>AEM</code>的扒坑之旅。不过，此前一直在扒<code>Drupal</code>的坑，再扒一堆坑也无关紧要了。</p>
-<h2 id="AEM_技术栈">AEM 技术栈</h2>
-<p><img src="/images/cq_technology_stack.png" alt="stack" title="cq5 technology stack"></p>
-<h3 id="Apache_Sling">Apache Sling</h3>
-<p><code>Apache Sling</code> 是一个以内容为中心的网络框架。其使用Java的内容仓库去存储与管理内容，比如<code>Apache Jackrabbit</code> 和 <code>CRX</code>。</p>
+<h2 id="AEM_技术栈">AEM 技术栈</h2><p><img src="/images/cq_technology_stack.png" alt="stack" title="cq5 technology stack"></p>
+<h3 id="Apache_Sling">Apache Sling</h3><p><code>Apache Sling</code> 是一个以内容为中心的网络框架。其使用Java的内容仓库去存储与管理内容，比如<code>Apache Jackrabbit</code> 和 <code>CRX</code>。</p>
 <blockquote>
 <ul>
 <li>基于<code>REST</code>原则，以内容为导向进行开发</li>
@@ -577,8 +459,7 @@
 </ul>
 </blockquote>
 <hr>
-<h3 id="OSGi_(Apache_Felix)">OSGi (Apache Felix)</h3>
-<p>CQ5 内建了基于<code>OSGI R4 服务平台</code>(OSGi Service Platform Release 4) 的应用程序框架。</p>
+<h3 id="OSGi_(Apache_Felix)">OSGi (Apache Felix)</h3><p>CQ5 内建了基于<code>OSGI R4 服务平台</code>(OSGi Service Platform Release 4) 的应用程序框架。</p>
 <blockquote>
 <ul>
 <li>是一个针对<code>JAVA</code>的动态模块系统</li>
@@ -586,22 +467,16 @@
 <li>OSGI的bundle可以包含经编译后的JAVA代码，脚本，或者内容。这些均可根据需要将其加载到相应的仓库，或者对其进行配置等等。</li>
 </ul>
 </blockquote>
-<h2 id="获得软件">获得软件</h2>
-<p>所有需要的，只是一个可独立执行的jar包。由于是商业软件，License是必须的。我们将其放到一个文件夹下，暂且命名为<code>aem-install</code>吧。<br><img src="/images/aem-dir.png" alt="aem-dir" title="AEM directory structure"></p>
+<h2 id="获得软件">获得软件</h2><p>所有需要的，只是一个可独立执行的jar包。由于是商业软件，License是必须的。我们将其放到一个文件夹下，暂且命名为<code>aem-install</code>吧。<br><img src="/images/aem-dir.png" alt="aem-dir" title="AEM directory structure"></p>
 <p>关于目录下的 <code>crx-quickstart</code> 是当你启动后，自动生成的。里面包含了，你开发所需要的所有，包含所有的内容，以及配置等等。</p>
-<h3 id="准备">准备</h3>
-<p>AEM 是一个基于<code>JAVA</code>跨平台的系统，所以<code>OS X</code>, <code>桌面版 Windows</code>, <code>Linux</code>肯定都可以支持啦。</p>
-<p>唯一需要注意的是，AEM运行在<code>JAVA 7</code>上。所以如果你是用的<code>JAVA 8</code>，但却装有<code>JAVA 7</code>的话，只需要切换一下<code>JAVA_HOME</code>。将这条命令放在你的 <code>.bashrc</code> 或者<code>.zshrc</code> source一下就搞定啦。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export JAV<span class="built_in">A_HOME</span>=<span class="escape">`/</span>usr/libexec/jav<span class="built_in">a_home</span> -v <span class="number">1.7</span>`</div></pre></td></tr></table></figure>
-
-<h3 id="启动">启动</h3>
-<p>好的，一准备工作就绪，那么我们就开始我们的正式启动。比如有趣的是，Adobe提供了两种方法供我们使用。</p>
+<h3 id="准备">准备</h3><p>AEM 是一个基于<code>JAVA</code>跨平台的系统，所以<code>OS X</code>, <code>桌面版 Windows</code>, <code>Linux</code>肯定都可以支持啦。</p>
+<p>唯一需要注意的是，AEM运行在<code>JAVA 7</code>上。所以如果你是用的<code>JAVA 8</code>，但却装有<code>JAVA 7</code>的话，只需要切换一下<code>JAVA_HOME</code>。将这条命令放在你的 <code>.bashrc</code> 或者<code>.zshrc</code> source一下就搞定啦。<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAV<span class="built_in">A_HOME</span>=<span class="escape">`/</span>usr/libexec/jav<span class="built_in">a_home</span> -v <span class="number">1.7</span>`</span><br></pre></td></tr></table></figure></p>
+<h3 id="启动">启动</h3><p>好的，一准备工作就绪，那么我们就开始我们的正式启动。比如有趣的是，Adobe提供了两种方法供我们使用。</p>
 <blockquote>
 <p><strong>1. 控制台</strong></p>
 <p>不用说，作为一个职业代码人，我们还是比较喜欢这样的方式的。</p>
 </blockquote>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -Xmx1024M -jar <span class="keyword">cq</span>-author-p4502.jar -<span class="keyword">p</span> <span class="number">4502</span> -<span class="keyword">r</span> author</div></pre></td></tr></table></figure>
-
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Xmx1024M -jar cq-author-p4502<span class="class">.jar</span> -<span class="tag">p</span> <span class="number">4502</span> -r author</span><br></pre></td></tr></table></figure>
 <p>其中，以下两个参数是可省的，因为默认的参数就是 <strong>端口 4502</strong>，<strong>模式 author</strong>。当然，如果你的电脑足够强大，<strong>-Xmx1024M</strong> 也是可以省的。</p>
 <blockquote>
 <ul>
@@ -614,22 +489,12 @@
 <p><strong>2. GUI 双击</strong></p>
 <p>当然，有时为了方便，也可以直接双击<code>cq-author-p4502.jar</code>启动。只是有几个需要注意的地方。</p>
 </blockquote>
-<p>默认的情况，是以<code>author</code>模式，启动在<code>localhost:4502</code>。但我们可以在启动以前，通过修改jar包的名字，达到不同模式不同端口的效果。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cq</span>-&lt;instance-<span class="built_in">type</span>&gt;-<span class="keyword">p</span>&lt;port-<span class="keyword">number</span>&gt;.jar</div></pre></td></tr></table></figure>
-
-<p>比如，修改成</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cq</span>-author-p4502.jar</div></pre></td></tr></table></figure>
-
-<p>启动，这就达到了以<code>author</code>模式启动，端口设置在 <code>4502</code>的效果。<br>同理，修改成</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cq</span>-publish-p4503.jar</div></pre></td></tr></table></figure>
-
-<p>启动，就将以<code>publish</code>的模式启动，端口是<code>4503</code>。<br>理想的情况是，你需要同时启动两个<code>instance</code>，只需要把jar包和license文件放在相应目录下就可以了。如：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">aem-install</span>&gt;</span>/author</div><div class="line">和</div><div class="line"><span class="tag">&lt;<span class="title">aem-install</span>&gt;</span>/publish</div></pre></td></tr></table></figure>
-
-<h3 id="就绪">就绪</h3>
-<p>当AEM启动后，会自动打开浏览器定位到相应的页面。比如，我的是<code>localhost:4502</code>。以<code>admin:admin</code>登陆就可以开始正式的开发之路了。<br><img src="/images/crx_de.png" alt="crx-de" title="crx/de"></p>
-<h2 id="小结">小结</h2>
-<p>那么就此开始，我们已经扒完了AEM的第一坑了，AEM的填坑之路就正式开始了。接下来几篇，我将着重在开发之上，讲解一下AEM的整个开发流程。</p>
+<p>默认的情况，是以<code>author</code>模式，启动在<code>localhost:4502</code>。但我们可以在启动以前，通过修改jar包的名字，达到不同模式不同端口的效果。<br><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cq-&lt;instance-<span class="class"><span class="keyword">type</span>&gt;-<span class="title">p</span>&lt;port-number&gt;.<span class="title">jar</span></span></span><br></pre></td></tr></table></figure></p>
+<p>比如，修改成<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cq</span>-author-p4502.jar</span><br></pre></td></tr></table></figure></p>
+<p>启动，这就达到了以<code>author</code>模式启动，端口设置在 <code>4502</code>的效果。<br>同理，修改成<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cq</span>-publish-p4503.jar</span><br></pre></td></tr></table></figure></p>
+<p>启动，就将以<code>publish</code>的模式启动，端口是<code>4503</code>。<br>理想的情况是，你需要同时启动两个<code>instance</code>，只需要把jar包和license文件放在相应目录下就可以了。如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">aem-install</span>&gt;</span>/author</span><br><span class="line">和</span><br><span class="line"><span class="tag">&lt;<span class="title">aem-install</span>&gt;</span>/publish</span><br></pre></td></tr></table></figure></p>
+<h3 id="就绪">就绪</h3><p>当AEM启动后，会自动打开浏览器定位到相应的页面。比如，我的是<code>localhost:4502</code>。以<code>admin:admin</code>登陆就可以开始正式的开发之路了。<br><img src="/images/crx_de.png" alt="crx-de" title="crx/de"></p>
+<h2 id="小结">小结</h2><p>那么就此开始，我们已经扒完了AEM的第一坑了，AEM的填坑之路就正式开始了。接下来几篇，我将着重在开发之上，讲解一下AEM的整个开发流程。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>AEM是Adobe公司所出的商业内容管理系统，全称<strong>阿豆比体验管理系统</strong>(Adobe Experience Manager)，其前身叫<strong>CQ</strong>，分别有<code>CQ5</code> <code>CQ6</code]]>
@@ -637,11 +502,11 @@
     
       <category term="AEM" scheme="http://owenyang0.github.io/tags/AEM/"/>
     
+      <category term="Adobe" scheme="http://owenyang0.github.io/tags/Adobe/"/>
+    
       <category term="CMS" scheme="http://owenyang0.github.io/tags/CMS/"/>
     
       <category term="Drupal" scheme="http://owenyang0.github.io/tags/Drupal/"/>
-    
-      <category term="Adobe" scheme="http://owenyang0.github.io/tags/Adobe/"/>
     
       <category term="Experience Management" scheme="http://owenyang0.github.io/tags/Experience-Management/"/>
     
@@ -654,8 +519,7 @@
     <published>2014-12-11T02:38:11.000Z</published>
     <updated>2014-12-11T02:50:04.000Z</updated>
     <content type="html"><![CDATA[<p>修改tab或者window的标题，是一项较老的实践。<code>Gmail</code> 用它来提示用户新的聊天消息，当有新的page通过<code>AJAX</code>加载的时候，本站同样用它更新<code>tab title</code>。这是怎样做到的呢？当时是通过设置<code>document</code>对象。</p>
-<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.title = <span class="string">'Hello!'</span>; <span class="comment">// New title :)</span></div></pre></td></tr></table></figure>
-
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.title = <span class="string">'Hello!'</span>; <span class="comment">// New title :)</span></span><br></pre></td></tr></table></figure>
 <p>有一个常识性的错误是：你会以为应该去修改 <code>window.title</code>。但实际上，你应该使用<code>document</code>对象，否则你做的肯定是无用的。注意一下，你将会看到：很多时候会用 <code>setInterval</code>来实际更新 <code>document.title</code>，用以引起用户的注意！</p>
 <p><strong>原文：</strong><a href="http://davidwalsh.name/change-title-javascript" target="_blank" rel="external">Change Tab Title with JavaScript</a></p>
 ]]></content>
@@ -675,8 +539,7 @@
     <id>http://owenyang0.github.io/2014/12/04/JavaScript-TDD-with-Mocha/</id>
     <published>2014-12-03T16:37:41.000Z</published>
     <updated>2014-12-03T16:47:15.000Z</updated>
-    <content type="html"><![CDATA[<h3 id="开发现状">开发现状</h3>
-<p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 <code>人肉测试</code> 不在本博的讨论范围。</p>
+    <content type="html"><![CDATA[<h3 id="开发现状">开发现状</h3><p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 <code>人肉测试</code> 不在本博的讨论范围。</p>
 <p>测试大体分为以下几类</p>
 <blockquote>
 <ul>
@@ -685,8 +548,7 @@
 <li>功能测试</li>
 </ul>
 </blockquote>
-<h3 id="测试驱动开发">测试驱动开发</h3>
-<p>TDD(Test-Driven Development) 从根本上改变了传统的开发模式，它要求你在写代码之前就写好测试，而不仅仅是待你写你代码以后的用作验证的目的。<br>TDD将测试提到了应用设计的阶段，在这期间你应该用你的测试理清你写代码时的思路，我们称作 <code>Tasking</code>.</p>
+<h3 id="测试驱动开发">测试驱动开发</h3><p>TDD(Test-Driven Development) 从根本上改变了传统的开发模式，它要求你在写代码之前就写好测试，而不仅仅是待你写你代码以后的用作验证的目的。<br>TDD将测试提到了应用设计的阶段，在这期间你应该用你的测试理清你写代码时的思路，我们称作 <code>Tasking</code>.</p>
 <p>以下是TDD开发时的基本要点</p>
 <blockquote>
 <ol>
@@ -698,8 +560,7 @@
 </ol>
 </blockquote>
 <p>这就是TDD开发过程中的基本过程，我们就在 “红-绿-红-绿” 中完成我们的软件开发。</p>
-<h3 id="JavaScript_TDD">JavaScript TDD</h3>
-<p>笔者将通过编写一个传统游戏的方式，来完成一个 JavaScript TDD 的实践。  </p>
+<h3 id="JavaScript_TDD">JavaScript TDD</h3><p>笔者将通过编写一个传统游戏的方式，来完成一个 JavaScript TDD 的实践。  </p>
 <p><strong>4 digits</strong><br>是一个猜数字游戏。在国外称为公牛和母牛，在中国人们就叫它猜数字。游戏的目标是在八次内用尽可能短的时间猜出一个随机的四位数：</p>
 <blockquote>
 <ul>
@@ -716,8 +577,7 @@
 <li>仅做算法处理(比较所猜数字与给定数字)</li>
 </ul>
 </blockquote>
-<h4 id="开发准备">开发准备</h4>
-<blockquote>
+<h4 id="开发准备">开发准备</h4><blockquote>
 <ul>
 <li>Node  </li>
 <li>Mocha</li>
@@ -734,19 +594,17 @@
 </ul>
 </blockquote>
 <p>本次工程就选择 <a href="https://github.com/visionmedia/should.js" target="_blank" rel="external">should.js</a>吧，写TDD很优美，下面正式开发我们的TDD之旅。</p>
-<h4 id="工程建立">工程建立</h4>
-<pre><code>mkdir -p digits/{src,test}
-cd digits
-touch src/digits.js test/digitsSpec.js
+<h4 id="工程建立">工程建立</h4><pre><code><span class="keyword">mkdir</span> -p digits/{src,<span class="keyword">test</span>}
+<span class="keyword">cd</span> digits
+touch src/digits.js <span class="keyword">test</span>/digitsSpec.js
 npm init
-npm <span class="operator"><span class="keyword">install</span> -g mocha
-npm <span class="keyword">install</span> should <span class="comment">--save-dev</span></span>
+npm install -<span class="keyword">g</span> mocha
+npm install should --<span class="keyword">save</span>-dev
 </code></pre><p>工程就是这样搭建完成了，我们可以来看一下目录结构(<br>我把node_modules目录隐藏了)：<br><img src="/images/catalog.png" alt="Catalog"></p>
 <p>就这样，我们就可以直接运行</p>
 <pre><code><span class="title">mocha</span> 
 </code></pre><p>跑测试了。当然，我们什么代码都没有写，当时没有测试可以跑，所以结果会是一个 <code>0 passing</code>。那我们正式开始吧。</p>
-<h4 id="测试代码编写">测试代码编写</h4>
-<p>先写出我们的第一个测试用例吧。<br>如果输入数字，或者所给数字的长度都不等于4，则返回-1。</p>
+<h4 id="测试代码编写">测试代码编写</h4><p>先写出我们的第一个测试用例吧。<br>如果输入数字，或者所给数字的长度都不等于4，则返回-1。</p>
 <pre><code><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'should'</span>),
   Digits = <span class="built_in">require</span>(<span class="string">'../src/digits'</span>).Digits;
 
@@ -763,8 +621,7 @@ describe(<span class="string">'Digits'</span>, <span class="function"><span clas
 });
 </code></pre><p>嗯，代码看起来不错，我们尝试着 <code>mocha</code> 跑一下。啊哦，意料之中，变红了：<img src="/images/mocha_error.png" alt="mocha error"></p>
 <p>什么原因喃？原来我们根本没有写实现代码，你这不废话么？确实是这样，这就是TDD中的第一步，<strong>红</strong>。接下来，我们就编写一些代码，让它变绿吧。</p>
-<h4 id="实现代码编写">实现代码编写</h4>
-<p>我们定义一个简单的Digits的function吧，通过 <code>exports.Digits = Digits;</code> 将函数接口暴露出去。就像这样：</p>
+<h4 id="实现代码编写">实现代码编写</h4><p>我们定义一个简单的Digits的function吧，通过 <code>exports.Digits = Digits;</code> 将函数接口暴露出去。就像这样：</p>
 <pre><code><span class="function"><span class="keyword">function</span> <span class="title">Digits</span><span class="params">()</span> </span>{}
 
 Digits.compare = <span class="function"><span class="keyword">function</span><span class="params">(inputNum, givenNum)</span> </span>{
@@ -780,8 +637,7 @@ Digits.compare = <span class="function"><span class="keyword">function</span><sp
 
 exports.Digits = Digits;
 </code></pre><p>看吧，看起来也很不错的样子，那我们继续跑一下测试吧。啊哈，意料之中，变<strong>绿</strong>了：<img src="/images/mocha_success.png" alt="mocha success"></p>
-<h4 id="repeat">repeat</h4>
-<p>由红变绿之后，这个task也就相当于是完成了。我们又可以按照这样的一个步骤，再写新的测试，然后再将它实现出来。到此为止，一个基本的 JavaScript TDD流程也就完了，趁着热乎劲儿。我们把这个 <code>compare</code> 函数的其他测试也一并写了吧。代码如下：</p>
+<h4 id="repeat">repeat</h4><p>由红变绿之后，这个task也就相当于是完成了。我们又可以按照这样的一个步骤，再写新的测试，然后再将它实现出来。到此为止，一个基本的 JavaScript TDD流程也就完了，趁着热乎劲儿。我们把这个 <code>compare</code> 函数的其他测试也一并写了吧。代码如下：</p>
 <p><strong>digitsSepc.js</strong></p>
 <pre><code><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'should'</span>),
   Digits = <span class="built_in">require</span>(<span class="string">'../src/digits'</span>).Digits;
@@ -848,8 +704,7 @@ Digits.compare = <span class="function"><span class="keyword">function</span><sp
 
 exports.Digits = Digits;
 </code></pre><p>最后再来跑一遍 <code>mocha -R spec</code>，结果如下(大功告成啦)：<img src="/images/mocha_successes.png" alt="mocha successes"></p>
-<h3 id="结语">结语</h3>
-<p>大功告成了，此时的你其实可以洗洗睡了，不用再担心你的程序有问题啦。你的测试告诉你，你的程序都是绿色可行的。当然，如果你测试写有的问题就别当别说咯。<br>测试代码会有一些什么好处呢？</p>
+<h3 id="结语">结语</h3><p>大功告成了，此时的你其实可以洗洗睡了，不用再担心你的程序有问题啦。你的测试告诉你，你的程序都是绿色可行的。当然，如果你测试写有的问题就别当别说咯。<br>测试代码会有一些什么好处呢？</p>
 <blockquote>
 <ul>
 <li>测试代码在那里，可以保证你以后修改代码时，或者重构时不会对已有的功能产生影响。</li>
@@ -858,15 +713,14 @@ exports.Digits = Digits;
 <p>这条是很重要的，也是相当重要的。如果没有测试代码的保证，你无从知道你自己所改的代码，对已有的代码会产生什么样的影响。与其每次上线时都得加班改BUG，为啥不先写好测试，上线时早些洗洗睡了呢？</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h3 id="开发现状">开发现状</h3>
-<p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多]]>
+    <![CDATA[<h3 id="开发现状">开发现状</h3><p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多各]]>
     </summary>
     
       <category term="JavaScript" scheme="http://owenyang0.github.io/tags/JavaScript/"/>
     
-      <category term="TDD" scheme="http://owenyang0.github.io/tags/TDD/"/>
-    
       <category term="Mocha" scheme="http://owenyang0.github.io/tags/Mocha/"/>
+    
+      <category term="TDD" scheme="http://owenyang0.github.io/tags/TDD/"/>
     
   </entry>
   
@@ -877,10 +731,8 @@ exports.Digits = Digits;
     <published>2014-03-02T15:25:00.000Z</published>
     <updated>2014-12-27T15:55:24.000Z</updated>
     <content type="html"><![CDATA[<p>JavaScript函数是将要执行的<strong>代码</strong>及执行这些代码的<strong>作用域</strong>构成的一个综合体。计算机术语称这种代码和作用域的综合体为<strong>闭包</strong>。故所有JavaScript函数都是闭包。但我们常说的JavaScript闭包是指，一个嵌套函数被导出到它所定义的作用域外时，才明确地称为<strong>闭包</strong>。</p>
-<h2 id="JavaScript闭包">JavaScript闭包</h2>
-<p>闭包是 <code>JavaScript</code> 一个非常重要的特性，这意味着当前作用域总是能够访问外部作用域中的变量。 因为<strong>函数</strong>是 <code>JavaScript</code> 中唯一拥有自身作用域的结构，因此闭包的创建<strong>依赖于</strong>函数。</p>
-<h2 id="简单写法">简单写法</h2>
-<p>该函数的私有持久变量，可以被多个函数共享</p>
+<h2 id="JavaScript闭包">JavaScript闭包</h2><p>闭包是 <code>JavaScript</code> 一个非常重要的特性，这意味着当前作用域总是能够访问外部作用域中的变量。 因为<strong>函数</strong>是 <code>JavaScript</code> 中唯一拥有自身作用域的结构，因此闭包的创建<strong>依赖于</strong>函数。</p>
+<h2 id="简单写法">简单写法</h2><p>该函数的私有持久变量，可以被多个函数共享</p>
 <pre><code><span class="keyword">var</span> uniqueID = (<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
     <span class="comment">// 私有持久值</span>
     <span class="keyword">var</span> id = <span class="number">0</span>;
@@ -888,16 +740,14 @@ exports.Digits = Digits;
         <span class="keyword">return</span> id++;
     }
 })();
-</code></pre><h2 id="循环中的闭包">循环中的闭包</h2>
-<p>一个常见的错误出现在<strong>循环</strong>中使用闭包，开发人员在循环语句里创建函数（内部计数）时经常得不到预期的结果，假设我们需要在每次循环中调用循环<strong>序号</strong></p>
+</code></pre><h2 id="循环中的闭包">循环中的闭包</h2><p>一个常见的错误出现在<strong>循环</strong>中使用闭包，开发人员在循环语句里创建函数（内部计数）时经常得不到预期的结果，假设我们需要在每次循环中调用循环<strong>序号</strong></p>
 <pre><code><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) {
     setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
         <span class="built_in">console</span>.log(i);  
     }, <span class="number">1000</span>);
 }
 </code></pre><p>所输入的内容不是 <code>0-9</code>，取而代之的是打印10次 <code>10</code>。<br>关键原因，在调用<code>console.log(i)</code>时，循环已经结束，同一个上下文中创建的闭包是共用一个[[Scope]]属性，导致<strong>i</strong>已经被修改成了<code>10</code>。<br>在ECMAScript中，同一个父上下文中创建的闭包是共用一个<code>[[Scope]]</code>属性的。也就是说，某个闭包对其中[[Scope]]的变量做修改会影响到其他闭包对其变量的读取。</p>
-<h2 id="解决方式">解决方式</h2>
-<p>避免引用错误，获取正确序号。我们需要引入自执行函数，包裹一下。传入就是<code>i</code>的拷贝，这样就能获取正确的输出。</p>
+<h2 id="解决方式">解决方式</h2><p>避免引用错误，获取正确序号。我们需要引入自执行函数，包裹一下。传入就是<code>i</code>的拷贝，这样就能获取正确的输出。</p>
 <pre><code><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) {
     (<span class="function"><span class="keyword">function</span><span class="params">(e)</span> </span>{
         setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
@@ -906,8 +756,7 @@ exports.Digits = Digits;
     })(i);
 }
 </code></pre><p>将<code>setTimeout</code>包裹在一个匿名函数中，匿名函数拥有变量<code>e</code>的引用，便不用被循环改变了。   </p>
-<h2 id="使用闭包的断点">使用闭包的断点</h2>
-<p>在此贴上《JavaScript权威指南》中，使用<code>闭包的断点</code>代码。由<code>Steve Yen</code>所写，用来捕获一个函数中的当前作用域（包括局部变量和函数的参数），并返回其结果。</p>
+<h2 id="使用闭包的断点">使用闭包的断点</h2><p>在此贴上《JavaScript权威指南》中，使用<code>闭包的断点</code>代码。由<code>Steve Yen</code>所写，用来捕获一个函数中的当前作用域（包括局部变量和函数的参数），并返回其结果。</p>
 <pre><code>function inspect(inspector, title) {
   <span class="keyword">var</span> expression, <span class="literal">result</span>;
   <span class="keyword">if</span>(<span class="string">"ignore"</span> <span class="keyword">in</span> arguments.callee) {
@@ -936,8 +785,7 @@ exports.Digits = Digits;
     <span class="literal">result</span> = inspector(expression);
   }
 }
-</code></pre><h2 id="用断点技术计算阶乘的函数">用断点技术计算阶乘的函数</h2>
-<pre><code>function factorial(n) {
+</code></pre><h2 id="用断点技术计算阶乘的函数">用断点技术计算阶乘的函数</h2><pre><code>function factorial(n) {
   <span class="keyword">var</span> inspector = function($) {
     <span class="keyword">return</span> eval($);
   }
@@ -955,8 +803,7 @@ exports.Digits = Digits;
   inspect(inspector, <span class="string">"Exiting factorial()"</span>);
   <span class="keyword">return</span> <span class="literal">result</span>;
 }
-</code></pre><h2 id="参考">参考</h2>
-<ul>
+</code></pre><h2 id="参考">参考</h2><ul>
 <li><a href="http://www.amazon.cn/JavaScript%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97-%E5%BC%97%E6%8B%89%E7%BA%B3%E6%A0%B9/dp/B0012UMVYA/ref=sr_1_2?ie=UTF8&amp;qid=1393770256&amp;sr=8-2&amp;keywords=javascript+%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97" target="_blank" rel="external">JavaScript权威指南</a>  </li>
 <li><a href="http://bonsaiden.github.io/JavaScript-Garden/zh/#function.closures" target="_blank" rel="external">Closure</a></li>
 </ul>
@@ -977,12 +824,9 @@ exports.Digits = Digits;
     <id>http://owenyang0.github.io/2014/02/17/实习那几月/</id>
     <published>2014-02-17T14:00:00.000Z</published>
     <updated>2014-12-21T08:12:56.000Z</updated>
-    <content type="html"><![CDATA[<h3 id="题外">题外</h3>
-<p>自<strong>新蛋实习</strong>至今，也有三个多月了吧。回想起那天面试的时候，还有些许的紧张，或许是自己知道的太少，或者是自己想表达的太多。反正初出茅庐的样子，让南哥见笑了好久（我猜的）。</p>
-<h3 id="题前">题前</h3>
-<p>新蛋算得上是我人生去的第一家公司吧，走出了学校那座象牙塔，才明白世界是如此的广阔——以至于自己在最初时，会有自己该有的迷茫。<br>今天突然有种想写一写的冲动，也不知道是写给自己，还是写给未来的自己。权当自己人生过往的一点印记，当自己未来的一种回首！</p>
-<h3 id="题中">题中</h3>
-<p>没错，我就是传说中的那个<strong>程序猿</strong>，起早而贪黑，半夜却又不想眠。不太方便形容，我此时的状态，是无法形容。</p>
+    <content type="html"><![CDATA[<h3 id="题外">题外</h3><p>自<strong>新蛋实习</strong>至今，也有三个多月了吧。回想起那天面试的时候，还有些许的紧张，或许是自己知道的太少，或者是自己想表达的太多。反正初出茅庐的样子，让南哥见笑了好久（我猜的）。</p>
+<h3 id="题前">题前</h3><p>新蛋算得上是我人生去的第一家公司吧，走出了学校那座象牙塔，才明白世界是如此的广阔——以至于自己在最初时，会有自己该有的迷茫。<br>今天突然有种想写一写的冲动，也不知道是写给自己，还是写给未来的自己。权当自己人生过往的一点印记，当自己未来的一种回首！</p>
+<h3 id="题中">题中</h3><p>没错，我就是传说中的那个<strong>程序猿</strong>，起早而贪黑，半夜却又不想眠。不太方便形容，我此时的状态，是无法形容。</p>
 <p><strong>只能说：</strong> 仅仅只是自我感受罢了</p>
 <blockquote>
 <p><strong>这三个月看的书，差不多比得上以前的半年</strong></p>
@@ -1006,8 +850,7 @@ exports.Digits = Digits;
 </blockquote>
 <p>很多人很可能都对 <code>TDD</code> 不屑一顾，认为那纯粹的是浪费时间。诚言，有些东西是不可测试的，但必须的测试单元还是需要的。<br>多数时候，回归 <code>BUG</code> 再现的时候，自己都不会注意所写的代码。当你改代码的时候，没有一个必须的东西来保证，你所修改的部分对其他部分不会产生影响，就算你相当的自信。</p>
 <p>哈哈，其实很多东西都是瞎掰，各位看客权当笑话看就行。</p>
-<h3 id="再说迷茫">再说迷茫</h3>
-<p>我不知道别人怎样，反正作为我自己，是有些许迷茫的感觉——不知自己会从事什么，也不知自己可以深入什么。反正就一样：对很多东西都感觉兴趣。达到了别人眼中所谓的 <code>广度</code>，殊不知自己 <code>深度</code> 方面有太多的欠缺。<br>当有一天，有人问你：</p>
+<h3 id="再说迷茫">再说迷茫</h3><p>我不知道别人怎样，反正作为我自己，是有些许迷茫的感觉——不知自己会从事什么，也不知自己可以深入什么。反正就一样：对很多东西都感觉兴趣。达到了别人眼中所谓的 <code>广度</code>，殊不知自己 <code>深度</code> 方面有太多的欠缺。<br>当有一天，有人问你：</p>
 <blockquote>
 <p>你学过那么多的东西，到底有没有一样是你真正喜欢的东西？你有自己所深入了解过的领域吗？</p>
 </blockquote>
@@ -1023,20 +866,18 @@ exports.Digits = Digits;
 <blockquote>
 <p>不在乎天长地长，至少我们曾经拥有。不在乎现在是否有结果，但至少我们曾经有过思考。</p>
 </blockquote>
-<h3 id="题后">题后</h3>
-<p>想不到自己还是写到了最后，不说自己写了些什么，至少写的过程中，有些自己的考量。或许你们是觉得此博写得是如此的可笑，或许有一天我回头看的也觉得可笑。<br>但，那又怎样呢？</p>
+<h3 id="题后">题后</h3><p>想不到自己还是写到了最后，不说自己写了些什么，至少写的过程中，有些自己的考量。或许你们是觉得此博写得是如此的可笑，或许有一天我回头看的也觉得可笑。<br>但，那又怎样呢？</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h3 id="题外">题外</h3>
-<p>自<strong>新蛋实习</strong>至今，也有三个多月了吧。回想起那天面试的时候，还有些许的紧张，或许是自己知道的太少，或者是自己想表达的太多。反正初出茅庐的样子，让南哥见笑了好久（我猜的）。</p>
-<h3 id="题前">]]>
+    <![CDATA[<h3 id="题外">题外</h3><p>自<strong>新蛋实习</strong>至今，也有三个多月了吧。回想起那天面试的时候，还有些许的紧张，或许是自己知道的太少，或者是自己想表达的太多。反正初出茅庐的样子，让南哥见笑了好久（我猜的）。</p>
+<h3 id="题前">题]]>
     </summary>
+    
+      <category term="graduate" scheme="http://owenyang0.github.io/tags/graduate/"/>
     
       <category term="intern" scheme="http://owenyang0.github.io/tags/intern/"/>
     
       <category term="newegg" scheme="http://owenyang0.github.io/tags/newegg/"/>
-    
-      <category term="graduate" scheme="http://owenyang0.github.io/tags/graduate/"/>
     
   </entry>
   

@@ -13,10 +13,11 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="/css/screen.css" />
   <link rel="stylesheet" href="/css/moody.css" type="text/css">
-
   <meta name="generator" content="OwenYang'S IDEAS">
 
   
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
   
   
 
@@ -65,15 +66,14 @@
     | 
     <a href='/tags/JavaScript/'>JavaScript</a>, 
     
-    <a href='/tags/TDD/'>TDD</a>, 
+    <a href='/tags/Mocha/'>Mocha</a>, 
     
-    <a href='/tags/Mocha/'>Mocha</a>
+    <a href='/tags/TDD/'>TDD</a>
     
     
 </span>
     <section class="post-content">
-      <h3 id="开发现状">开发现状</h3>
-<p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 <code>人肉测试</code> 不在本博的讨论范围。</p>
+      <h3 id="开发现状">开发现状</h3><p>当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。<br>为了不至于让上线的版本挂掉挂掉，少不了就是 <code>人肉测试</code>。<br>在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 <code>人肉测试</code> 不在本博的讨论范围。</p>
 <p>测试大体分为以下几类</p>
 <blockquote>
 <ul>
@@ -82,8 +82,7 @@
 <li>功能测试</li>
 </ul>
 </blockquote>
-<h3 id="测试驱动开发">测试驱动开发</h3>
-<p>TDD(Test-Driven Development) 从根本上改变了传统的开发模式，它要求你在写代码之前就写好测试，而不仅仅是待你写你代码以后的用作验证的目的。<br>TDD将测试提到了应用设计的阶段，在这期间你应该用你的测试理清你写代码时的思路，我们称作 <code>Tasking</code>.</p>
+<h3 id="测试驱动开发">测试驱动开发</h3><p>TDD(Test-Driven Development) 从根本上改变了传统的开发模式，它要求你在写代码之前就写好测试，而不仅仅是待你写你代码以后的用作验证的目的。<br>TDD将测试提到了应用设计的阶段，在这期间你应该用你的测试理清你写代码时的思路，我们称作 <code>Tasking</code>.</p>
 <p>以下是TDD开发时的基本要点</p>
 <blockquote>
 <ol>
@@ -95,8 +94,7 @@
 </ol>
 </blockquote>
 <p>这就是TDD开发过程中的基本过程，我们就在 “红-绿-红-绿” 中完成我们的软件开发。</p>
-<h3 id="JavaScript_TDD">JavaScript TDD</h3>
-<p>笔者将通过编写一个传统游戏的方式，来完成一个 JavaScript TDD 的实践。  </p>
+<h3 id="JavaScript_TDD">JavaScript TDD</h3><p>笔者将通过编写一个传统游戏的方式，来完成一个 JavaScript TDD 的实践。  </p>
 <p><strong>4 digits</strong><br>是一个猜数字游戏。在国外称为公牛和母牛，在中国人们就叫它猜数字。游戏的目标是在八次内用尽可能短的时间猜出一个随机的四位数：</p>
 <blockquote>
 <ul>
@@ -113,8 +111,7 @@
 <li>仅做算法处理(比较所猜数字与给定数字)</li>
 </ul>
 </blockquote>
-<h4 id="开发准备">开发准备</h4>
-<blockquote>
+<h4 id="开发准备">开发准备</h4><blockquote>
 <ul>
 <li>Node  </li>
 <li>Mocha</li>
@@ -131,19 +128,17 @@
 </ul>
 </blockquote>
 <p>本次工程就选择 <a href="https://github.com/visionmedia/should.js" target="_blank" rel="external">should.js</a>吧，写TDD很优美，下面正式开发我们的TDD之旅。</p>
-<h4 id="工程建立">工程建立</h4>
-<pre><code>mkdir -p digits/{src,test}
-cd digits
-touch src/digits.js test/digitsSpec.js
+<h4 id="工程建立">工程建立</h4><pre><code><span class="keyword">mkdir</span> -p digits/{src,<span class="keyword">test</span>}
+<span class="keyword">cd</span> digits
+touch src/digits.js <span class="keyword">test</span>/digitsSpec.js
 npm init
-npm <span class="operator"><span class="keyword">install</span> -g mocha
-npm <span class="keyword">install</span> should <span class="comment">--save-dev</span></span>
+npm install -<span class="keyword">g</span> mocha
+npm install should --<span class="keyword">save</span>-dev
 </code></pre><p>工程就是这样搭建完成了，我们可以来看一下目录结构(<br>我把node_modules目录隐藏了)：<br><img src="/images/catalog.png" alt="Catalog"></p>
 <p>就这样，我们就可以直接运行</p>
 <pre><code><span class="title">mocha</span> 
 </code></pre><p>跑测试了。当然，我们什么代码都没有写，当时没有测试可以跑，所以结果会是一个 <code>0 passing</code>。那我们正式开始吧。</p>
-<h4 id="测试代码编写">测试代码编写</h4>
-<p>先写出我们的第一个测试用例吧。<br>如果输入数字，或者所给数字的长度都不等于4，则返回-1。</p>
+<h4 id="测试代码编写">测试代码编写</h4><p>先写出我们的第一个测试用例吧。<br>如果输入数字，或者所给数字的长度都不等于4，则返回-1。</p>
 <pre><code><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'should'</span>),
   Digits = <span class="built_in">require</span>(<span class="string">'../src/digits'</span>).Digits;
 
@@ -160,8 +155,7 @@ describe(<span class="string">'Digits'</span>, <span class="function"><span clas
 });
 </code></pre><p>嗯，代码看起来不错，我们尝试着 <code>mocha</code> 跑一下。啊哦，意料之中，变红了：<img src="/images/mocha_error.png" alt="mocha error"></p>
 <p>什么原因喃？原来我们根本没有写实现代码，你这不废话么？确实是这样，这就是TDD中的第一步，<strong>红</strong>。接下来，我们就编写一些代码，让它变绿吧。</p>
-<h4 id="实现代码编写">实现代码编写</h4>
-<p>我们定义一个简单的Digits的function吧，通过 <code>exports.Digits = Digits;</code> 将函数接口暴露出去。就像这样：</p>
+<h4 id="实现代码编写">实现代码编写</h4><p>我们定义一个简单的Digits的function吧，通过 <code>exports.Digits = Digits;</code> 将函数接口暴露出去。就像这样：</p>
 <pre><code><span class="function"><span class="keyword">function</span> <span class="title">Digits</span><span class="params">()</span> </span>{}
 
 Digits.compare = <span class="function"><span class="keyword">function</span><span class="params">(inputNum, givenNum)</span> </span>{
@@ -177,8 +171,7 @@ Digits.compare = <span class="function"><span class="keyword">function</span><sp
 
 exports.Digits = Digits;
 </code></pre><p>看吧，看起来也很不错的样子，那我们继续跑一下测试吧。啊哈，意料之中，变<strong>绿</strong>了：<img src="/images/mocha_success.png" alt="mocha success"></p>
-<h4 id="repeat">repeat</h4>
-<p>由红变绿之后，这个task也就相当于是完成了。我们又可以按照这样的一个步骤，再写新的测试，然后再将它实现出来。到此为止，一个基本的 JavaScript TDD流程也就完了，趁着热乎劲儿。我们把这个 <code>compare</code> 函数的其他测试也一并写了吧。代码如下：</p>
+<h4 id="repeat">repeat</h4><p>由红变绿之后，这个task也就相当于是完成了。我们又可以按照这样的一个步骤，再写新的测试，然后再将它实现出来。到此为止，一个基本的 JavaScript TDD流程也就完了，趁着热乎劲儿。我们把这个 <code>compare</code> 函数的其他测试也一并写了吧。代码如下：</p>
 <p><strong>digitsSepc.js</strong></p>
 <pre><code><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'should'</span>),
   Digits = <span class="built_in">require</span>(<span class="string">'../src/digits'</span>).Digits;
@@ -245,8 +238,7 @@ Digits.compare = <span class="function"><span class="keyword">function</span><sp
 
 exports.Digits = Digits;
 </code></pre><p>最后再来跑一遍 <code>mocha -R spec</code>，结果如下(大功告成啦)：<img src="/images/mocha_successes.png" alt="mocha successes"></p>
-<h3 id="结语">结语</h3>
-<p>大功告成了，此时的你其实可以洗洗睡了，不用再担心你的程序有问题啦。你的测试告诉你，你的程序都是绿色可行的。当然，如果你测试写有的问题就别当别说咯。<br>测试代码会有一些什么好处呢？</p>
+<h3 id="结语">结语</h3><p>大功告成了，此时的你其实可以洗洗睡了，不用再担心你的程序有问题啦。你的测试告诉你，你的程序都是绿色可行的。当然，如果你测试写有的问题就别当别说咯。<br>测试代码会有一些什么好处呢？</p>
 <blockquote>
 <ul>
 <li>测试代码在那里，可以保证你以后修改代码时，或者重构时不会对已有的功能产生影响。</li>
@@ -309,6 +301,8 @@ exports.Digits = Digits;
 
       
 <footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
   
   <div class="inner">
      <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>

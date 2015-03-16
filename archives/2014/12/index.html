@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>Archives: 2014/12 | OwenYang&#39;S IDEAS</title>
+  <title>OwenYang&#39;S IDEAS</title>
   <meta name="description" content="" />
   <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
   <meta name="HandheldFriendly" content="True" />
@@ -13,10 +13,11 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="/css/screen.css" />
   <link rel="stylesheet" href="/css/moody.css" type="text/css">
-
   <meta name="generator" content="OwenYang'S IDEAS">
 
   
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
   
   
 
@@ -65,13 +66,9 @@
       <p>
       
         Git是一个开源的版本控制系统，由Linus Torvalds主导，用于支持Linux内核开发。每一个Git工作目录，都是一个完整的代码库，包含所有的提交历史。有能力跟踪所有的代码版本，而不会去依赖于网络与中央服务器。
-安装
-Git可以通过以下的命令进行安装
-1sudo apt-get install git
-
-配置
-每一个git的用户，在第一次使用的时候都需要通过以下两个命令，进行相应的配置
-12git config --global
+安装Git可以通过以下的命令进行安装1sudo apt-get install git
+配置每一个git的用户，在第一次使用的时候都需要通过以下两个命令，进行相应的配置
+12git config --global use
       
       </p>
       
@@ -85,13 +82,13 @@ Git可以通过以下的命令进行安装
     
     
     | 
-    <a href='/tags/ubuntu/'>ubuntu</a>, 
-    
     <a href='/tags/git/'>git</a>, 
     
     <a href='/tags/git-server/'>git server</a>, 
     
-    <a href='/tags/gitolite/'>gitolite</a>
+    <a href='/tags/gitolite/'>gitolite</a>, 
+    
+    <a href='/tags/ubuntu/'>ubuntu</a>
     
     
 </span>
@@ -108,9 +105,8 @@ Git可以通过以下的命令进行安装
       
         在很多时候，想使用 display: table; 以及其子元素使用 display: table-cell 都只是为了使用 vertical-align 这一属性。这是一个很简单的常识，但这次在项目上使用却产生意想不到的表现方式。
 因为我在其中又使用了 position: relative; 这样一个属性。同样是一个很简单而标准的属性，我想即使放在一起，肯定也是可以正常工作的。可惜，我错了。
-缘起
-就这样的一个简单的样式场景，
-Chr
+缘起就这样的一个简单的样式场景，
+Chro
       
       </p>
       
@@ -126,13 +122,13 @@ Chr
     | 
     <a href='/tags/css/'>css</a>, 
     
-    <a href='/tags/table-cell/'>table-cell</a>, 
-    
     <a href='/tags/display/'>display</a>, 
     
     <a href='/tags/position/'>position</a>, 
     
-    <a href='/tags/relative/'>relative</a>
+    <a href='/tags/relative/'>relative</a>, 
+    
+    <a href='/tags/table-cell/'>table-cell</a>
     
     
 </span>
@@ -165,11 +161,11 @@ AEM
     | 
     <a href='/tags/AEM/'>AEM</a>, 
     
+    <a href='/tags/Adobe/'>Adobe</a>, 
+    
     <a href='/tags/CMS/'>CMS</a>, 
     
     <a href='/tags/Drupal/'>Drupal</a>, 
-    
-    <a href='/tags/Adobe/'>Adobe</a>, 
     
     <a href='/tags/Experience-Management/'>Experience Management</a>
     
@@ -188,8 +184,7 @@ AEM
       
         修改tab或者window的标题，是一项较老的实践。Gmail 用它来提示用户新的聊天消息，当有新的page通过AJAX加载的时候，本站同样用它更新tab title。这是怎样做到的呢？当时是通过设置document对象。
 1document.title = 'Hello!'; // New title :)
-
-有一个常识性的错误是：你会以为应该去修改 window.title。但实际上，你应该使用document对象，否则你做的肯定是
+有一个常识性的错误是：你会以为应该去修改 window.title。但实际上，你应该使用document对象，否则你做的肯定是无
       
       </p>
       
@@ -220,8 +215,7 @@ AEM
     <section class="post-excerpt">
       <p>
       
-        开发现状
-当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。为了不至于让上线的版本挂掉挂掉，少不了就是 人肉测试。在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 人肉测试 不在本博的讨论范围。
+        开发现状当新的版本快要发布的时候，大家都忙于加班，加紧修复BUG1、BUG2。我想这就是很多公司开发的现状。为了不至于让上线的版本挂掉挂掉，少不了就是 人肉测试。在一个项目中，我们会做许许多多各种各样的测试，这些测试都必不可少的。测试是项目成功不可或缺的一部分。但 人肉测试 不在本博的讨论范围。
 测试大体分为以下几类
 
 
@@ -230,8 +224,7 @@ AEM
 功能测试
 
 
-测试驱动开发
-TDD(Test-Driven Development) 从根本上
+测试驱动开发TDD(Test-Driven Development) 从根本上改变
       
       </p>
       
@@ -247,9 +240,9 @@ TDD(Test-Driven Development) 从根本上
     | 
     <a href='/tags/JavaScript/'>JavaScript</a>, 
     
-    <a href='/tags/TDD/'>TDD</a>, 
+    <a href='/tags/Mocha/'>Mocha</a>, 
     
-    <a href='/tags/Mocha/'>Mocha</a>
+    <a href='/tags/TDD/'>TDD</a>
     
     
 </span>
@@ -267,6 +260,8 @@ TDD(Test-Driven Development) 从根本上
 
       
 <footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
   
   <div class="inner">
      <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>
