@@ -798,3 +798,6 @@ tt {
 .line {
   height: 18px;
 }
+strong {
+  color: #c00;
+}

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Functional Programming in JavaScript | OwenYang&#39;S IDEAS</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+  <meta name="generator" content="OwenYang'S IDEAS">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+      <header class="header">
+    <div class="header__container">
+        <a href="/" class="logo">OwenYang'S IDEAS</a>
+        <nav class="header__nav">
+            <ul class="header__nav-list">
+                
+                    <li class="nav-item">
+                        <a class="icon-home"  href="/">Home</a>
+                        </li>
+                
+                    <li class="nav-item">
+                        <a class="icon-mail"  href="/about/">Contact</a>
+                        </li>
+                
+
+            </ul>
+        </nav>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <h1 class="post-title">Functional Programming in JavaScript</h1>
+    <span class="post-meta">
+      <time datetime="2015-04-11T16:09:44.000Z" itemprop="datePublished">
+          Apr 12 2015
+      </time>
+    
+    
+    | 
+    <a href='/tags/FP/'>FP</a>, 
+    
+    <a href='/tags/Functional-Programming/'>Functional Programming</a>, 
+    
+    <a href='/tags/JavaScript/'>JavaScript</a>, 
+    
+    <a href='/tags/Ramda/'>Ramda</a>
+    
+    
+</span>
+    <section class="post-content">
+      <h2 id="Agenda">Agenda</h2><ul>
+<li>What is Functional Programming?</li>
+<li>How Functional Programming Differs From Other Paradigms</li>
+<li>Functional Programming in Javascript</li>
+<li>Advantages and Disadvantages of Functional Style</li>
+<li>Interaction of Functional and Object-Oriented Styles</li>
+</ul>
+<hr>
+<h2 id="What_is_Functional_Programming?">What is Functional Programming?</h2><ul>
+<li><strong>Restricted sense,</strong> FP means programming without mutable variables, assignments, loops and other imperative control structures</li>
+<li><strong>Wider sense,</strong> FP means focusing on the functions</li>
+<li><strong>Particularly,</strong> functions can be values that are produced, consumed, and composed.</li>
+</ul>
+<hr>
+<h2 id="Functional_Programming_Languages">Functional Programming Languages</h2><p>Functions in a FP languages are first-class citizens. This means:</p>
+<ul>
+<li>they can be defined anywhere, including inside other function</li>
+<li>like any other values, they can be passed as parameters to functions and returned as results</li>
+<li>as for other values, there exist a set of operators to compose functions</li>
+</ul>
+<hr>
+<h2 id="Some_languages">Some languages</h2><p><strong>Restricted sense:</strong></p>
+<ul>
+<li>Pure Lisp, XSLT, XPath, XQuery, FP</li>
+</ul>
+<p><strong>Wider sense:</strong></p>
+<ul>
+<li>JavaScript</li>
+<li>Lisp, Scheme, Racket, Clojure</li>
+<li>SML, F#</li>
+<li>Haskell (full language)</li>
+<li>Scala</li>
+</ul>
+<hr>
+<h2 id="OOP_vs_FP">OOP vs FP</h2><p>OO focuses on the differences in the data, while FP concentrates on consistent data structures.</p>
+<hr>
+<h3 id="Object-Oriented">Object-Oriented</h3><ul>
+<li>Data and the operations upon it are tightly coupled</li>
+<li>Objects hide their implementation of operations from other objects via their interfaces</li>
+<li>The central model for abstraction is the data itself</li>
+<li>The central activity is composing new objects and extending existing objects by adding new methods to them</li>
+</ul>
+<hr>
+<h3 id="Functional">Functional</h3><ul>
+<li>Data is only loosely coupled to functions</li>
+<li>Functions hide their implementation, and the language’s abstractions speak to functions and the way they are combined or expressed</li>
+<li>The central model for abstraction is the function, not the data structure.<br>The central activity is writing new functions</li>
+</ul>
+<hr>
+<h2 id="Declarative_vs_Imperative">Declarative vs Imperative</h2><p>One main distinguishing characteristics of functional programming languages is that they describe what they want done, and not how to do it. OO, inside its methods, still uses mostly imperative techniques.</p>
+<hr>
+<h3 id="Imperative_programming_is_about">Imperative programming is about</h3><ul>
+<li>modifying mutable variables</li>
+<li>using assignment</li>
+<li>and control structures such as if-then-else, loops, break, continue, return.</li>
+</ul>
+<hr>
+<p>The most common informal way to understand imperative programs is as instruction sequences for a Von Neumann computer</p>
+<p>Processor &lt;—— bus ——&gt; Memory</p>
+<hr>
+<h3 id="Declarative_programming_is_about">Declarative programming is about</h3><ul>
+<li>concentrate on functions</li>
+<li>avoid mutations (mutation can bestroy useful laws)</li>
+<li>have powerful ways to abstract and compose functions</li>
+</ul>
+<hr>
+<h3 id="Imperative_style">Imperative style</h3><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sumOfSquares = function(list) &#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="literal">result</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; list.length; i++) &#123;</span><br><span class="line">        <span class="literal">result</span> += square(list[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">console.log(sumOfSquares([<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>]));</span><br></pre></td></tr></table></figure>
+<h3 id="Functional_style">Functional style</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sumOfSquares = pipe(map(square), reduce(add, <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(sumOfSquares([<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>]));</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Functional_Features_in_JavaScript">Functional Features in JavaScript</h2><h3 id="Easily_available_in_Javascript">Easily available in Javascript</h3><ul>
+<li>First-class functions</li>
+<li>Lambdas/Anonymous Functions with closures</li>
+<li>Compact, even terse, functions</li>
+</ul>
+<h3 id="Possible_to_accomplish_in_JavaScript">Possible to accomplish in JavaScript</h3><ul>
+<li>Mostly stateless processing</li>
+<li>Side-effect-free functions calls</li>
+</ul>
+<hr>
+<h3 id="Not_available_in_JavaScript">Not available in JavaScript</h3><ul>
+<li>Performant recursion through tail call optimization</li>
+<li>Pattern matching (Haskell, Erlang)</li>
+<li>Lazy Evaluation (Miranda, Haskell)</li>
+<li>Homoiconicity (mostly LISP-like languages?)</li>
+</ul>
+<hr>
+<h3 id="Shared_examples">Shared examples</h3><p>This calculates the odds of choosing the correct <code>n</code> numbers out of the <code>p</code> possibilities.</p>
+<h3 id="iterative_version">iterative version</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">odds</span><span class="params">(n, p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> acc = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        acc *= (n - i) / (p - i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> acc;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(odds(<span class="number">3</span>, <span class="number">10</span>)); <span class="comment">//=&gt; (3/10) * (2/9) * (1/8) =&gt; (1/120) =&gt; 0.008333...</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Recursive_version">Recursive version</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Recursive version</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">odds</span><span class="params">(n, p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (n == <span class="number">0</span>) ? <span class="number">1</span> : (n / p) * odds(n - <span class="number">1</span>, p - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(odds(<span class="number">3</span>, <span class="number">10</span>)); <span class="comment">//=&gt; (3/10) * (2/9) * (1/8) =&gt; (1/120) =&gt; 0.008333...</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>recursive functions are often much more elegant than their iterative cousins.</li>
+<li>Unfortunately, they often don’t perform as well. All the overhead of creating stack contexts for function calls tends to add up. But certain kinds of recursive calls can be easily optimized.</li>
+</ul>
+<hr>
+<h3 id="tail_recursive">tail recursive</h3><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> odds = (<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> odds1 = <span class="function"><span class="keyword">function</span><span class="params">(n, p, acc)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (n == <span class="number">0</span>) ? acc : odds1(n - <span class="number">1</span>, p - <span class="number">1</span>, (n / p) * acc);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(n, p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> odds1(n, p, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>Note that the recursive call in <strong>odds1</strong> is the last statement in its branch of the function. If this is true for all recursive calls, then the function is <strong>tail-recursive</strong>, and the compiler can replace the entire set of nested calls with simple <strong>JUMP</strong> operations.</p>
+<hr>
+<h2 id="Functional_Programming_in_Javascript">Functional Programming in Javascript</h2><p>With first-class function, closures, and anonymous functions, Javascript allows us to do a great deal of functional programming, even if we don’t have things like pattern matching and homoiconicity.</p>
+<p>There are some tools built in to modern Javascript environments, and it’s straightforward to roll your own.</p>
+<ul>
+<li>Ramda</li>
+<li>Underscore, Lo-Dash</li>
+</ul>
+<hr>
+<h2 id="Using_Functional_Techniques_in_JavaScript">Using Functional Techniques in JavaScript</h2><p>Example will be a Task List application, fetching something like the following data from the server:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = &#123;</span><br><span class="line">    result: <span class="string">"SUCCESS"</span>,</span><br><span class="line">    interfaceVersion: <span class="string">"1.0.3"</span>,</span><br><span class="line">    requested: <span class="string">"10/17/2013 15:31:20"</span>.</span><br><span class="line">    lastUpdated: <span class="string">"10/16/2013 10:52:39"</span>,</span><br><span class="line">    tasks: [</span><br><span class="line">        &#123;id: <span class="number">104</span>, complete: <span class="literal">false</span>,            priority: <span class="string">"high"</span>,</span><br><span class="line">                  dueDate: <span class="string">"11/29/2013"</span>,      member: <span class="string">"Scott"</span>,</span><br><span class="line">                  title: <span class="string">"Do something"</span>,      created: <span class="string">"9/22/2013"</span>&#125;,</span><br><span class="line">        &#123;id: <span class="number">105</span>, complete: <span class="literal">false</span>,            priority: <span class="string">"medium"</span>,</span><br><span class="line">                  dueDate: <span class="string">"11/22/2013"</span>,      member: <span class="string">"Lena"</span>,</span><br><span class="line">                  title: <span class="string">"Do something else"</span>, created: <span class="string">"9/22/2013"</span>&#125;,</span><br><span class="line">        &#123;id: <span class="number">107</span>, complete: <span class="literal">true</span>,             priority: <span class="string">"high"</span>,</span><br><span class="line">                  dueDate: <span class="string">"11/22/2013"</span>,      member: <span class="string">"Mike"</span>,</span><br><span class="line">                  title: <span class="string">"Fix the foo"</span>,       created: <span class="string">"9/22/2013"</span>&#125;,</span><br><span class="line">        &#123;id: <span class="number">108</span>, complete: <span class="literal">false</span>,            priority: <span class="string">"low"</span>,</span><br><span class="line">                  dueDate: <span class="string">"11/15/2013"</span>,      member: <span class="string">"Punam"</span>,</span><br><span class="line">                  title: <span class="string">"Adjust the bar"</span>,    created: <span class="string">"9/25/2013"</span>&#125;,</span><br><span class="line">        &#123;id: <span class="number">110</span>, complete: <span class="literal">false</span>,            priority: <span class="string">"medium"</span>,</span><br><span class="line">                  dueDate: <span class="string">"11/15/2013"</span>,      member: <span class="string">"Scott"</span>,</span><br><span class="line">                  title: <span class="string">"Rename everything"</span>, created: <span class="string">"10/2/2013"</span>&#125;,</span><br><span class="line">        &#123;id: <span class="number">112</span>, complete: <span class="literal">true</span>,             priority: <span class="string">"high"</span>,</span><br><span class="line">                  dueDate: <span class="string">"11/27/2013"</span>,      member: <span class="string">"Lena"</span>,</span><br><span class="line">                  title: <span class="string">"Alter all quuxes"</span>,  created: <span class="string">"10/5/2013"</span>&#125;</span><br><span class="line">        <span class="comment">// , ...</span></span><br><span class="line">    ]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Goal">Goal</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">tasks:</span> [</span><br><span class="line">        &#123;<span class="string">id:</span> <span class="number">104</span>, <span class="string">complete:</span> <span class="literal">false</span>,            <span class="string">priority:</span> <span class="string">"high"</span>,</span><br><span class="line"><span class="label">                  dueDate:</span> <span class="string">"11/29/2013"</span>,      <span class="string">member:</span> <span class="string">"Scott"</span>,</span><br><span class="line"><span class="label">                  title:</span> <span class="string">"Do something"</span>,      <span class="string">created:</span> <span class="string">"9/22/2013"</span>&#125;,</span><br><span class="line">        &#123;<span class="string">id:</span> <span class="number">105</span>, <span class="string">complete:</span> <span class="literal">false</span>,            <span class="string">priority:</span> <span class="string">"medium"</span>,</span><br><span class="line"><span class="label">                  dueDate:</span> <span class="string">"11/22/2013"</span>,      <span class="string">member:</span> <span class="string">"Lena"</span>,</span><br><span class="line"><span class="label">                  title:</span> <span class="string">"Do something else"</span>, <span class="string">created:</span> <span class="string">"9/22/2013"</span>&#125;,</span><br><span class="line">    <span class="comment">// , ...</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>The goal will be a function that accepts a <code>member</code> parameter, then fetches the data from the server (or from some application cache), chooses the tasks for that member that are not complete, returns their ids, priorities, titles, and dues dates, sorted by due date.</p>
+<ul>
+<li>asynchronous, we’ll hook everything together with promises.</li>
+<li>ignore all error-checking</li>
+</ul>
+<hr>
+<h2 id="Imperative_Approach">Imperative Approach</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> getIncompleteTaskSummariesForMember_imperative = <span class="function"><span class="keyword">function</span><span class="params">(memberName)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fetchData()</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(data)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data.tasks;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> results = [];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (tasks[i].member == memberName) &#123;</span><br><span class="line">                    results.push(tasks[i]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> results;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> results = [];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!tasks[i].complete) &#123;</span><br><span class="line">                    results.push(tasks[i]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> results;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> results = [], task;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">                task = tasks[i];</span><br><span class="line">                results.push(&#123;</span><br><span class="line">                    id: task.id,</span><br><span class="line">                    dueDate: task.dueDate,</span><br><span class="line">                    title: task.title,</span><br><span class="line">                    priority: task.priority</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> results;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            tasks.sort(<span class="function"><span class="keyword">function</span><span class="params">(first, second)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> first.dueDate - second.dueDate;</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="keyword">return</span> tasks;</span><br><span class="line">        &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Object-Oriented_Approach">Object-Oriented Approach</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main method</span></span><br><span class="line"><span class="keyword">var</span> getIncompleteTaskSummariesForMember_objectOriented = <span class="function"><span class="keyword">function</span><span class="params">(memberName)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> fetchData()</span><br><span class="line">       .then(<span class="function"><span class="keyword">function</span><span class="params">(data)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">var</span> taskList = <span class="keyword">new</span> TaskList(data.tasks);</span><br><span class="line">           taskList.chooseByMember(memberName);</span><br><span class="line">           taskList.chooseByCompletion(<span class="literal">false</span>);</span><br><span class="line">           <span class="keyword">var</span> newTaskList = taskList.getSummaries();</span><br><span class="line">           newTaskList.sort(<span class="keyword">new</span> TaskListSorter(<span class="string">"dueDate"</span>));</span><br><span class="line">           <span class="keyword">return</span> newTaskList.tasks;</span><br><span class="line">       &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> TaskList = (<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> TaskList = <span class="function"><span class="keyword">function</span><span class="params">(<span class="comment">/*Task[]*/</span> tasks)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.tasks = tasks;</span><br><span class="line">    &#125;;</span><br><span class="line">    TaskList.prototype.chooseByMember = <span class="function"><span class="keyword">function</span><span class="params">(memberName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> results = [];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = <span class="keyword">this</span>.tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.tasks[i].member === memberName) &#123;</span><br><span class="line">                results.push(<span class="keyword">this</span>.tasks[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.tasks = results;</span><br><span class="line">    &#125;;</span><br><span class="line">    TaskList.prototype.chooseByCompletion = <span class="function"><span class="keyword">function</span><span class="params">(completion)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> results = [];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = <span class="keyword">this</span>.tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.tasks[i].complete == completion) &#123;</span><br><span class="line">                results.push(<span class="keyword">this</span>.tasks[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.tasks = results;</span><br><span class="line">    &#125;;</span><br><span class="line">    TaskList.prototype.getSummaries = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> results = [], task;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = <span class="keyword">this</span>.tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">                task = <span class="keyword">this</span>.tasks[i];</span><br><span class="line">                results.push(&#123;</span><br><span class="line">                    id: task.id,</span><br><span class="line">                    dueDate: task.dueDate,</span><br><span class="line">                    title: task.title,</span><br><span class="line">                    priority: task.priority</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> TaskList(results);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        TaskList.prototype.sort = <span class="function"><span class="keyword">function</span><span class="params">(<span class="comment">/*TaskListSorter*/</span> sorter)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.tasks.sort(sorter.getSortFunction());</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> TaskList;</span><br><span class="line">    &#125;());</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> TaskListSorter = (<span class="function"><span class="keyword">function</span><span class="params">()</span>  </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> TaskListSorter = <span class="function"><span class="keyword">function</span><span class="params">(propName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.propName = propName;</span><br><span class="line">    &#125;;</span><br><span class="line">    TaskListSorter.prototype.getSortFunction = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> propName = <span class="keyword">this</span>.propName;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(first, second)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> first[propName] &lt; second[propName] ? -<span class="number">1</span> :</span><br><span class="line">                   first[propName] &gt; second[propName] ? +<span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> TaskListSorter;</span><br><span class="line">&#125;());</span><br></pre></td></tr></table></figure>
+<p>The contents of the functions are much the same; it’s the way they are organized that varies.</p>
+<hr>
+<h2 id="Converting_to_Functional_Code">Converting to Functional Code</h2><p>The process for the remainder of this talk will be to convert this code into concise, readable, functional code, one block at a time, explaining some of the basic building blocks of functional programming as we go. First up is this little function:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.then(<span class="function"><span class="keyword">function</span><span class="params">(data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> data.tasks;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>Functional version<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.then(prop(<span class="string">'tasks'</span>))</span><br></pre></td></tr></table></figure></p>
+<p>So the obvious question, then, is, what is the <strong>prop</strong> function?</p>
+<hr>
+<h2 id="The_prop_function">The prop function</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = _curry2(<span class="function"><span class="keyword">function</span> <span class="title">prop</span><span class="params">(p, obj)</span> </span>&#123; <span class="keyword">return</span> obj[p]; &#125;);</span><br></pre></td></tr></table></figure>
+<p>Our <strong>then</strong> call needs a function, so <strong>curry</strong> must be doing something interesting with this function, which should return an object propery, to instead returning a new function. So we need to take a detour to discuss <strong>curry</strong> a bit.</p>
+<hr>
+<h2 id="Currying_Functions">Currying Functions</h2><p>Currying is the process of converting functions that take multiple arguments into ones that, when supplied fewer arguments, return new functions that accept the remaining ones.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> addFourNumbers = <span class="function"><span class="keyword">function</span><span class="params">(a, b, c, d)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b + c + d;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> curriedAddFourNumbers = R.curry(addFourNumbers);</span><br><span class="line"><span class="keyword">var</span> f = curriedAddFourNumbers(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> g = f(<span class="number">3</span>);</span><br><span class="line">g(<span class="number">4</span>); <span class="comment">//=&gt; 10</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Back_to_get">Back to get</h2><p>Now that we understand curry, we can see that a manually curried version of this function might look like this:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> prop = <span class="function"><span class="keyword">function</span><span class="params">(prop)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> obj[prop];</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>And that means that our new <strong>get(‘tasks’)</strong> is equivalent to<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span><span class="params">(obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj[<span class="string">'tasks'</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="Filtering">Filtering</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> results = [];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (tasks[i].member == memberName) &#123;</span><br><span class="line">            results.push(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> results;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<hr>
+<p>Functional version<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.then(filter(<span class="function"><span class="keyword">function</span><span class="params">(task)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> task.member == memberName;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure></p>
+<p>But we’ve done something more important too: We’ve moved the focus from iteration and updating the state of a local collection to the real point of this block: choosing the tasks with the proper member property.</p>
+<p>One of the most important features of functional programming is that it makes it easy to shift focus in this manner.</p>
+<hr>
+<h2 id="Rejecting_elements">Rejecting elements</h2><p>The next block is similar, except that instead of using filter, we will use reject, which behaves exactly the same except that it chooses those members of the list that don’t match the predicate. We replace this code:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> results = [];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!tasks[i].complete) &#123;</span><br><span class="line">            results.push(tasks[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> results;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>with this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.then(reject(<span class="function"><span class="keyword">function</span><span class="params">(task)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> task.complete === <span class="literal">true</span>;</span><br><span class="line">)))</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Refactoring">Refactoring</h2><p>A reasonable question would be why with didn’t do this instead, which would work equally well:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.<span class="keyword">then</span>(filter(<span class="function"><span class="keyword">function</span><span class="params">(task)</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> task.complete !== <span class="keyword">true</span>;</span><br><span class="line">))</span><br></pre></td></tr></table></figure>
+<p>The reason is that the similarity between these two blocks will offer us a chance to refactor our code into something still more descriptive:</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span><span class="params">(task)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> task.member == memberName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span><span class="params">(task)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> task.complete === <span class="literal">true</span>;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>Both of these functions accept an object and return a boolean that describes whether a particular property of the object has a given value. Perhaps a good name for a function that generates such functions would be <strong>propEq</strong>.</p>
+<hr>
+<h2 id="Implementing_propEq">Implementing propEq</h2><p>Simplest Approach<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> propEq = <span class="function"><span class="keyword">function</span><span class="params">(prop, val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> obj[prop] === val;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>This works, and we could leave it there, but we’re going to take another detour into a popular style of functional programming known as <strong>points-free</strong> coding.</p>
+<hr>
+<h2 id="Points-free_definitions">Points-free definitions</h2><p>With the functions <strong>add</strong> (which adds two numbers) and <strong>reduce</strong> (which runs the supplied function against an accumulator and each element of the list, feeding the result of each call into the next one and returning the final result), we can easily define a <strong>sum</strong> function like this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sum = <span class="function"><span class="keyword">function</span><span class="params">(list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> reduce(add, <span class="number">0</span>, list);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>Because of the automatic currying, though, the following is entirely equivalent:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sum = reduce(add, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>This is the <strong>points-free</strong> style, defining functions without ever making direct reference to their arguments.</p>
+<hr>
+<p><strong>Wikipedia</strong><br>&gt;<br>Tacit [point-free] programming is a programming paradigm in which a function definition does not include information regarding its arguments, using combinators and function composition (but not ?-abstraction) instead of variables.</p>
+<p>There are plenty of reasons to like it, but the most important one might just be the simplicity. There is a great deal to be said for elegant, readable code.</p>
+<hr>
+<h2 id="A_points-free_version_of_propEq">A points-free version of propEq</h2><p>Can we redefine the following in a points-free style?</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> propEq = <span class="function"><span class="keyword">function</span><span class="params">(prop, val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> obj[prop] === val;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Here’s a version that is closer to points-free, removing the direct reference to obj:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> propEq = <span class="function"><span class="keyword">function</span><span class="params">(prop, val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> compose(eq(val), get(prop));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Huh? What? <strong>compose</strong>? <strong>eq</strong>?</p>
+<p><strong>eq</strong> is easy: like all good functions of multiple parameters, it’s curried, and it simply reports whether its two arguments are equal. So <strong>eq(val)</strong> is a function which reports whether its parameter has the same value as does <strong>val</strong>. But now we need to discuss <strong>compose</strong>.</p>
+<hr>
+<h2 id="Functional_composition">Functional composition</h2><p>In mathematics <strong>f ∘ g</strong> (pronounced “f composed with g”) is the function that given <strong>x</strong>, returns <strong>f(g(x))</strong>.</p>
+<p>So if we follow the mathematical model <strong>compose(add1, square)(x)</strong> should equal <strong>add1(square(x))</strong>.</p>
+<p>Simplest Implementation</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> compose = <span class="function"><span class="keyword">function</span><span class="params">(f, g)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f(g(x));</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>Note that <strong>Ramda</strong> also defines <strong>pipe</strong>, which does much the same thing, but runs the functions in the opposite order. So <strong>pipe(add1, square)(x)</strong> equals <strong>square(add1(x))</strong>. Both styles have their uses.</p>
+<hr>
+<h2 id="Back_to_propEq">Back to propEq</h2><p>So now this definition makes sense:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> propEq = <span class="function"><span class="keyword">function</span><span class="params">(prop, val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipe(get(prop), eq(val));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Note the switch from <strong>compose</strong> to <strong>pipe</strong>.</p>
+<p>This gives us a further way to clean it up, and make it entirely <strong>points-free</strong>, using a useful feature of Ramda we haven’t seen implemented in other libraries, which we call (for now) <strong>callWith</strong>. Used like <strong>callWith(fn, transformer1, … transformerN)</strong>, this returns a function which accepts N parameters, feeds them to the respective transformers, and then calls <strong>fn</strong> using the results of all these. This gives us the final version of propEq:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> propEq = callWith(pipe, get, eq);</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Definition_of_propEq">Definition of propEq</h2><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module.exports = _curry3(function propE<span class="string">q(name, val, obj)</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> _e<span class="string">q(obj[name], val)</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Using_our_new_function">Using our new function</h2><p>Still, all these explanations aside, it was only a minute or two of work to do this refactoring and arrive at a fairly simple version of <strong>propEq</strong>. We would plug it back in like this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> propEq = callWith(pipe, get, eq);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">.then(filter(propEq(<span class="string">'member'</span>, memberName)))</span><br><span class="line">.then(reject(propEq(<span class="string">'complete'</span>, <span class="literal">true</span>)))</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="New_objects_from_old">New objects from old</h2><p>The next block we wanted to update looked like this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> results = [], task;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">        task = tasks[i];</span><br><span class="line">        results.push(&#123;</span><br><span class="line">            id: task.id,</span><br><span class="line">            dueDate: task.dueDate,</span><br><span class="line">            title: task.title,</span><br><span class="line">            priority: task.priority</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> results;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>Functional version:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.then(map(pick([<span class="string">'id'</span>, <span class="string">'dueDate'</span>, <span class="string">'title'</span>, <span class="string">'priority'</span>])))</span><br></pre></td></tr></table></figure>
+<p>You’re a smart bunch, right? I probably don’t even have to explain what pick does, right?</p>
+<hr>
+<h2 id="The_map_function">The <strong>map</strong> function</h2><p>One of the most fundamental functions used in FP is <strong>map</strong>, which is used to convert one list into a related one by running the same function against each member.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fiveSquares = map(square, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]); <span class="comment">// =&gt; [1, 4, 9, 16, 25];</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> shouts = map(toUpperCase, [<span class="string">"oy"</span>, <span class="string">"vey"</span>]); <span class="comment">//=&gt; ["OY", "VEY"]</span></span><br></pre></td></tr></table></figure>
+<p>There isn’t much more to say about <strong>map</strong>, but it’s important to point out that this function and <strong>reduce</strong>, which we mentioned briefly earlier, are among the most important functional programming tools around.</p>
+<hr>
+<h2 id="Partial_clones_of_our_objects">Partial clones of our objects</h2><p>We used map like this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.then(map(pick([<span class="string">'id'</span>, <span class="string">'dueDate'</span>, <span class="string">'title'</span>, <span class="string">'priority'</span>])))</span><br></pre></td></tr></table></figure>
+<p>The magic of currying is again at work here:</p>
+<ul>
+<li><strong>pick</strong> accepts a list of properties and an object and return a partial clone, copying those properties from the original. Since we just pass in the properties, this curried function returns a new function that accepts an object and returns that partial clone.</li>
+<li><strong>map</strong> accepts a function and a list an applies the function to the list. But because it’s curried, and because we supply only the function generated by the curried pick, this one also returns a new function which will accept a list and create these partial clones of each element in the list.</li>
+<li>This function is passed to <strong>then</strong>, which will simply pass along its parameter (whenever that becomes ready) to our function and “return” the result of running our function against it. (We simply know because of the way prior calls have been built that this will be a list of tasks.)</li>
+</ul>
+<hr>
+<h2 id="A_final_task_of_some_sort">A final task of some sort</h2><p>The last segment we wanted to convert looked like this:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span></span> &#123;</span><br><span class="line">    tasks.sort(<span class="function"><span class="keyword">function</span><span class="params">(first, second)</span></span> &#123;</span><br><span class="line">        <span class="keyword">return</span> first.dueDate - second.dueDate;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> tasks;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>Sorts the list according to a key generated by the supplied function.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sortByFirstItem = R.sortBy(prop(<span class="number">0</span>));</span><br><span class="line"><span class="keyword">var</span> pairs = [[-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">2</span>, <span class="number">2</span>], [-<span class="number">3</span>, <span class="number">3</span>]];</span><br><span class="line">sortByFirstItem(pairs); <span class="comment">//=&gt; [[-3, 3], [-2, 2], [-1, 1]]</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Again_with_the_curry">Again with the curry</h2><p>Again, we take advantage of the fact that our important functions are curried, and use <strong>prop(‘dueDate’)</strong>. This creates a function that, fed one of our task objects, returns its due date. We can feed this into <strong>sortBy</strong> to get the following:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.<span class="function"><span class="title">then</span><span class="params">(sortBy(prop(<span class="string">'dueDate'</span>)</span></span>))</span><br></pre></td></tr></table></figure>
+<hr>
+<p>While this is not a lot less code than the original:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">    tasks.sort(<span class="function"><span class="keyword">function</span><span class="params">(first, second)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> first.dueDate - second.dueDate;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> tasks;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>it clearly is a savings. However, much more importantly, the code is all clearly aimed at our problem.</p>
+<hr>
+<h2 id="Recap_–_Imperative">Recap – Imperative</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> getIncompleteTaskSummariesForMember_imperative = <span class="function"><span class="keyword">function</span><span class="params">(memberName)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fetchData()</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(data)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data.tasks;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> results = [];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (tasks[i].member == memberName) &#123;</span><br><span class="line">                    results.push(tasks[i]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> results;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> results = [];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!tasks[i].complete) &#123;</span><br><span class="line">                    results.push(tasks[i]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> results;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> results = [], task;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = tasks.length; i &lt; len; i++) &#123;</span><br><span class="line">                task = tasks[i];</span><br><span class="line">                results.push(&#123;</span><br><span class="line">                    id: task.id,</span><br><span class="line">                    dueDate: task.dueDate,</span><br><span class="line">                    title: task.title,</span><br><span class="line">                    priority: task.priority</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> results;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="keyword">function</span><span class="params">(tasks)</span> </span>&#123;</span><br><span class="line">            tasks.sort(<span class="function"><span class="keyword">function</span><span class="params">(first, second)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> first.dueDate - second.dueDate;</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="keyword">return</span> tasks;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Recap_–_Functional">Recap – Functional</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> getIncompleteTaskSummariesForMemberFunctional = <span class="function"><span class="keyword">function</span><span class="params">(memberName)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fetchData()</span><br><span class="line">        .then(get(<span class="string">'tasks'</span>))</span><br><span class="line">        .then(filter(propEq(<span class="string">'member'</span>, memberName)))</span><br><span class="line">        .then(reject(propEq(<span class="string">'complete'</span>, <span class="literal">true</span>)))</span><br><span class="line">        .then(map(pick([<span class="string">'id'</span>, <span class="string">'dueDate'</span>, <span class="string">'title'</span>, <span class="string">'priority'</span>])))</span><br><span class="line">        .then(sortBy(get(<span class="string">'dueDate'</span>)));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Most_Important_Functions">Most Important Functions</h2><p>We’ve seen what are probably the most important functions in functional programming:</p>
+<ul>
+<li>map</li>
+<li>reduce</li>
+<li>filter</li>
+<li>compose</li>
+<li>curry</li>
+</ul>
+<p>There’s one that to some might be conspicuous by it’s absence:</p>
+<ul>
+<li>forEach<br>Maybe it is not actually appropriate to functional programming, as its main purpose is to help you achieve side-effects. But many libraries do include one.</li>
+</ul>
+<hr>
+<h3 id="What_We_Gain_from_FP_Style">What We Gain from FP Style</h3><ul>
+<li>Elegance and simplicity</li>
+<li>Easier decomposition of problems</li>
+<li>Code more closely tied to the problem domain</li>
+</ul>
+<p><strong>And through these, we can also achieve</strong></p>
+<ul>
+<li>Straightforward unit testing</li>
+<li>Easier debugging</li>
+<li>Simple concurrency</li>
+</ul>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?url=http://owenyang0.github.io/2015/04/12/functional-programming-in-javascript/&title=Functional Programming in JavaScript | OwenYang&#39;S" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2015/04/12/functional-programming-in-javascript/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2015/04/12/functional-programming-in-javascript/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2015/04/12/functional-programming-in-javascript/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2015/03/16/修复AWS上EC2损坏的sshd-config文件/">
+        修复AWS上EC2损坏的sshd_config文件 →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="https://github.com/owenyang0/moody">moody</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-57882600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'owenyang';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
