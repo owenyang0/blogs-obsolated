@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>两分钟了解ReactiveX | OwenYang&#39;S IDEAS</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="blog, tech blog, code, personal opinion, OwenYang ideas" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" href="/css/moody.css" type="text/css">
+  <meta name="generator" content="OwenYang'S IDEAS">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body class="home-template">
+<div id="perspective" class="perspective effect-movedown">
+  <div class="container">
+    <!-- wrapper -->
+    <div class="wrapper">
+      <header class="header">
+    <div class="header__container">
+        <a href="/" class="logo">OwenYang'S IDEAS</a>
+        <nav class="header__nav">
+            <ul class="header__nav-list">
+                
+                    <li class="nav-item">
+                        <a class="icon-home"  href="/">Home</a>
+                        </li>
+                
+                    <li class="nav-item">
+                        <a class="icon-mail"  href="/about/">Contact</a>
+                        </li>
+                
+
+            </ul>
+        </nav>
+    </div>
+</header>
+
+      
+
+<main class="content" role="main">
+  <article class="post">
+    <h1 class="post-title">两分钟了解ReactiveX</h1>
+    <span class="post-meta">
+      <time datetime="2015-05-08T03:59:09.000Z" itemprop="datePublished">
+          May 8 2015
+      </time>
+    
+    
+    | 
+    <a href='/tags/Reactive-Programming/'>Reactive Programming</a>, 
+    
+    <a href='/tags/Rx/'>Rx</a>, 
+    
+    <a href='/tags/RxJS/'>RxJS</a>
+    
+    
+</span>
+    <section class="post-content">
+      <p>可能在之前，你就已经看过这篇<a href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754" target="_blank" rel="external">响应式编程的入门</a>。什么？太长？好吧，这都没关系，<a href="https://github.com/Reactive-Extensions/RxJS" target="_blank" rel="external">Rx</a>并不难，你甚至可以自己实现一个这样的框架。<br>知道数组吧？你当然知道，这就是：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ <span class="number">14</span>, <span class="number">9</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">10</span>, <span class="number">13</span>, <span class="number">4</span> ]</span><br></pre></td></tr></table></figure></p>
+<p>如果说这是一个<strong>非可变数组</strong>，但需要移除所有的奇数，你会怎样做呢？可能会是这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[ <span class="number">14</span>, <span class="number">9</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">10</span>, <span class="number">13</span>, <span class="number">4</span> ]</span><br><span class="line"></span><br><span class="line">filter( (x) -&gt; x % <span class="number">2</span> == <span class="number">0</span> )</span><br><span class="line"><span class="comment">// =&gt; [ 14, 2, 10, 4 ]</span></span><br></pre></td></tr></table></figure>
+<p>直到现在也没什么新鲜东西，这在<code>underscore.js</code>, <code>ECMAScript 5.1</code>, <code>LINQ</code>, <code>Guava</code>, 等等之中，早已司空见惯。这些都是来自于函数式的编程范型。</p>
+<hr>
+<p>再来想想带来坐标位置数据的点击事件。如果画一条时间线，它们看起来应该是这样。<br><img src="/images/click-events.png" alt="click events line"></p>
+<p>是的，这是一个事件流，它有一妮称，叫 “Observable”。</p>
+<p>这些点击事件，都来自于鼠标，意味着整个事件流都是<strong>不可变的</strong>。事件被触发后，我们没有办法对事件进行添加或删除。<br>但我如果只是关心<code>x &lt; 250</code>的事件呢？能不能创建一个像数组一样的新的流，再对其进行过滤呢？<br><img src="/images/click-events.png" alt="click events line"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filter( (event) -&gt; event.x &lt; <span class="number">250</span> )</span><br></pre></td></tr></table></figure>
+<p><img src="/images/click-events-filtered.png" alt="click events filted line"></p>
+<p>非可变数组和Observables有什么区别呢？其实不多，两个都可以使用<code>map</code>, <code>filter</code>, <code>reduce</code>等高阶函数。在Observables中，你也可以使用<code>merge</code>, <code>delay</code>, <code>concat</code>, <code>buffer</code>, <code>distinct</code>, <code>first</code>, <code>last</code>, <code>zip</code>, <code>startWith</code>, <code>window</code>, <code>takeUntil</code>, <code>skip</code>, <code>scan</code>, <code>sample</code>, <code>amb</code>, <code>n</code>, <code>flatMap</code>等函数。</p>
+<p><strong>想像一下异步的非可变数组</strong><br><code>Rx</code>可以说是操作事件的<code>underscore.js</code>。但，等一下，什么是事件？在你的程序中，难道不是绝大多数代码都是事件吗？<br>程序启动事件，API响应事件，键盘事件，设备休眠事件等等。</p>
+<p>基本上，所有东西都可以是事件流。所需要的只是要适当地进行排列组合。</p>
+<p>这就是<code>Rx</code>的两分钟。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>Owen Yang</h4>
+    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+</section>
+      <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-sina-weibo" href="http://v.t.sina.com.cn/share/share.php?url=http://owenyang0.github.io/2015/05/08/2-minute-introduction-to-Rx/&title=两分钟了解ReactiveX | OwenYang&#39;S" target="_blank">
+        <span class="hidden">weibo</span>
+    </a>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://owenyang0.github.io/2015/05/08/2-minute-introduction-to-Rx/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://owenyang0.github.io/2015/05/08/2-minute-introduction-to-Rx/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://owenyang0.github.io/2015/05/08/2-minute-introduction-to-Rx/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="icon-logo">•</span>
+    
+    <a class="older-posts" href="/2015/04/12/functional-programming-in-javascript/">
+        Functional Programming in JavaScript →
+    </a>
+    
+</nav>
+
+  <div id="comment" class="comments-area">
+    <h4 class="title"><a href="#disqus_comments" name="disqus_comments">Comments</a></h4>
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+
+</main>
+
+
+      
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="atom.xml"><span class="tooltip">Subscribe!</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">OwenYang'S IDEAS</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" href="https://github.com/owenyang0/moody">moody</a></section>
+  </div>
+</footer>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-57882600-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'owenyang';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
