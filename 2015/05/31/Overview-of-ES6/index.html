@@ -87,8 +87,6 @@
 <li>default function params</li>
 <li>class</li>
 <li>module</li>
-<li>promoise</li>
-<li>iterators</li>
 </ul>
 <h2 id="Requirements">Requirements</h2><p>Babel <a href="https://babeljs.io/docs/usage/cli/" target="_blank" rel="external">https://babeljs.io/docs/usage/cli/</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install --global babel</span><br></pre></td></tr></table></figure>
@@ -99,7 +97,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(<span class="keyword">typeof</span> global === <span class="string">"object"</span> ? global : <span class="built_in">window</span>, <span class="string">"PI"</span>, &#123;</span><br><span class="line">    value:        <span class="number">3.14</span>,</span><br><span class="line">    enumerable:   <span class="literal">true</span>,</span><br><span class="line">    writable:     <span class="literal">false</span>,</span><br><span class="line">    configurable: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h2 id="let">let</h2><p>声明变量，变量只在let命令所在代码块内有效。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">let</span> b = <span class="number">10</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a <span class="comment">//1</span></span><br><span class="line">b <span class="comment">// ReferenceError: b is not defined.</span></span><br></pre></td></tr></table></figure>
-<p>let不允许在相同作用域内，重复声明同一个变量。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// error</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// error</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>let不允许在相同作用域内，重复声明同一个变量。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// error</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="block-level_declaration">block-level declaration</h2><ul>
 <li>let, const 块级作用域</li>
 <li>var 函数作用域</li>
@@ -204,7 +202,7 @@
     <footer class="post-footer">
       <section class="author">
     <h4>Owen Yang</h4>
-    <p>爱看书，爱社区，爱前端，爱代码。爱这样一个挨踢的行业。</p>
+    <p>摘一叶菩提，享一份宁静，敲一键淡然。</p>
 </section>
       <section class="share">
     <h4>Share this post</h4>

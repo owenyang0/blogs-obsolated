@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://owenyang0.github.io/"/>
-  <updated>2015-05-31T10:50:19.000Z</updated>
+  <updated>2015-06-03T05:40:22.000Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://owenyang0.github.io/2015/05/31/Overview-of-ES6/"/>
     <id>http://owenyang0.github.io/2015/05/31/Overview-of-ES6/</id>
     <published>2015-05-31T09:03:25.000Z</published>
-    <updated>2015-05-31T10:50:19.000Z</updated>
+    <updated>2015-06-03T05:40:22.000Z</updated>
     <content type="html"><![CDATA[<p>Slides in ES6 overview workshop</p>
 <h2 id="Intro">Intro</h2><h3 id="What">What</h3><p>ECMAScript 6（以下简称ES6）是JavaScript语言的下一代标准</p>
 <h3 id="Goal">Goal</h3><p>ES6的目标，是使得JavaScript语言可以用来编写大型的复杂的应用程序，成为企业级开发语言。<br>新的语言特性，代码更优雅，程序更健壮，减少不必要的重复，减少不必要的第三方依赖。</p>
@@ -33,8 +33,6 @@
 <li>default function params</li>
 <li>class</li>
 <li>module</li>
-<li>promoise</li>
-<li>iterators</li>
 </ul>
 <h2 id="Requirements">Requirements</h2><p>Babel <a href="https://babeljs.io/docs/usage/cli/" target="_blank" rel="external">https://babeljs.io/docs/usage/cli/</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install --global babel</span><br></pre></td></tr></table></figure>
@@ -45,7 +43,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(<span class="keyword">typeof</span> global === <span class="string">"object"</span> ? global : <span class="built_in">window</span>, <span class="string">"PI"</span>, &#123;</span><br><span class="line">    value:        <span class="number">3.14</span>,</span><br><span class="line">    enumerable:   <span class="literal">true</span>,</span><br><span class="line">    writable:     <span class="literal">false</span>,</span><br><span class="line">    configurable: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h2 id="let">let</h2><p>声明变量，变量只在let命令所在代码块内有效。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">let</span> b = <span class="number">10</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a <span class="comment">//1</span></span><br><span class="line">b <span class="comment">// ReferenceError: b is not defined.</span></span><br></pre></td></tr></table></figure>
-<p>let不允许在相同作用域内，重复声明同一个变量。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// error</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// error</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>let不允许在相同作用域内，重复声明同一个变量。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// error</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="block-level_declaration">block-level declaration</h2><ul>
 <li>let, const 块级作用域</li>
 <li>var 函数作用域</li>
