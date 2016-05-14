@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://owenyang0.github.io/"/>
-  <updated>2016-01-02T17:12:56.000Z</updated>
+  <updated>2016-05-14T11:37:25.000Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -16,11 +16,54 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Babel和Rollup，开始构建发布你的ES6模块(Modules)</title>
+    <link href="http://owenyang0.github.io/2016/05/14/Build-and-Public-ES6-Modules-Today/"/>
+    <id>http://owenyang0.github.io/2016/05/14/Build-and-Public-ES6-Modules-Today/</id>
+    <published>2016-05-14T10:06:26.000Z</published>
+    <updated>2016-05-14T11:37:25.000Z</updated>
+    
+    <content type="html">&lt;p&gt;早在2015年六月，ES2015规范或者叫ES6就正式被ECMA国际协会(Ecma International)批准，成为了新一代的语言标准。2016年四月，Node.js团队发布了号称支持93%的ES6语言特性的Node v6，不过这一切还是由于V8引擎v5.0的发布。&lt;/p&gt;
+&lt;p&gt;是应该使用最新的语言特性，ES6+的语法，还是应该使用第三方库与polyfills来编写一个JavaScript库？相信这个问题一定困扰着写JavaScript库的你，因为这很难说前者会比后者有更大的优势。私以为，前者能减少代码冗余，让代码更可读，使用更少的抽象，让代码库更容易维护与扩展，提高开发效率等等。&lt;/p&gt;
+&lt;p&gt;如果你正在开发一个全新的基于Node.js平台的JavaScript库(npm 包), 那基于Node.js v6环境使用最新的特性将是一个很好的选择。你也可以同时提供给Node v5或者更老版本的开发者一个回退版本(fallback)，如此一来Node v6的用户也可以正常地使用你的库：&lt;br&gt;&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; MyLibrary = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&#39;my-library&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;在Node.js v6的环境，代码将是最简洁优雅的。同时也得保证使用Node 0.x, 4.x, 5.x的用户能够导入ES5.1版本的库：&lt;br&gt;&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; MyLibrary = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&#39;my-library/legacy&#39;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;除此以外，强烈推荐将使用ES2015模块语法的版本也放在你的NPM包中。虽然ES2015的&lt;a href=&quot;https://twitter.com/koistya/status/726042867211325440&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;模块系统&lt;/a&gt;还无法在Node.js或者V8中使用，但Node.js和前端社区早已大量地使用这种规范组织代码，这一切都归功于模块打包工具(module bundlers)，如Webpack, Berify, JSPM，Babel等等。&lt;/p&gt;
+&lt;p&gt;若要使用ES6的方式发布你的包，你项目的目录结构看起来可能会像这样：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;.&amp;#10;&amp;#9500;&amp;#9472;&amp;#9472; /dist/                  # Temp folder for compiled output&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /legacy/            # Legacy bundle(s) for Node 0.x, 4.x&amp;#10;&amp;#9474;   &amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /main.js        # ES5.1 bundle for Node 0.x, 4.x&amp;#10;&amp;#9474;   &amp;#9474;   &amp;#9492;&amp;#9472;&amp;#9472; /package.json   # Legacy NPM module settings&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /main.js            # ES6 bundle /w CommonJS for Node v6&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /main.mjs           # ES6 bundle /w Modules for cool kids&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /main.browser.js    # ES5.1 bundle for browsers&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /my-library.js      # UMD bundle for browsers&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /my-library.min.js  # UMD bundle, minified and optimized&amp;#10;&amp;#9474;   &amp;#9492;&amp;#9472;&amp;#9472; /package.json       # NPM module settings&amp;#10;&amp;#9500;&amp;#9472;&amp;#9472; /node_modules/          # 3rd-party libraries and utilities&amp;#10;&amp;#9500;&amp;#9472;&amp;#9472; /src/                   # ES2015+ source code&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /main.js            # The main entry point&amp;#10;&amp;#9474;   &amp;#9500;&amp;#9472;&amp;#9472; /sub-module-a.js    # A module referenced in main.js&amp;#10;&amp;#9474;   &amp;#9492;&amp;#9472;&amp;#9472; /sub-module-b.js    # A module referenced in main.js&amp;#10;&amp;#9500;&amp;#9472;&amp;#9472; /test/                  # Unit and end-to-end tests&amp;#10;&amp;#9500;&amp;#9472;&amp;#9472; /tools/                 # Build automation scripts and utilities&amp;#10;&amp;#9474;   &amp;#9492;&amp;#9472;&amp;#9472; /build.js           # Builds the project with Babel/Rollup&amp;#10;&amp;#9492;&amp;#9472;&amp;#9472; package.json            # Project settings&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;在 &lt;em&gt;src&lt;/em&gt; 目录里包含了你项目的源代码(当然是ES2015+规范)，&lt;em&gt;dist&lt;/em&gt; (或者 &lt;em&gt;build&lt;/em&gt; )目录则是在你构建工程时动态生成的。通过 &lt;em&gt;dist&lt;/em&gt; 目录，你可以发布你的NPM包(package)，里面包含了使用Babel和Webapck编译出来的符合CommonJS, ES6，和UMD规范的包(bundle).&lt;/p&gt;
+&lt;p&gt;在你的 &lt;em&gt;package.json&lt;/em&gt; 文件里面会包含这些bundle的引用：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&amp;#10;  &amp;#34;name&amp;#34;: &amp;#34;my-library&amp;#34;,&amp;#10;  &amp;#34;version&amp;#34;: &amp;#34;1.0.0&amp;#34;,&amp;#10;  &amp;#34;main&amp;#34;: &amp;#34;main.js&amp;#34;,&amp;#10;  &amp;#34;jsnext:main&amp;#34;: &amp;#34;main.mjs&amp;#34;,&amp;#10;  &amp;#34;browser&amp;#34;: &amp;#34;main.browser.js&amp;#34;,&amp;#10;  ...&amp;#10;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tools/build.js&lt;/code&gt;脚本是一种便捷的方式去配置你的编译过程，它看起来可能会像这样：&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/koistya/1abc156c61814fc307210f33e127f124.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;现在你只需要简单运行 &lt;code&gt;node tools/build&lt;/code&gt; (假定你已经在本地装好了Node.js v6)，就可以构建你的牛X库了，然后你只需要在 &lt;code&gt;dist&lt;/code&gt; 目录下，将代码发布到NPM就OK了。&lt;/p&gt;
+&lt;p&gt;希望该博可以对你有所帮助，这或许是将你的牛库是以ES6发布在NPM上的最好方式。你也可以在这里看到预配置好的发布NPM包的样板文件：&lt;a href=&quot;https://github.com/kriasoft/babel-starter-kit&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/kriasoft/babel-starter-kit&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;如果你发现有什么遗漏，不清楚，欢迎留言 :)&lt;/p&gt;
+&lt;p&gt;[译]&lt;a href=&quot;https://medium.com/@tarkus/how-to-build-and-publish-es6-modules-today-with-babel-and-rollup-4426d9c7ca71#.38s3c7m0q&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;How to Build and Publish ES6 Modules Today, with Babel and Rollup&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;早在2015年六月，ES2015规范或者叫ES6就正式被ECMA国际协会(Ecma International)批准，成为了新一代的语言标准。2016年四月，Node.js团队发布了号称支持93%的ES6语言特性的Node v6，不过这一切还是由于V8引擎v5.0的发布。&lt;
+    
+    </summary>
+    
+    
+      <category term="Babel" scheme="http://owenyang0.github.io/tags/Babel/"/>
+    
+      <category term="ES6" scheme="http://owenyang0.github.io/tags/ES6/"/>
+    
+      <category term="Modules" scheme="http://owenyang0.github.io/tags/Modules/"/>
+    
+      <category term="NPM" scheme="http://owenyang0.github.io/tags/NPM/"/>
+    
+      <category term="Rollup" scheme="http://owenyang0.github.io/tags/Rollup/"/>
+    
+  </entry>
+  
+  <entry>
     <title>赶在2015最后一班车</title>
     <link href="http://owenyang0.github.io/2016/01/03/%E8%B5%B6%E5%9C%A82015%E6%9C%80%E5%90%8E%E4%B8%80%E7%8F%AD%E8%BD%A6/"/>
     <id>http://owenyang0.github.io/2016/01/03/赶在2015最后一班车/</id>
     <published>2016-01-02T16:15:17.000Z</published>
-    <updated>2016-01-02T17:12:56.000Z</updated>
+    <updated>2016-05-04T07:50:13.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
 &lt;p&gt;2015人在路上，心在外边。&lt;/p&gt;
