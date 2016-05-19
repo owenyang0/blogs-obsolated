@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://owenyang0.github.io/"/>
-  <updated>2016-05-19T14:39:36.000Z</updated>
+  <updated>2016-05-19T15:03:42.000Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -16,14 +16,82 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>编写可维护性CSS之二，语义化</title>
+    <link href="http://owenyang0.github.io/2016/05/19/MaintainableCSS-Semantics/"/>
+    <id>http://owenyang0.github.io/2016/05/19/MaintainableCSS-Semantics/</id>
+    <published>2016-05-19T14:59:14.000Z</published>
+    <updated>2016-05-19T15:03:42.000Z</updated>
+    
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;这是一个系列，谈论所有有关编写可维护性CSS。&lt;br&gt;翻译自：&lt;a href=&quot;http://maintainablecss.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MaintainableCSS&lt;/a&gt;&lt;br&gt;完整版：&lt;a href=&quot;http://owenyang0.github.io/maintainablecss-cn/chapters/semantics/&quot;&gt;maintainablecss-cn/chapters/semantics/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;译者：&lt;/strong&gt;&lt;br&gt;&lt;i class=&quot;fa fa-github-square&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; &lt;a href=&quot;https://github.com/owenyang0&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Owen Yang&lt;/a&gt;&lt;br&gt;&lt;i class=&quot;fa fa-github-square&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; &lt;a href=&quot;https://github.com/bangwu&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Bang Wu&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;概述:&lt;/strong&gt; 基于这 &lt;em&gt;是&lt;/em&gt; 什么命名，而不是基于它 &lt;em&gt;像&lt;/em&gt; 什么或 &lt;em&gt;能做&lt;/em&gt; 什么命名。&lt;/p&gt;
+&lt;h2 id=&quot;u957F_u7248_u672C_u89E3_u91CA&quot;&gt;&lt;a href=&quot;#u957F_u7248_u672C_u89E3_u91CA&quot; class=&quot;headerlink&quot; title=&quot;长版本解释&quot;&gt;&lt;/a&gt;长版本解释&lt;/h2&gt;&lt;p&gt;语义化(semantic)的 HTML 不仅仅关乎我们所使用的元素&amp;mdash;&amp;mdash;你当然知道一个链接应该使用 &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt; 标签，表格数据应该使用 &lt;code&gt;&amp;lt;table&amp;gt;&lt;/code&gt; 标签，段落使用 &lt;code&gt;&amp;lt;p&amp;gt;&lt;/code&gt; 等等。&lt;/p&gt;
+&lt;p&gt;更重要的是，它和我们所添加的类名(class names)和IDs有关。而类名和IDs为 CSS 和 JavaScript提供额外的机制，让我们更容易去操作和增强 HTML 元素。&lt;/p&gt;
+&lt;p&gt;很容易出现不经过思考而随意添加类名的场景，但现实中命名却又特别重要。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;在计算机科学领域，有两大难题，如何让缓存失效(cache invalidation)和如何给各种东西命名。&amp;rdquo;&lt;br&gt;&lt;br&gt;&amp;mdash; &lt;cite&gt;Phil Karlton, 网景架构师&lt;/cite&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这是由于人只是擅长和人沟通，却不太能理解简短的，不具有语义化的抽象概念。&lt;/p&gt;
+&lt;h2 id=&quot;u7C7B_u540D_u597D_u574F_u5BF9_u6BD4&quot;&gt;&lt;a href=&quot;#u7C7B_u540D_u597D_u574F_u5BF9_u6BD4&quot; class=&quot;headerlink&quot; title=&quot;类名好坏对比&quot;&gt;&lt;/a&gt;类名好坏对比&lt;/h2&gt;&lt;p&gt;试着找出非语义化和语义化类名的区别…&lt;br&gt;&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 不好 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;red pull-left&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;grid row&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;col-xs-4&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;这里完全看不出这段 HTML 代码要表达 &lt;em&gt;什么&lt;/em&gt;。你 &lt;em&gt;可能&lt;/em&gt; 会说它 &lt;em&gt;看起来&lt;/em&gt; 怎样（比如应该在小屏幕还是大屏幕上），但也就仅此而已。&lt;br&gt;&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 好 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;header&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;basket&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;product&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;searchResults&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;这段代码就正是我所推崇的。我很清楚地知道这段 HTML 代表着什么。虽然我不知道它看起来应该是怎样的，但我并不在乎，这是 CSS 存在的价值。而语义化的类名对 HTML 和 CSS 甚至 JS 都很有意义。&lt;/p&gt;
+&lt;p&gt;所以，&lt;em&gt;为什么&lt;/em&gt; 我们应该使用语义化的类名呢？&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u66F4_u5BB9_u6613_u7406_u89E3&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u66F4_u5BB9_u6613_u7406_u89E3&quot; class=&quot;headerlink&quot; title=&quot;因为更容易理解&quot;&gt;&lt;/a&gt;因为更容易理解&lt;/h2&gt;&lt;p&gt;若使用语义化类名，不论你是在修改 HTML 或者 CSS，你都清楚你将造成的影响。而使用视觉化类名(visual class names)的方式，你不得不在每一个元素上写很多类名，最终你可能只是对这些类名有一个模糊的理解，而不清楚它真正的意图是什么。而且，视觉化类名非常难以维护。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u8981_u6784_u5EFA_u54CD_u5E94_u5F0F_u7AD9_u70B9&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u8981_u6784_u5EFA_u54CD_u5E94_u5F0F_u7AD9_u70B9&quot; class=&quot;headerlink&quot; title=&quot;因为要构建响应式站点&quot;&gt;&lt;/a&gt;因为要构建响应式站点&lt;/h2&gt;&lt;p&gt;一般说来，不同的视图(viewport)会有不同的样式。比如，你可能需要在大屏上浮动(float)一个元素，在小屏不浮动。如果你有一个叫 &lt;code&gt;.clearfix&lt;/code&gt; 的类名来清理浮动，但在小屏上的效果却和类名不一样，这看起来会不会让人困惑呢？&lt;/p&gt;
+&lt;p&gt;使用语义化的类名，你就会基于 mediea queries 去编写样式，这会让 CSS 更易维护。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u66F4_u5BB9_u6613_u67E5_u627E&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u66F4_u5BB9_u6613_u67E5_u627E&quot; class=&quot;headerlink&quot; title=&quot;因为更容易查找&quot;&gt;&lt;/a&gt;因为更容易查找&lt;/h2&gt;&lt;p&gt;如果一个元素是基于其外在表像命名，比如 &lt;code&gt;.red&lt;/code&gt;, &lt;code&gt;.clearfix&lt;/code&gt;, 和 &lt;code&gt;.pull-left&lt;/code&gt; 等，那么这些类名就会像垃圾一样散落在代码库的任何地方&amp;mdash;&amp;mdash;当你搜索一段特定的 HTML 代码的时候，类名不会起任何作用。&lt;/p&gt;
+&lt;p&gt;换句话说，如果你的类名足够语义化，搜索特定代码片段是很简单的事。更常见的是，当你从头搜索你的 HTML(想像一下浏览器上的审查元素)去找类名的时候，查找唯一的 CSS 选择器肯定会快很多。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u4E0D_u60F3_u505A_u65E0_u6545_u7684_u56DE_u5F52_u6D4B_u8BD5&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u4E0D_u60F3_u505A_u65E0_u6545_u7684_u56DE_u5F52_u6D4B_u8BD5&quot; class=&quot;headerlink&quot; title=&quot;因为不想做无故的回归测试&quot;&gt;&lt;/a&gt;因为不想做无故的回归测试&lt;/h2&gt;&lt;p&gt;如果你使用描述性的，非语义化的类名，那么当你修改其中一个类名的时候，样式的改变会影响每一个使用这个类名的元素。基于你使用 CSS 的经验，你能保证你的修改不会在其他地方产生不可预知的问题吗？&lt;/p&gt;
+&lt;p&gt;语义化的类名是唯一的，所以当你编辑其中一个的时候，你 &lt;em&gt;能&lt;/em&gt; 自信地说，你的修改只会影响你想要改变的那个模块，维护起来更简单。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u4E0D_u7528_u518D_u6050_u60E7_u66F4_u65B0_u4EE3_u7801&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u4E0D_u7528_u518D_u6050_u60E7_u66F4_u65B0_u4EE3_u7801&quot; class=&quot;headerlink&quot; title=&quot;因为不用再恐惧更新代码&quot;&gt;&lt;/a&gt;因为不用再恐惧更新代码&lt;/h2&gt;&lt;p&gt;和前一个有关回归测试的那一点有关，当你对修改的代码不够自信的时候，你很有可能会造成 BUG 接着便会由于害怕出错而不再碰那些代码。更可怕的是会造成恶性循环，写很多冗余代码，最后变得越来越不具有可维护性。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u6709_u52A9_u4E8E_u81EA_u52A8_u5316_u6D4B_u8BD5&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u6709_u52A9_u4E8E_u81EA_u52A8_u5316_u6D4B_u8BD5&quot; class=&quot;headerlink&quot; title=&quot;因为有助于自动化测试&quot;&gt;&lt;/a&gt;因为有助于自动化测试&lt;/h2&gt;&lt;p&gt;自动化功能测试需要定位特定的元素，与其进化交互（输入文本，点击按钮、链接等等），基于这些操作进行相关校验。&lt;/p&gt;
+&lt;p&gt;若你的 HTML 通篇都使用描述性的类名，那么你将不会有一个可靠方式去定位一个特定的元素，更惶论与其交互了。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u4E3AJavaScript_u63D0_u4F9B_u4E86_u6709_u610F_u4E49_u7684_u63A5_u53E3&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u4E3AJavaScript_u63D0_u4F9B_u4E86_u6709_u610F_u4E49_u7684_u63A5_u53E3&quot; class=&quot;headerlink&quot; title=&quot;因为为JavaScript提供了有意义的接口&quot;&gt;&lt;/a&gt;因为为JavaScript提供了有意义的接口&lt;/h2&gt;&lt;p&gt;就像和自动化测试一样，语义化的类名对JavaScript来说同样有意义。描述性的类名不具有可靠性，不可用于定位相应的模块或组件。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u5E38_u89C4_u7EF4_u62A4_u7684_u62C5_u5FC3&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u5E38_u89C4_u7EF4_u62A4_u7684_u62C5_u5FC3&quot; class=&quot;headerlink&quot; title=&quot;因为常规维护的担心&quot;&gt;&lt;/a&gt;因为常规维护的担心&lt;/h2&gt;&lt;p&gt;若你是基于该元素是什么而命名，你就不必再次修改 HTML 的类名。如，heading 始终是 heading, 你不用管它变成什么样子。&lt;/p&gt;
+&lt;p&gt;样式可能会改变，但你只需要改变你的 CSS。这在另一个方面来说，实际是上松耦合从而提高了可维护性。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u975E_u8BED_u4E49_u7C7B_u540D_u8C03_u8BD5_u56F0_u96BE&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u975E_u8BED_u4E49_u7C7B_u540D_u8C03_u8BD5_u56F0_u96BE&quot; class=&quot;headerlink&quot; title=&quot;因为非语义类名调试困难&quot;&gt;&lt;/a&gt;因为非语义类名调试困难&lt;/h2&gt;&lt;p&gt;当你调试(debug)一个元素的时候，会出现很多类似的 CSS 选择器，增加了调试的难度。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u6807_u51C6_u63A8_u8350_u4F7F_u7528&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u6807_u51C6_u63A8_u8350_u4F7F_u7528&quot; class=&quot;headerlink&quot; title=&quot;因为标准推荐使用&quot;&gt;&lt;/a&gt;因为标准推荐使用&lt;/h2&gt;&lt;p&gt;HTML5 的规范在 &lt;a href=&quot;https://www.w3.org/TR/html5/dom.html#classes&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;3.2.5.7&lt;/a&gt; 里有说，使用类名属性。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“[…] 更鼓励使用能描述内容本质的类名，而不是那些只是描述其外在表像的值。”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u80FD_u5E26_u6765_u6027_u80FD_u7684_u63D0_u5347&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u80FD_u5E26_u6765_u6027_u80FD_u7684_u63D0_u5347&quot; class=&quot;headerlink&quot; title=&quot;因为能带来性能的提升&quot;&gt;&lt;/a&gt;因为能带来性能的提升&lt;/h2&gt;&lt;p&gt;这是一个 &lt;em&gt;非常&lt;/em&gt; 小的优势，因为当你一个元素只有一个类名的时候，你的整个 HTML 代码体积都会更小。而使用描述性的类名，每个元素有无数个类名，结果自然与前者不一样。&lt;/p&gt;
+&lt;h2 id=&quot;u56E0_u4E3A_u548C_u91CD_u7528_u89C4_u5219_u6709_u5173&quot;&gt;&lt;a href=&quot;#u56E0_u4E3A_u548C_u91CD_u7528_u89C4_u5219_u6709_u5173&quot; class=&quot;headerlink&quot; title=&quot;因为和重用规则有关&quot;&gt;&lt;/a&gt;因为和重用规则有关&lt;/h2&gt;&lt;p&gt;如果你没有使用语义化类名，你有可能会是误解了重用(reuse)的概念，而误用重用。阅读下章，获得更多。&lt;/p&gt;
+&lt;!--## Why? Because visual class names might declare the same property!
+
+It&#39;s likely that several different utility classes could refer to the same property meaning order matters and performance degrades.
+
+Think of an example of this.
+--&gt;
+&lt;h2 id=&quot;u6700_u540E_u60F3_u60F3_u8BED_u4E49_u5316&quot;&gt;&lt;a href=&quot;#u6700_u540E_u60F3_u60F3_u8BED_u4E49_u5316&quot; class=&quot;headerlink&quot; title=&quot;最后想想语义化&quot;&gt;&lt;/a&gt;最后想想语义化&lt;/h2&gt;&lt;p&gt;语义化的类名是 &lt;em&gt;MaintainableCSS&lt;/em&gt; 的基石，没有它，一切都没意义。所以，基于是什么命名，其他所有都将受益。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;这是一个系列，谈论所有有关编写可维护性CSS。&lt;br&gt;翻译自：&lt;a href=&quot;http://maintainablecss.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MaintainableCSS&lt;/a&gt;&lt;br&gt;完
+    
+    </summary>
+    
+    
+      <category term="CSS" scheme="http://owenyang0.github.io/tags/CSS/"/>
+    
+      <category term="MaintainableCSS" scheme="http://owenyang0.github.io/tags/MaintainableCSS/"/>
+    
+      <category term="Semantics" scheme="http://owenyang0.github.io/tags/Semantics/"/>
+    
+  </entry>
+  
+  <entry>
     <title>编写可维护性CSS之一，前言</title>
     <link href="http://owenyang0.github.io/2016/05/19/MaintainableCSS-introduction/"/>
     <id>http://owenyang0.github.io/2016/05/19/MaintainableCSS-introduction/</id>
     <published>2016-05-19T14:27:27.000Z</published>
-    <updated>2016-05-19T14:39:36.000Z</updated>
+    <updated>2016-05-19T15:04:05.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
-&lt;p&gt;这是一个系列，谈论所有有关编写可维护性CSS。&lt;br&gt;翻译自：&lt;a href=&quot;http://maintainablecss.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MaintainableCSS&lt;/a&gt;&lt;br&gt;完整版：&lt;a href=&quot;http://owenyang0.github.io/maintainablecss-cn/chapters/introduction/&quot;&gt;http://owenyang0.github.io/maintainablecss-cn/chapters/introduction/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;这是一个系列，谈论所有有关编写可维护性CSS。&lt;br&gt;翻译自：&lt;a href=&quot;http://maintainablecss.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MaintainableCSS&lt;/a&gt;&lt;br&gt;完整版：&lt;a href=&quot;http://owenyang0.github.io/maintainablecss-cn/chapters/introduction/&quot;&gt;maintainablecss-cn/chapters/introduction/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;译者：&lt;/strong&gt;&lt;br&gt;&lt;i class=&quot;fa fa-github-square&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; &lt;a href=&quot;https://github.com/owenyang0&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Owen Yang&lt;/a&gt;&lt;br&gt;&lt;i class=&quot;fa fa-github-square&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; &lt;a href=&quot;https://github.com/bangwu&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Bang Wu&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;em&gt;MaintainableCSS&lt;/em&gt; 是一种编写模块化、可扩展和易维护的CSS的架构。&lt;/p&gt;
