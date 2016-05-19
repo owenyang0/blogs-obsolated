@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://owenyang0.github.io/"/>
-  <updated>2016-05-17T14:38:02.000Z</updated>
+  <updated>2016-05-19T14:39:36.000Z</updated>
   <id>http://owenyang0.github.io/</id>
   
   <author>
@@ -14,6 +14,42 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>编写可维护性CSS之一，前言</title>
+    <link href="http://owenyang0.github.io/2016/05/19/MaintainableCSS-introduction/"/>
+    <id>http://owenyang0.github.io/2016/05/19/MaintainableCSS-introduction/</id>
+    <published>2016-05-19T14:27:27.000Z</published>
+    <updated>2016-05-19T14:39:36.000Z</updated>
+    
+    <content type="html">&lt;blockquote&gt;
+&lt;p&gt;这是一个系列，谈论所有有关编写可维护性CSS。&lt;br&gt;翻译自：&lt;a href=&quot;http://maintainablecss.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MaintainableCSS&lt;/a&gt;&lt;br&gt;完整版：&lt;a href=&quot;http://owenyang0.github.io/maintainablecss-cn/chapters/introduction/&quot;&gt;http://owenyang0.github.io/maintainablecss-cn/chapters/introduction/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;译者：&lt;/strong&gt;&lt;br&gt;&lt;i class=&quot;fa fa-github-square&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; &lt;a href=&quot;https://github.com/owenyang0&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Owen Yang&lt;/a&gt;&lt;br&gt;&lt;i class=&quot;fa fa-github-square&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; &lt;a href=&quot;https://github.com/bangwu&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Bang Wu&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;em&gt;MaintainableCSS&lt;/em&gt; 是一种编写模块化、可扩展和易维护的CSS的架构。&lt;/p&gt;
+&lt;p&gt;在实际情况下，这意味着，作为一个开发者，当我想创建一个新的功能或者修改已有的功能的时候，我不需要担心会使原来的代码变的更糟。&lt;/p&gt;
+&lt;h2 id=&quot;u4EC0_u4E48_u90FD_u4E0D_u9700_u8981_u4E0B_u8F7D&quot;&gt;&lt;a href=&quot;#u4EC0_u4E48_u90FD_u4E0D_u9700_u8981_u4E0B_u8F7D&quot; class=&quot;headerlink&quot; title=&quot;什么都不需要下载&quot;&gt;&lt;/a&gt;什么都不需要下载&lt;/h2&gt;&lt;p&gt;&lt;em&gt;MaintainableCSS&lt;/em&gt; 是不需要下载的。这只是一套帮助你构建大规模或者小规模网站的原则、指南和约定。&lt;/p&gt;
+&lt;h2 id=&quot;u53EF_u7EF4_u62A4_u7684_u610F_u4E49_u662F_u4EC0_u4E48_uFF1F&quot;&gt;&lt;a href=&quot;#u53EF_u7EF4_u62A4_u7684_u610F_u4E49_u662F_u4EC0_u4E48_uFF1F&quot; class=&quot;headerlink&quot; title=&quot;可维护的意义是什么？&quot;&gt;&lt;/a&gt;可维护的意义是什么？&lt;/h2&gt;&lt;p&gt;有一份可维护的代码意味着当你编辑一个模块的样式的时候不需要担心意外的改变的其他模块的代码。我清楚的知道我写出的代码是经过封装的。&lt;/p&gt;
+&lt;h2 id=&quot;u53EF_u7EF4_u62A4_u7684_u610F_u4E49_u662F_u4EC0_u4E48_uFF1F-1&quot;&gt;&lt;a href=&quot;#u53EF_u7EF4_u62A4_u7684_u610F_u4E49_u662F_u4EC0_u4E48_uFF1F-1&quot; class=&quot;headerlink&quot; title=&quot;可维护的意义是什么？&quot;&gt;&lt;/a&gt;可维护的意义是什么？&lt;/h2&gt;&lt;p&gt;这意味着, 当CSS代码库的大小增长的时候, 维护这些代码不会有任何困难. 如果你曾经继承了一个大的CSS代码库并且害怕去编辑这些已有的样式,你就会深有感触了。&lt;/p&gt;
+&lt;h2 id=&quot;u6A21_u5757_u5316_u7684_u610F_u4E49_u662F_u4EC0_u4E48_uFF1F&quot;&gt;&lt;a href=&quot;#u6A21_u5757_u5316_u7684_u610F_u4E49_u662F_u4EC0_u4E48_uFF1F&quot; class=&quot;headerlink&quot; title=&quot;模块化的意义是什么？&quot;&gt;&lt;/a&gt;模块化的意义是什么？&lt;/h2&gt;&lt;p&gt;模块是一个特殊的、独立的单元，可以与其他的模块进行组合，以便形成更加复杂的单元。例如在一个客厅，你可以把电视、沙发和墙分别看成模块，这些组合在一起就是一个可以使用的房间。&lt;/p&gt;
+&lt;p&gt;如果你带走其中一个单元，其他的任然能够工作的很好，没有电视你也能坐在沙发上，在一个网站上，页眉、页脚、产品列表和文章，这些都可以考虑为一个模块。&lt;/p&gt;
+&lt;h2 id=&quot;u8FD9_u9002_u5408_u8C01_uFF1F&quot;&gt;&lt;a href=&quot;#u8FD9_u9002_u5408_u8C01_uFF1F&quot; class=&quot;headerlink&quot; title=&quot;这适合谁？&quot;&gt;&lt;/a&gt;这适合谁？&lt;/h2&gt;&lt;p&gt;如果你曾经经历过维护CSS的痛苦，这本书可以帮助你避免常见的问题。无论的你的组是1个人或者是100个人，你都能在这本书上找到有用的建议。如果你的网站正在发展，你更加需要这本书。&lt;/p&gt;
+&lt;h2 id=&quot;u8FD9_u5B66_u8D77_u6765_u96BE_u5417_uFF1F&quot;&gt;&lt;a href=&quot;#u8FD9_u5B66_u8D77_u6765_u96BE_u5417_uFF1F&quot; class=&quot;headerlink&quot; title=&quot;这学起来难吗？&quot;&gt;&lt;/a&gt;这学起来难吗？&lt;/h2&gt;&lt;p&gt;我想说的是这很容易学。你可以在20分钟内读完这本书并且在几分钟内使用这些规则。如果你发现了任何错误请及时通知我。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;这是一个系列，谈论所有有关编写可维护性CSS。&lt;br&gt;翻译自：&lt;a href=&quot;http://maintainablecss.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MaintainableCSS&lt;/a&gt;&lt;br&gt;完
+    
+    </summary>
+    
+    
+      <category term="CSS" scheme="http://owenyang0.github.io/tags/CSS/"/>
+    
+      <category term="MaintainableCSS" scheme="http://owenyang0.github.io/tags/MaintainableCSS/"/>
+    
+  </entry>
   
   <entry>
     <title>Babel和Rollup，开始构建发布你的ES6模块(Modules)</title>
